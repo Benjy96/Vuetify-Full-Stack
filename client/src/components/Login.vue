@@ -49,7 +49,7 @@ export default {
     methods: {
         login(event) {  //event is a MouseEvent - passed in by Javascript
             firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-                .then(user => {
+                .then(() => {
                     this.$router.go({path: this.$router.path});
                 }, err => {
                     alert(err.message);

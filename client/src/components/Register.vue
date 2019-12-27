@@ -33,6 +33,7 @@
 <script>
 import firebase from 'firebase';
 
+//TODO: Could I combine the login/register component? Make em re-usable? The sign in form, even
 export default {
     name: 'register',
     data() {
@@ -49,7 +50,7 @@ export default {
     methods: {
         register(event) {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                .then(user => {
+                .then(() => {
                     this.$router.go({path: this.$router.path});
                 }, err => {
                     alert(err.message);

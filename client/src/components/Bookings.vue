@@ -9,11 +9,11 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import BookingService from '../BookingService';
 
 export default {
     name: 'Bookings',
-    props: ['project_id'],  //TODO pass in email or some identifier
     data() {
         return {
             bookings: [],
@@ -22,7 +22,7 @@ export default {
     }, 
     async created() { //run when component is initialized
         try {
-            this.bookings = await BookingService.getBookingsByEmail("benjamindickey@hotmail.co.uk");  //this refers to this component instance
+            this.bookings = await BookingService.getBookingsByEmail(firebase.auth().currentUser.email);  //this refers to this component instance
         } catch(err) {
             this.err = err.message;
         }
