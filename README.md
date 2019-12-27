@@ -1,0 +1,30 @@
+# Book a Business
+
+Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions. Integrated with the Timekit API.
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start Front-end (Vue.js): http://localhost:8080
+cd client
+npm run serve
+
+# Start Server (Cloud functions)
+cd functions
+npm run serve
+
+# Build for production (Will build into functions/public, ready for deployment)
+cd client
+npm run build
+
+# Deploy to production (Will deploy to Firebase hosting)
+cd functions
+firebase deploy
+```
+
+### Author
+
+Benjamin Dickey
