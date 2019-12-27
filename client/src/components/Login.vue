@@ -50,7 +50,6 @@ export default {
         login(event) {  //event is a MouseEvent - passed in by Javascript
             firebase.auth().signInWithEmailAndPassword(this.email, this.password)
                 .then(user => {
-                    alert("You are logged in as: " + user.email);
                     this.$router.go({path: this.$router.path});
                 }, err => {
                     alert(err.message);

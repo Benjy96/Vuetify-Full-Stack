@@ -50,7 +50,6 @@ export default {
         register(event) {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 .then(user => {
-                    alert(JSON.stringify(user));
                     this.$router.go({path: this.$router.path});
                 }, err => {
                     alert(err.message);
