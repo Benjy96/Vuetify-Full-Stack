@@ -1,6 +1,9 @@
 # Book a Business
 
+https://fir-payment-test.firebaseapp.com/
+
 Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions. Integrated with the Timekit API.
+
 
 ## Quick Start
 
@@ -12,7 +15,7 @@ npm install
 cd client
 npm run serve
 
-# Start Server (Cloud functions)
+# Start Server (Cloud functions): http://localhost:5000/firebase-payment-test/us-central1/app
 cd functions
 npm run serve
 
