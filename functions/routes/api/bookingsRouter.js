@@ -44,7 +44,7 @@ router.get('/:id', async (req, res) => {
             + req.params.id,
         'headers': {
         'Content-Type': 'application/json',
-        'Authorization': 'Basic OnRlc3RfYXBpX2tleV9YOGxnNVptYVlYaFE3RDl1aXJwNDZUWGlJeno0TmNlMw=='
+        'Authorization': tkConfig.basic_req_auth
         }
     };
 
