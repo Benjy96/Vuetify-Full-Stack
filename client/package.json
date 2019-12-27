@@ -11,7 +11,6 @@
     "axios": "^0.19.0",
     "core-js": "^3.4.3",
     "firebase": "^7.6.1",
-    "firebaseui": "^4.4.0",
     "timekit-booking": "^2.6.0",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",

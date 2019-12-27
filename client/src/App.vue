@@ -9,6 +9,7 @@
       <div class="admin-buttons">
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
         <v-btn v-if="currentUser" to="/bookings">Dashboard</v-btn>
+        <v-btn v-if="!currentUser" to="/register">Register</v-btn>
         <v-btn v-if="!currentUser" to="/login">Login</v-btn>
         <v-btn v-else v-on:click="logout">Logout</v-btn>
       </div>

@@ -1,30 +1,63 @@
 <template>
-    <div>
-        <div id="firebaseui-auth-container"></div>
-    </div>
+    <v-app>
+        <v-card width="400px" class="mx-auto mt-5">
+            <v-card-title><h1>Login</h1></v-card-title>
+
+            <v-card-text>
+                <v-form>
+                    <v-text-field v-model="email"
+                    required
+                    v-bind:rules="emailRules"
+                    label="email" prepend-icon="mdi-account-circle"
+                    />
+                    <v-text-field v-model="password"
+                    @click:append="showPassword = !showPassword"
+                    v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                    v-bind:type="showPassword ? 'text' : 'password'"
+                    label="password" prepend-icon="mdi-lock" 
+                    />
+                </v-form>
+            </v-card-text>
+
+            <v-divider></v-divider>
+
+            <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="success" @click="login">Login</v-btn>
+            </v-card-actions>
+
+        </v-card>
+    </v-app>
 </template>
 
 <script>
-var firebase = require('firebase');
-var firebaseui = require('firebaseui');
-import 'firebaseui/dist/firebaseui.css';
+import firebase from 'firebase';
 
 export default {
     name: 'login',
-    mounted() {
-        var uiConfig = {
-            signInOptions: [
-                firebase.auth.GoogleAuthProvider.PROVIDER_ID
+    data() {
+        return {
+            showPassword: false,
+            email: '',
+            password: '',
+            emailRules: [
+                v => !!v || 'E-mail is required',
+                v => /.+@.+/.test(v) || 'E-mail must be valid',
             ]
         }
-
-        if(firebaseui.auth.AuthUI.getInstance()) {
-            const ui = firebaseui.auth.AuthUI.getInstance();
-            ui.start('#firebaseui-auth-container', uiConfig);
-        } else {
-            const ui = new firebaseui.auth.AuthUI(firebase.auth());
-            ui.start('#firebaseui-auth-container', uiConfig);
-        }
     },
+    methods: {
+        login(event) {  //event is a MouseEvent - passed in by Javascript
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+                .then(user => {
+                    alert("You are logged in as: " + user.email);
+                    this.$router.go({path: this.$router.path});
+                }, err => {
+                    alert(err.message);
+                }
+            );
+            event.preventDefault();
+        }
+    }
 }
 </script>

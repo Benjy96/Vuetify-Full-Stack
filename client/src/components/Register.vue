@@ -5,12 +5,12 @@
 
             <v-card-text>
                 <v-form>
-                    <v-text-field 
+                    <v-text-field v-model="email"
                     required
-                    v-model="email" v-bind:rules="emailRules"
+                    v-bind:rules="emailRules"
                     label="email" prepend-icon="mdi-account-circle"
                     />
-                    <v-text-field 
+                    <v-text-field v-model="password"
                     @click:append="showPassword = !showPassword"
                     v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                     v-bind:type="showPassword ? 'text' : 'password'"
@@ -23,7 +23,7 @@
 
             <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="success">Register</v-btn>
+                <v-btn color="success" @click="register">Register</v-btn>
             </v-card-actions>
 
         </v-card>
@@ -31,6 +31,8 @@
 </template>
 
 <script>
+import firebase from 'firebase';
+
 export default {
     name: 'register',
     data() {
@@ -42,6 +44,18 @@ export default {
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid',
             ]
+        }
+    },
+    methods: {
+        register(event) {
+            firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+                .then(user => {
+                    alert(JSON.stringify(user));
+                    this.$router.go({path: this.$router.path});
+                }, err => {
+                    alert(err.message);
+                });
+            event.preventDefault();
         }
     }
 }
