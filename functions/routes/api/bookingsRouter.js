@@ -12,7 +12,8 @@ router.get('/', async (req, res) => {
     // Generated beneath code with POSTMAN Code button on the right-hand side of the screen
     var options = {
         'method': 'GET',
-        'url': 'https://api.timekit.io/v2/bookings?include=available_actions,attributes,calendar,customers',
+        'url': `https://api.timekit.io/v2/bookings
+                    ?include=available_actions,attributes,calendar,customers`,
         'headers': {
         'Content-Type': 'application/json',
         'Authorization': tkConfig.basic_req_auth
@@ -40,8 +41,9 @@ router.get('/:id', async (req, res) => {
     // Generated beneath code with POSTMAN Code button on the right-hand side of the screen
     var options = {
         'method': 'GET',
-        'url': 'https://api.timekit.io/v2/bookings?include=available_actions,attributes,calendar,customers&search=resource.id:' 
-            + req.params.id,
+        'url': `https://api.timekit.io/v2/bookings
+                    ?include=available_actions,attributes,calendar,customers
+                    &search=resource.id:${req.params.id}`, 
         'headers': {
         'Content-Type': 'application/json',
         'Authorization': tkConfig.basic_req_auth
