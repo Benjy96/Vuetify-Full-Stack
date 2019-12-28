@@ -6,7 +6,7 @@ const apiURL = 'api/resources/';
 //Front end HTTP request utility
 class ResourceService {
 
-    static createTKResource(obj) {
+    static createResource(obj) {
         return axios.post(apiURL, {
             data: {
                 ...obj

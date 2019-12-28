@@ -32,7 +32,6 @@
 
 <script>
 import firebase from 'firebase';
-import ResourceService from '../services/ResourceService';
 
 //TODO: Could I combine the login/register component? Make em re-usable? The sign in form, even
 export default {
@@ -52,14 +51,6 @@ export default {
         register(event) {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 .then(() => {
-                    ResourceService.createTKResource(
-                        {
-                            "email": this.email, 
-                            "timezone": "Europe/Belfast", 
-                            "name": this.email, 
-                            "password": this.password
-                        }
-                    );
                     this.$router.go({path: this.$router.path});
                 }, err => {
                     alert(err.message);

@@ -35,8 +35,6 @@
 </template>
 
 <script>
-import BusinessService from '../services/BusinessService.js';
-
 export default {
   name: 'home',
   data() {  //component state
@@ -60,13 +58,6 @@ export default {
         this.err = err.message;
       }
     } */
-  }, 
-  async created() { //run when component is initialized
-    try {
-      this.businesses = await BusinessService.getBusinesses();  //this refers to this component instance
-    } catch(err) {
-      this.err = err.message;
-    }
   }
 }
 </script>
