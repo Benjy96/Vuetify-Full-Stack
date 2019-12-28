@@ -1,12 +1,18 @@
+// Routing
 const express = require('express');
 const request = require('request');
-
-//Router object from express
 const router = express.Router();
 
+// Firestore
+const admin = require('firebase-admin');
+let db = admin.firestore();
+
+// Keys
 const tkConfig = require('../../config/timekitsdk.json');
 
 router.post('/', (req, res) => {
+
+    console.log('req body ' + JSON.stringify(req.body));
 
     var options = {
         'method': 'POST',
@@ -15,14 +21,17 @@ router.post('/', (req, res) => {
           'Content-Type': 'application/json',
           'Authorization': tkConfig.basic_req_auth
         },
-        body: req.body
+        body: JSON.stringify(req.body.data)
       };
 
     request(options, function (error, response) { 
         if (error) {
             res.status(500).send(error);
         } else {
-            res.status(201).send(response.body);
+            var responseJSON = JSON.parse(response.body).data;
+            db.collection('businesses').doc(responseJSON.id).set(responseJSON);
+
+            res.status(201).send(response.body.data);
         }
     });
 });

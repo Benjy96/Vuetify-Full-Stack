@@ -6,10 +6,10 @@ const apiURL = 'api/resources/';
 //Front end HTTP request utility
 class ResourceService {
 
-    static insertBusiness(obj) {
+    static createTKResource(obj) {
         return axios.post(apiURL, {
             data: {
-                obj
+                ...obj
             }
         });
     }
