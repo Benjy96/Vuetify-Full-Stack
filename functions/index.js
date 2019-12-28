@@ -17,7 +17,7 @@ app.use(cors());  //Enable ALL CORS requests
 //get the exported routers
 const businessesRouter = require('./routes/api/businessesRouter');
 const bookingsRouter = require('./routes/api/bookingsRouter');
-const resourcesRouter = require('./routes/api/bookingsRouter');
+const resourcesRouter = require('./routes/api/resourcesRouter');
 
 //use([path], [callback...]) mounts a middleware FUNCTION(s) at the specified path
 app.use('/api/businesses', businessesRouter); //sends all requests to /api/posts/* to the postsRouter
