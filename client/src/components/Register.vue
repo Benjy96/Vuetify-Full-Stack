@@ -32,7 +32,7 @@
 
 <script>
 import firebase from 'firebase';
-import ResourceService from '../ResourceService';
+import ResourceService from '../services/ResourceService';
 
 //TODO: Could I combine the login/register component? Make em re-usable? The sign in form, even
 export default {

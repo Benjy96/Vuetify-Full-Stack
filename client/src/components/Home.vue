@@ -35,7 +35,7 @@
 </template>
 
 <script>
-import BusinessService from '../BusinessService.js';
+import BusinessService from '../services/BusinessService.js';
 
 export default {
   name: 'home',
