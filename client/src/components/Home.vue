@@ -2,9 +2,7 @@
   <div>
     <h1>Businesses</h1>
     <v-divider></v-divider>
-
-    <v-container fluid>
-      <v-row dense>
+      <v-row>
         <v-col
           v-for="(business, index) in businesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business"
@@ -14,11 +12,9 @@
             <router-link :to="{ name: 'business', params: { id: business } }">
               <v-card-title v-text="business"></v-card-title>
             </router-link>
-
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
   </div> <!-- v-container shrinks the width: adds gutter/padding to sides -->
 </template>
 
