@@ -6,7 +6,8 @@
           <!-- v-btn extends router-link -->
         <v-btn to="/about" class="router-button">About</v-btn>
       </div>
-      <div class="admin-buttons">
+      <v-spacer></v-spacer>
+      <div>
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
         <v-btn v-if="currentUser" to="/bookings">Dashboard</v-btn>
         <v-btn v-if="!currentUser" to="/register">Register</v-btn>
@@ -16,7 +17,7 @@
     </v-app-bar>
 
     <v-content>
-      <v-container>
+      <v-container> <!-- https://vuetifyjs.com/en/components/grids -->
         <router-view/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
       </v-container>
     </v-content>
@@ -78,10 +79,5 @@ export default {
 .router-button {
   margin-right: 1vw;
   margin-left: 1vw;
-}
-
-.admin-buttons {
-  position: absolute;
-  left: 85%;
 }
 </style>
