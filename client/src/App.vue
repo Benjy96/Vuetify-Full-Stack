@@ -1,15 +1,15 @@
 <template>
   <v-app>
     <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
-        <v-btn to="/" class="router-button">Home</v-btn>
+        <v-btn to="/" class="router-button mr-4">Home</v-btn>
           <!-- v-btn extends router-link -->
         <v-btn to="/about" class="router-button">About</v-btn>
       <v-spacer></v-spacer>
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
         <v-btn v-if="currentUser" to="/bookings">Dashboard</v-btn>
         <v-btn v-if="!currentUser" to="/register">Register</v-btn>
-        <v-btn v-if="!currentUser" to="/login">Login</v-btn>
-        <v-btn v-else v-on:click="logout">Logout</v-btn>
+        <v-btn v-if="!currentUser" to="/login" class="ml-4">Login</v-btn>
+        <v-btn v-else v-on:click="logout" class="ml-4">Logout</v-btn>
     </v-app-bar>
 
     <v-content>
