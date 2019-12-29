@@ -5,13 +5,11 @@
       <v-row>
         <v-col
           v-for="(business, index) in businesses" 
-          v-bind:item="business" v-bind:index="index" v-bind:key="business"
+          v-bind:item="business" v-bind:index="index" v-bind:key="business.id"
           :cols="6"
         >
-          <v-card>
-            <router-link :to="{ name: 'business', params: { id: business } }">
-              <v-card-title v-text="business"></v-card-title>
-            </router-link>
+          <v-card :to="{ name: 'business', params: { id: business.id } }">
+            <v-card-text class="title">{{ business.name }}</v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -33,7 +31,12 @@ export default {
   created() {
     db.collection('businesses').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
-        this.businesses.push(doc.id);
+        this.businesses.push(
+          {
+            id: doc.id,
+            ...doc.data()
+          }
+        );
       });
     }).catch((err) => {
       alert(err.message);
