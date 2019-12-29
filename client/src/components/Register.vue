@@ -56,7 +56,7 @@ export default {
         }
     },
     methods: {
-        register(event) {
+        register() {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
             //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
             //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
@@ -65,13 +65,10 @@ export default {
                     db.collection('businesses').doc(userCredential.user.uid).set({
                         displayName: this.displayName,
                         email: this.email
-                    }).then(() => {
-                        this.$router.go({path: this.$router.path});
                     });
                 }, err => {
                     alert(err.message);
                 });
-            event.preventDefault();
         }
     }
 }
