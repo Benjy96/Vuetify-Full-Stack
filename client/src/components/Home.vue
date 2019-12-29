@@ -3,7 +3,7 @@
     <h1>Businesses</h1>
     <v-divider></v-divider>
 
-    <Calendar/>
+    <!-- <Calendar/> -->
 
     <!-- <v-container fluid>
       <v-row dense>
@@ -36,12 +36,12 @@
 
 <script>
 //TODO: Move calendar to another child
-import Calendar from './Calendar';
+// import Calendar from './Calendar';
 
 export default {
   name: 'home',
   components: {
-    Calendar
+    // Calendar
   },
   data() {  //component state
     return {

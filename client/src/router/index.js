@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../components/Home.vue'
-import BusinessComponent from '../components/BusinessComponent.vue'
+import Calendar from '../components/Calendar.vue'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
 import Bookings from '../components/Bookings.vue'
@@ -44,9 +44,9 @@ const routes = [
     //I think it's just to make the URL look nice lol
   },
   {
-    path: '/businesses/:project_id',
+    path: '/businesses/:id',
     name: 'business',
-    component: BusinessComponent,
+    component: Calendar,
     props: true
   },
   {
