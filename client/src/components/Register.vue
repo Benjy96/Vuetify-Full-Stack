@@ -4,10 +4,15 @@
 
         <v-card-text>
             <v-form>
+                <v-text-field v-model="displayName"
+                required
+                v-bind:rules="nameRules"
+                label="name" prepend-icon="mdi-account-circle"
+                />
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                label="email" prepend-icon="mdi-account-circle"
+                label="email" prepend-icon="mdi-at"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
@@ -30,6 +35,7 @@
 
 <script>
 import firebase from 'firebase';
+import { db } from '../firebaseInit';
 
 //TODO: Could I combine the login/register component? Make em re-usable? The sign in form, even
 export default {
@@ -37,19 +43,31 @@ export default {
     data() {
         return {
             showPassword: false,
+            displayName: '',
             email: '',
             password: '',
             emailRules: [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid',
+            ],
+            nameRules: [
+                v => !!v || 'Name is required'
             ]
         }
     },
     methods: {
         register(event) {
             firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    this.$router.go({path: this.$router.path});
+            //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
+            //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
+                .then((userCredential) => {
+                    //TODO: What if one stage gets interrupted? Perhaps move this more complex code to a back-end call?
+                    db.collection('businesses').doc(userCredential.user.uid).set({
+                        displayName: this.displayName,
+                        email: this.email
+                    }).then(() => {
+                        this.$router.go({path: this.$router.path});
+                    });
                 }, err => {
                     alert(err.message);
                 });
