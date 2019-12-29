@@ -1,19 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar id="nav"> <!-- was <div id="nav" ></v-app> -->
-      <div class="router-buttons">
+    <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
         <v-btn to="/" class="router-button">Home</v-btn>
           <!-- v-btn extends router-link -->
         <v-btn to="/about" class="router-button">About</v-btn>
-      </div>
       <v-spacer></v-spacer>
-      <div>
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
         <v-btn v-if="currentUser" to="/bookings">Dashboard</v-btn>
         <v-btn v-if="!currentUser" to="/register">Register</v-btn>
         <v-btn v-if="!currentUser" to="/login">Login</v-btn>
         <v-btn v-else v-on:click="logout">Logout</v-btn>
-      </div>
     </v-app-bar>
 
     <v-content>
@@ -61,23 +57,5 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-}
-
-#nav {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url(assets/barcelona.jpg);
-    background-size: cover;
-    background-position: center;
-    margin-bottom: 1vh;
-}
-
-.router-buttons {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, 0%);
-}
-
-.router-button {
-  margin-right: 1vw;
-  margin-left: 1vw;
 }
 </style>
