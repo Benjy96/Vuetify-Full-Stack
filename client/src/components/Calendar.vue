@@ -174,7 +174,7 @@ export default {
   }),
   created () {
     this.getBookedDays()
-    this.getEvents()
+    this.getBookings()
   },
   computed: {
     title () {
@@ -242,8 +242,8 @@ export default {
     test(obj) {
       alert(JSON.stringify(obj));
     },
-    async getEvents () {
-      let snapshot = await db.collection('calEvent').get()
+    async getBookings () {
+      let snapshot = await db.collection(`businesses/${this.id}/bookings`).get()
       let events = {};
       snapshot.forEach(doc => {
         let appData = doc.data()
@@ -319,7 +319,7 @@ export default {
           end: this.end,
           color: this.color
         })
-        this.getEvents()
+        this.getBookings()
         this.name = '',
         this.details = '',
         this.start = '',
@@ -342,7 +342,7 @@ export default {
     async deleteEvent (ev) {
       await db.collection("calEvent").doc(ev).delete()
       this.selectedOpen = false,
-      this.getEvents()
+      this.getBookings()
     },
     showEvent ({ nativeEvent, event }) {
       const open = () => {
