@@ -31,7 +31,7 @@
         </v-col>
       </v-row>
     </v-container> -->
-  </div>
+  </div> <!-- v-container shrinks the width: adds gutter/padding to sides -->
 </template>
 
 <script>

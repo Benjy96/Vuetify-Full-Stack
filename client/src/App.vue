@@ -14,8 +14,13 @@
         <v-btn v-else v-on:click="logout">Logout</v-btn>
       </div>
     </v-app-bar>
-    <br>
-    <router-view/> <!-- Render the matched component for this path (paths in src/router/index.js) -->
+
+    <v-content>
+      <v-container>
+        <router-view/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
+      </v-container>
+    </v-content>
+    
   </v-app>
 </template>
 
