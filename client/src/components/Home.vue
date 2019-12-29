@@ -3,36 +3,28 @@
     <h1>Businesses</h1>
     <v-divider></v-divider>
 
-    <!-- <v-container fluid>
+    <v-container fluid>
       <v-row dense>
         <v-col
           v-for="(business, index) in businesses" 
-          v-bind:item="business" v-bind:index="index" v-bind:key="business.id"
+          v-bind:item="business" v-bind:index="index" v-bind:key="business"
           :cols="6"
         >
           <v-card>
-            <router-link :to="{ name: 'business', params: { project_id: business.id } }">
-              <v-card-title v-text="business.name"></v-card-title>
+            <router-link :to="{ name: 'business', params: { id: business } }">
+              <v-card-title v-text="business"></v-card-title>
             </router-link>
-        
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-share-variant</v-icon>
-              </v-btn>
-            </v-card-actions>
 
           </v-card>
         </v-col>
       </v-row>
-    </v-container> -->
+    </v-container>
   </div> <!-- v-container shrinks the width: adds gutter/padding to sides -->
 </template>
 
 <script>
+import { db } from '../firebaseInit';
+
 export default {
   name: 'home',
   data() {  //component state
@@ -41,6 +33,15 @@ export default {
       err: '',
       text: ''
     }
+  },
+  created() {
+    db.collection('businesses').get().then(querySnapshot => {
+      querySnapshot.forEach(doc => {
+        this.businesses.push(doc.id);
+      });
+    }).catch((err) => {
+      alert(err.message);
+    });
   }
 }
 </script>
