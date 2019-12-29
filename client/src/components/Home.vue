@@ -3,8 +3,6 @@
     <h1>Businesses</h1>
     <v-divider></v-divider>
 
-    <!-- <Calendar/> -->
-
     <!-- <v-container fluid>
       <v-row dense>
         <v-col
@@ -35,35 +33,14 @@
 </template>
 
 <script>
-//TODO: Move calendar to another child
-// import Calendar from './Calendar';
-
 export default {
   name: 'home',
-  components: {
-    // Calendar
-  },
   data() {  //component state
     return {
       businesses: [], //will be filled by a request to the back end
       err: '',
       text: ''
     }
-  },
-  methods: {
-/*     async createBusiness() {
-      await BusinessService.insertbusiness(this.text);
-      this.businesses = await BusinessService.getBusinesses();
-      //for performance could not bother with this request but add manually, but then again, what if it didnt get added? 
-    },
-    async deleteBusiness(id) {
-      try {
-        await BusinessService.deleteBusiness(id);  //this refers to this component instance
-        this.businesses = await BusinessService.getBusinesses();
-      } catch(err) {
-        this.err = err.message;
-      }
-    } */
   }
 }
 </script>
