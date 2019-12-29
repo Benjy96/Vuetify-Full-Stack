@@ -272,10 +272,8 @@ export default {
       this.$refs.calendar.next()
     },
     async addEvent () {
-      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({
-        text: 'ay'
-      }).then(()=>{
-        alert('hi')
+      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({}).then(()=>{
+        alert('hi');
       }).catch(()=>{
         alert('err');
       });
