@@ -1,11 +1,9 @@
 <template>
-    <v-app>
-        <v-container fluid>
-        <v-row dense>
-            {{bookings}}
-        </v-row>
-        </v-container>
-    </v-app>
+    <v-container fluid>
+    <v-row dense>
+        {{bookings}}
+    </v-row>
+    </v-container>
 </template>
 
 <script>

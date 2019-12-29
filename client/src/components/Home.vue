@@ -1,10 +1,12 @@
 <template>
-  <div class="container">
+  <v-app>
 
     <h1>Businesses</h1>
     <v-divider></v-divider>
 
-    <v-container fluid>
+    <Calendar/>
+
+    <!-- <v-container fluid>
       <v-row dense>
         <v-col
           v-for="(business, index) in businesses" 
@@ -17,7 +19,6 @@
             </router-link>
         
             <v-card-actions>
-              <!-- move buttons to right -->
               <v-spacer></v-spacer>
               <v-btn icon>
                 <v-icon>mdi-heart</v-icon>
@@ -30,13 +31,19 @@
           </v-card>
         </v-col>
       </v-row>
-    </v-container>
-  </div>
+    </v-container> -->
+  </v-app>
 </template>
 
 <script>
+//TODO: Move calendar to another child
+import Calendar from './Calendar';
+
 export default {
   name: 'home',
+  components: {
+    Calendar
+  },
   data() {  //component state
     return {
       businesses: [], //will be filled by a request to the back end
