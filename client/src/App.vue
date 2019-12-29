@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <v-app-bar id="nav"> <!-- was <div id="nav" ></div> -->
+  <v-app>
+    <v-app-bar id="nav"> <!-- was <div id="nav" ></v-app> -->
       <div class="router-buttons">
         <v-btn to="/" class="router-button">Home</v-btn>
           <!-- v-btn extends router-link -->
@@ -16,7 +16,7 @@
     </v-app-bar>
     <br>
     <router-view/> <!-- Render the matched component for this path (paths in src/router/index.js) -->
-  </div>
+  </v-app>
 </template>
 
 <script>

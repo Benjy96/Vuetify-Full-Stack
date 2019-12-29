@@ -1,6 +1,5 @@
 <template>
-  <v-app>
-
+  <div>
     <h1>Businesses</h1>
     <v-divider></v-divider>
 
@@ -32,7 +31,7 @@
         </v-col>
       </v-row>
     </v-container> -->
-  </v-app>
+  </div>
 </template>
 
 <script>
