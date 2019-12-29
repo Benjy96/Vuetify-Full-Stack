@@ -172,7 +172,7 @@ export default {
     addEventKey: null,
     bookedDays: {}
   }),
-  mounted () {
+  created () {
     this.getBookedDays()
     this.getEvents()
   },
@@ -272,8 +272,7 @@ export default {
       this.$refs.calendar.next()
     },
     async addEvent () {
-      alert('in add event');
-      await db.collection('calEvent').doc(this.addEventKey).set({
+      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({
         text: 'ay'
       }).then(()=>{
         alert('hi')
