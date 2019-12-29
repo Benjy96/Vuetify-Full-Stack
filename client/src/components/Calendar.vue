@@ -70,12 +70,19 @@
   @click:event="showEvent"
   @click:more="viewDay"
   @click:date="viewDay"
+  @click:day="iewDay"
   @change="updateRange"
   >
+  <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
+
+  <template v-slot:day="day">
+    <v-sheet v-if="available(day)" height="100%" color="green">
+    </v-sheet>
+  </template>
 
   <template v-slot:interval="object">
     <!-- TODO: Check if event exists for this element -->
-    <v-btn v-if="noEvent(object) == true"
+    <v-btn v-if="noEventAtTime(object) == true"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
     ></v-btn>
   </template>
@@ -162,9 +169,11 @@ export default {
     dialog: false,
     dialogDate: false,
     //Ben - Adding for unique key
-    addEventKey: null
+    addEventKey: null,
+    bookedDays: {}
   }),
   mounted () {
+    this.getBookedDays()
     this.getEvents()
   },
   computed: {
@@ -199,11 +208,30 @@ export default {
     }
   },
   methods: {
+    async getBookedDays(){
+      let snapshot = await db.collection(`businesses/${this.id}/unavailable_days`).get()
+      let bookedDays = {}
+      snapshot.forEach(doc => {
+        bookedDays[doc.id] = true
+      })
+      this.bookedDays = bookedDays;
+    },
+    available(day){
+      if(this.bookedDays[day.date] == true){
+        return false;
+      } else{
+        return true;
+      }
+    },
     openDialog(dateObject) {
       this.dialog = true;
       this.addEventKey = `${dateObject.date}${dateObject.time}`;
     },
-    noEvent(dateObject) {
+    noEventAtTime(dateObject) {
+      if(this.available(dateObject) == false){
+        return false;
+      }
+
       let key = dateObject.date + dateObject.time
       if(this.events[key] != null){
         return false;
