@@ -243,6 +243,7 @@ export default {
       alert(JSON.stringify(obj));
     },
     async getBookings () {
+      //TODO: Realtime DB not priced on read/writes - may be better for retrieving these
       let snapshot = await db.collection(`businesses/${this.id}/bookings`).get()
       let events = {};
       snapshot.forEach(doc => {
@@ -272,11 +273,7 @@ export default {
       this.$refs.calendar.next()
     },
     async addEvent () {
-      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({}).then(()=>{
-        alert('hi');
-      }).catch(()=>{
-        alert('err');
-      });
+      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({});
       /* What needs to happen when we try to make a booking?
 
         1. Add to firebase collection
@@ -329,20 +326,20 @@ export default {
         alert('You must enter event name, start, and end time')
       } */
     },
-    editEvent (ev) {
-      this.currentlyEditing = ev.id
+    editEvent () {
+      // this.currentlyEditing = ev.id
     },
-    async updateEvent (ev) {
-      await db.collection('calEvent').doc(this.currentlyEditing).update({
+    async updateEvent () {
+/*       await db.collection('calEvent').doc(this.currentlyEditing).update({
         details: ev.details
       })
       this.selectedOpen = false,
-      this.currentlyEditing = null
+      this.currentlyEditing = null */
     },
-    async deleteEvent (ev) {
-      await db.collection("calEvent").doc(ev).delete()
+    async deleteEvent () {
+/*       await db.collection("calEvent").doc(ev).delete()
       this.selectedOpen = false,
-      this.getBookings()
+      this.getBookings() */
     },
     showEvent ({ nativeEvent, event }) {
       const open = () => {
@@ -358,6 +355,7 @@ export default {
       }
       nativeEvent.stopPropagation()
     },
+    //start & end objects passed in with a .month proeprty, properly indexed.
     updateRange ({ start, end }) {
       this.start = start
       this.end = end
