@@ -4,7 +4,7 @@ import Home from '../components/Home.vue'
 import Calendar from '../components/Calendar.vue'
 import Login from '../components/Login.vue'
 import Register from '../components/Register.vue'
-import Bookings from '../components/Bookings.vue'
+import Dashboard from '../components/Dashboard.vue'
 
 import firebase from 'firebase'
 
@@ -50,9 +50,9 @@ const routes = [
     props: true
   },
   {
-    path: '/bookings',
-    name: 'bookings',
-    component: Bookings,
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard,
     meta: {
       requiresAuth: true
     }

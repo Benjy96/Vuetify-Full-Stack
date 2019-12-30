@@ -1,14 +1,12 @@
 <template>
 
-    <v-container>
+    <div>
         <v-row v-for="booking in bookings" v-bind:key="booking">
             <v-col>
-                <v-card>
-                    {{ booking.id }}
-                </v-card>
+                {{ booking.id }}
             </v-col>
         </v-row>
-    </v-container>
+    </div>
         
 </template>
 

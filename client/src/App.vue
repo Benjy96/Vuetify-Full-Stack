@@ -6,7 +6,7 @@
         <v-btn to="/about" class="router-button">About</v-btn>
       <v-spacer></v-spacer>
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
-        <v-btn v-if="currentUser" to="/bookings">My Bookings</v-btn>
+        <v-btn v-if="currentUser" to="/dashboard">Dashboard</v-btn>
         <v-btn v-if="!currentUser" to="/register">Register</v-btn>
         <v-btn v-if="!currentUser" to="/login" class="ml-4">Login</v-btn>
         <v-btn v-else v-on:click="logout" class="ml-4">Logout</v-btn>
