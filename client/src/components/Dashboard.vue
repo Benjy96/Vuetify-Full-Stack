@@ -8,7 +8,7 @@
                 <v-card>
                     <v-card-title>Availability</v-card-title>
                     <v-divider></v-divider>
-                    <TimeRangePicker/>
+                    <TimeRangePicker :id="id"/>
                 </v-card>
             </v-col>
         </v-row>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import firebase from 'firebase';
 import Bookings from './Bookings';
 import TimeRangePicker from './TimeRangePicker';
 
@@ -35,6 +36,14 @@ export default {
     components: {
         Bookings,
         TimeRangePicker
+    },
+    data() {
+        return {
+            id: null
+        }
+    },
+    created() {
+        this.id = firebase.auth().currentUser.uid;
     }
 }
 </script>

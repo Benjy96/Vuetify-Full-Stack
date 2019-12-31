@@ -17,8 +17,10 @@
 
 <script>
 import date from 'date-and-time';
+import { db } from '../firebaseInit';
 
 export default {
+    props: ['id'],
     data() {
         return {
             day: 'Monday',
@@ -31,6 +33,19 @@ export default {
         }
     },
     methods: {
+        /* Standard availability algorithm:
+
+            - Store date range
+                1. Save Monday 09:00 - 17:00
+                2. Add to DB: business/unavailable/days/Monday/17:00-09:00
+            - Retrieve date range
+                1. Click on Monday on calendar
+                2. Read from DB: business/unavailable/days/Monday
+                3. If Monday collection length > 0:
+                    1. For each Calendar Hour (interval slot) in Calendar Monday:
+                        1. If Calendar Hour in DB Monday Range:
+                            1. Do not render clickable booking slot
+        */
         validate() {
             //TODO: Maybe a dropdown is better.....? (Although less control) 
                 //Any other date pickers? Get working for now in DB side though
@@ -40,7 +55,27 @@ export default {
             if(parsedFrom > parsedTo){
                 alert('From should be earlier than To!');
             } else {
+                let formattedFromHours = this.getDoubleDigitTime(parsedFrom.getHours());
+                let formattedFromMins = this.getDoubleDigitTime(parsedFrom.getMinutes());
+
+                let formattedToHour = this.getDoubleDigitTime(parsedTo.getHours());
+                let formattedToMins = this.getDoubleDigitTime(parsedTo.getMinutes());
+
+                alert('formattedToHour: ' + formattedToHour);
+
+                parsedTo = `${formattedToHour}:${formattedToMins}`;
+                parsedFrom = `${formattedFromHours}:${formattedFromMins}`;
+
                 //Add to db...
+                db.collection(`businesses/${this.id}/unavailable/days/${this.day}`)
+                    .doc(`${parsedTo}-${parsedFrom}`).set({});
+            }
+        },
+        getDoubleDigitTime(intMinOrHour){
+            if(intMinOrHour < 10){
+                return `0${intMinOrHour}`;
+            } else {
+                return intMinOrHour;
             }
         }
     }
