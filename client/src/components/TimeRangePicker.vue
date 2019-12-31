@@ -70,8 +70,6 @@ export default {
                 let formattedToHour = this.getDoubleDigitTime(parsedTo.getHours());
                 let formattedToMins = this.getDoubleDigitTime(parsedTo.getMinutes());
 
-                alert('formattedToHour: ' + formattedToHour);
-
                 parsedTo = `${formattedToHour}:${formattedToMins}`;
                 parsedFrom = `${formattedFromHours}:${formattedFromMins}`;
 

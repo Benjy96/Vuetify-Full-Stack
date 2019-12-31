@@ -70,19 +70,19 @@
   @click:event="showEvent"
   @click:more="viewDay"
   @click:date="viewDay"
-  @click:day="iewDay"
+  @click:day="viewDay"
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
 
   <template v-slot:day="day">
-    <v-sheet v-if="available(day)" height="100%" color="green">
+    <v-sheet v-if="isAvailableDay(day)" height="100%" color="green">
     </v-sheet>
   </template>
 
   <template v-slot:interval="object">
     <!-- TODO: Check if event exists for this element -->
-    <v-btn v-if="noEventAtTime(object) == true"
+    <v-btn v-if="availableAtTime(object) == true"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
     ></v-btn>
   </template>
@@ -95,7 +95,6 @@
   v-model="selectedOpen"
   :close-on-content-click="false"
   :activator="selectedElement"
-  full-width
   offset-x
   >
   <v-card color="grey lighten-4" :width="350" flat>
@@ -142,6 +141,8 @@
 
 <script>
 import { db } from '../firebaseInit';
+import BookingService from './BookingService';
+import DateUtils from './DateUtils';
 
 export default {
   props: ['id'],
@@ -170,11 +171,13 @@ export default {
     dialogDate: false,
     //Ben - Adding for unique key
     addEventKey: null,
-    bookedDays: {}
+    bookedDays: {},
+    unavailableTimeRanges: {}
   }),
   created () {
     this.getBookedDays()
     this.getBookings()
+    this.getUnavailableRanges()
   },
   computed: {
     title () {
@@ -216,7 +219,7 @@ export default {
       })
       this.bookedDays = bookedDays;
     },
-    available(day){
+    isAvailableDay(day){
       if(this.bookedDays[day.date] == true){
         return false;
       } else{
@@ -227,8 +230,27 @@ export default {
       this.dialog = true;
       this.addEventKey = `${dateObject.date}${dateObject.time}`;
     },
-    noEventAtTime(dateObject) {
-      if(this.available(dateObject) == false){
+    availableAtTime(dateObject) {
+      //TODO: once per day
+
+      // Standard Availability
+      if(this.unavailableTimeRanges[dateObject.weekday] != null) {
+        // Check if hour in range
+
+        //TODO: wasn't returning from forEach..why? I guess it was returning the for each method itself
+        for(var i = 0; i < this.unavailableTimeRanges[dateObject.weekday].length; i++){
+          //1. Split string
+          //2. Convert to number
+          //3. Check larger than left, check lower than right
+            //If true, return false
+          if(DateUtils.timeWithinRange(dateObject.hour, dateObject.minute, this.unavailableTimeRanges[dateObject.weekday][i])){
+            return false;
+          }
+        }
+      }
+
+      // Special / Booking Availability
+      if(this.isAvailableDay(dateObject) == false){
         return false;
       }
 
@@ -251,6 +273,13 @@ export default {
         events[doc.id] = appData
       })
       this.events = events;
+    },
+    async getUnavailableRanges() {
+      for(var i = 0; i < 8; i++){
+        if(this.unavailableTimeRanges[i] == null) {
+          this.unavailableTimeRanges[i] = await BookingService.getUnavailableTimeRanges(this.id, i);
+        }
+      }
     },
     setDialogDate({ date }) {
       this.dialogDate = true
@@ -277,7 +306,7 @@ export default {
       /* What needs to happen when we try to make a booking?
 
         1. Add to firebase collection
-        2. Mark the booking as no longer available
+        2. Mark the booking as no longer isAvailableDay
             Q: How to store and retrieve "taken" booking timeslots? 
             
                 Collection for each day populated with bookings

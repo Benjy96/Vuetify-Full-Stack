@@ -12,6 +12,15 @@ class BookingService {
         })
         return bookings;
     }
+
+    static async getUnavailableTimeRanges(uid, weekday){
+        let ranges = [];
+        let snapshot = await db.collection(`businesses/${uid}/unavailable/days/${weekday}`).get();
+        snapshot.forEach(doc => {
+            ranges.push(doc.id);
+        })
+        return ranges;
+    }
 }
 
 export default BookingService;
