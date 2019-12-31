@@ -8,13 +8,7 @@
                 <v-card>
                     <v-card-title>Availability</v-card-title>
                     <v-divider></v-divider>
-                    <v-container class="grey lighten-2">
-                        <v-radio-group>
-                            <v-radio label="24/7"/>
-                            <v-radio label="Weekdays"/>
-                            <v-radio label="Weekends"/>
-                        </v-radio-group>
-                    </v-container>
+                    <TimeRangePicker/>
                 </v-card>
             </v-col>
         </v-row>
@@ -34,11 +28,13 @@
 
 <script>
 import Bookings from './Bookings';
+import TimeRangePicker from './TimeRangePicker';
 
 export default {
     name: 'Dashboard',
     components: {
-        Bookings
+        Bookings,
+        TimeRangePicker
     }
 }
 </script>
