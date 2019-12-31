@@ -4,7 +4,7 @@
         <v-row class="green lighten-4">
             <v-col>
             <v-form>
-                <v-select v-bind:items='["Monday", "Tuesday"]' label="Day" v-model="day"/>
+                <v-select v-bind:items="days" label="Day" v-model="day"/>
                 <!-- v-text-field extends v-input: how do mixins work? -->
                 <v-text-field label="From" placeholder="09:00" v-model="from" :rules="dateRules"/>
                 <v-text-field label="To" placeholder="17:00" v-model="to" :rules="dateRules"/>
@@ -29,6 +29,15 @@ export default {
             dateRules: [
                 v => !!v || 'A time is required!',
                 v => (v && v.length == 5 ) || 'Time must be in the "24:00" format'
+            ],
+            days: [
+                {text: "Monday", value: 1},
+                {text: "Tuesday", value: 2},
+                {text: "Wednesay", value: 3},
+                {text: "Thursday", value: 4},
+                {text: "Friday", value: 5},
+                {text: "Saturday", value: 6},
+                {text: "Sunday", value: 7}
             ]
         }
     },

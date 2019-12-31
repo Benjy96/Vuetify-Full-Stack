@@ -304,27 +304,6 @@ export default {
                             E.g., v-if="!dict[key]"
 
       */
-
-
-
-
-      /* if (this.name && this.start && this.end) {
-        await db.collection("calEvent").add({
-          name: this.name,
-          details: this.details,
-          start: this.start,
-          end: this.end,
-          color: this.color
-        })
-        this.getBookings()
-        this.name = '',
-        this.details = '',
-        this.start = '',
-        this.end = '',
-        this.color = ''
-      } else {
-        alert('You must enter event name, start, and end time')
-      } */
     },
     editEvent () {
       // this.currentlyEditing = ev.id
