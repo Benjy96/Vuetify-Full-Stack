@@ -28,7 +28,7 @@ export default {
             to: '17:00',
             dateRules: [
                 v => !!v || 'A time is required!',
-                v => (v && v.length == 5 ) || 'Time must be in the "24:00" format'
+                v => (v && v.length == 5 ) || 'Time must be in the 24:00 format'
             ],
             days: [
                 {text: "Monday", value: 1},
