@@ -14,6 +14,7 @@
 <script>
 import date from 'date-and-time';
 import { db } from '../firebaseInit';
+import { daysOfWeek } from './DateUtils';
 
 export default {
     props: ['id'],
@@ -27,15 +28,7 @@ export default {
                 v => (v && v.length == 5 ) || 'Time must be in the 24:00 format',
                 v => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/.test(v) || 'Time must be in the 24:00 format'
             ],
-            days: [
-                {text: "Monday", value: 1},
-                {text: "Tuesday", value: 2},
-                {text: "Wednesay", value: 3},
-                {text: "Thursday", value: 4},
-                {text: "Friday", value: 5},
-                {text: "Saturday", value: 6},
-                {text: "Sunday", value: 7}
-            ]
+            days: daysOfWeek
         }
     },
     methods: {

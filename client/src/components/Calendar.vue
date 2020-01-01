@@ -142,7 +142,7 @@
 <script>
 import { db } from '../firebaseInit';
 import BookingService from './BookingService';
-import DateUtils from './DateUtils';
+import {DateUtils} from './DateUtils';
 
 export default {
   props: ['id'],

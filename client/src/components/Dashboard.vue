@@ -8,15 +8,36 @@
                 <v-card>
                     <v-card-title>Availability</v-card-title>
                     <v-divider></v-divider>
-                    <v-row>
-                        <v-col>
+                    <v-row no-gutters>
+                        <v-col class="red lighten-3">
                             <v-container>
                                 <TimeRangePicker :id="id"/>
                             </v-container>
                         </v-col>
                         <v-col class="red lighten-4">
                             <v-container>
-                        Test
+                                <v-card-title>Regular Hours</v-card-title>
+                                <!-- Days of Week -->
+                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day.value">
+                                    <!-- Day -->
+                                    <v-col class="red lighten-2">
+                                        {{day.text}}
+                                    </v-col>
+
+                                    <!-- Time Ranges for Day-->
+                                    <v-col class="red lighten-3">
+                                        <v-list-item v-for="range in ranges[day.value]" :key="'dayRange' + day.value + range">
+                                            {{range}}
+                                            <v-list-item-action>
+                                                <v-btn icon @click="deleteTimeRange">
+                                                    <v-icon>mdi-close</v-icon>
+                                                </v-btn>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                        
+                                    </v-col>
+                                </v-row>
+
                             </v-container> 
                         </v-col>
                     </v-row>
@@ -38,6 +59,9 @@
 </template>
 
 <script>
+import { db } from '../firebaseInit';
+import { daysOfWeek } from './DateUtils';
+
 import firebase from 'firebase';
 import Bookings from './Bookings';
 import TimeRangePicker from './TimeRangePicker';
@@ -50,11 +74,37 @@ export default {
     },
     data() {
         return {
-            id: null
+            id: null,
+            ranges: {
+                1: [],
+                2: [],
+                3: [],
+                4: [],
+                5: [],
+                6: [],
+                7: []
+            },
+            daysOfWeek: daysOfWeek
         }
     },
     created() {
         this.id = firebase.auth().currentUser.uid;
-    }
+        this.daysOfWeek.forEach(day => {
+            this.getRanges(day.value);
+        })
+    },
+    methods: {
+        deleteTimeRange() {
+            //TODO: Implement
+        },
+        async getRanges(dayNum) {
+            let snapshot = await db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get();
+            snapshot.forEach(doc => {
+                var bothRanges = doc.id.split("-");
+                var reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
+                this.ranges[dayNum].push(reversedAndFormatted);
+            });
+        }
+    },
 }
 </script>

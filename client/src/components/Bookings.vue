@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <v-row v-for="booking in bookings" v-bind:key="booking">
+        <v-row v-for="booking in bookings" v-bind:key="'Booking' + booking.id">
             <v-col>
                 {{ booking.id }}
             </v-col>
