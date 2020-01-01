@@ -1,18 +1,14 @@
 <template>
-    <v-container class="grey lighten-2">
+    <div class="grey lighten-2">
         <!-- v-bind:items because it tells Vue it's not a string -->
-        <v-row class="green lighten-4">
-            <v-col>
-            <v-form>
-                <v-select v-bind:items="days" label="Day" v-model="day"/>
-                <!-- v-text-field extends v-input: how do mixins work? -->
-                <v-text-field label="From" placeholder="09:00" v-model="from" :rules="dateRules"/>
-                <v-text-field label="To" placeholder="17:00" v-model="to" :rules="dateRules"/>
-                <v-btn @click="validate">Save</v-btn>
-            </v-form>
-            </v-col>
-        </v-row>
-    </v-container>
+        <v-form>
+            <v-select v-bind:items="days" label="Day" v-model="day"/>
+            <!-- v-text-field extends v-input: how do mixins work? -->
+            <v-text-field label="From" placeholder="09:00" v-model="from" :rules="dateRules"/>
+            <v-text-field label="To" placeholder="17:00" v-model="to" :rules="dateRules"/>
+            <v-btn @click="validate">Save</v-btn>
+        </v-form>
+    </div>
 </template>
 
 <script>
@@ -28,7 +24,8 @@ export default {
             to: '17:00',
             dateRules: [
                 v => !!v || 'A time is required!',
-                v => (v && v.length == 5 ) || 'Time must be in the 24:00 format'
+                v => (v && v.length == 5 ) || 'Time must be in the 24:00 format',
+                v => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/.test(v) || 'Time must be in the 24:00 format'
             ],
             days: [
                 {text: "Monday", value: 1},

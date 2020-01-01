@@ -8,7 +8,18 @@
                 <v-card>
                     <v-card-title>Availability</v-card-title>
                     <v-divider></v-divider>
-                    <TimeRangePicker :id="id"/>
+                    <v-row>
+                        <v-col>
+                            <v-container>
+                                <TimeRangePicker :id="id"/>
+                            </v-container>
+                        </v-col>
+                        <v-col class="red lighten-4">
+                            <v-container>
+                        Test
+                            </v-container> 
+                        </v-col>
+                    </v-row>
                 </v-card>
             </v-col>
         </v-row>
