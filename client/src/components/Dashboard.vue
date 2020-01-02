@@ -6,7 +6,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Availability</v-card-title>
+                    <v-card-title>Regular Availability</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col class="red lighten-3">
@@ -35,6 +35,43 @@
                                             </v-list-item-action>
                                         </v-list-item>
                                         
+                                    </v-col>
+                                </v-row>
+
+                            </v-container> 
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <!-- Exceptional Availability Box -->
+        <v-row>
+            <v-col>
+                <v-card>
+                    <v-card-title>Exceptional Availability</v-card-title>
+                    <v-divider></v-divider>
+                    <v-row no-gutters>
+                        <v-col class="red lighten-3">
+                            <v-container>
+                                <v-row>
+                                    <v-col cols=6>
+                                        <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+                                    </v-col>
+                                    <v-col cols=6>
+                                        <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>    
+                                    </v-col>
+                                </v-row>
+                            </v-container>
+                        </v-col>
+                        <v-col class="red lighten-4">
+                            <v-container>
+                                <v-card-title>Unavailable</v-card-title>
+                                <!-- Days of Week -->
+                                <v-row class="red lighten-1">
+                                    <!-- Day -->
+                                    <v-col class="red lighten-2">
+                                        Test
                                     </v-col>
                                 </v-row>
 
@@ -91,7 +128,7 @@ export default {
         this.id = firebase.auth().currentUser.uid;
         this.daysOfWeek.forEach(day => {
             this.getRanges(day.value);
-        })
+        });
     },
     methods: {
         deleteTimeRange(dayNum, range) {
