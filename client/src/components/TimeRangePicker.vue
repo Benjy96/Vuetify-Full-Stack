@@ -46,7 +46,7 @@ export default {
                             1. Do not render clickable booking slot
         */
         validate() {
-          //TODO: Maybe a dropdown is better.....? (Although less control) 
+            //TODO: Maybe a dropdown is better.....? (Although less control) 
                 //Any other date pickers? Get working for now in DB side though
             let parsedFrom = date.parse(this.from, 'hh:mm');
             let parsedTo = date.parse(this.to, 'hh:mm');
@@ -71,7 +71,7 @@ export default {
             }
         },
         getDoubleDigitTime(intMinOrHour){
-            if(intMinOrHour < 10){
+            if(intMinOrHour < 10) {
                 return `0${intMinOrHour}`;
             } else {
                 return intMinOrHour;
