@@ -46,7 +46,7 @@ export default {
                             1. Do not render clickable booking slot
         */
         validate() {
-            //TODO: Maybe a dropdown is better.....? (Although less control) 
+          //TODO: Maybe a dropdown is better.....? (Although less control) 
                 //Any other date pickers? Get working for now in DB side though
             let parsedFrom = date.parse(this.from, 'hh:mm');
             let parsedTo = date.parse(this.to, 'hh:mm');
@@ -65,7 +65,9 @@ export default {
 
                 //Add to db...
                 db.collection(`businesses/${this.id}/unavailable/days/${this.day}`)
-                    .doc(`${parsedTo}-${parsedFrom}`).set({});
+                    .doc(`${parsedTo}-${parsedFrom}`).set({}).then(
+                        this.$emit('saved-time-range', this.day)
+                    );  
             }
         },
         getDoubleDigitTime(intMinOrHour){

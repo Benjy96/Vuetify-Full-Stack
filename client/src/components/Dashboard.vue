@@ -11,7 +11,7 @@
                     <v-row no-gutters>
                         <v-col class="red lighten-3">
                             <v-container>
-                                <TimeRangePicker :id="id"/>
+                                <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>
                             </v-container>
                         </v-col>
                         <v-col class="red lighten-4">
@@ -97,14 +97,15 @@ export default {
         deleteTimeRange() {
             //TODO: Implement
         },
-        async getRanges(dayNum) {
-            let snapshot = await db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get();
-            snapshot.forEach(doc => {
-                var bothRanges = doc.id.split("-");
-                var reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
-                this.ranges[dayNum].push(reversedAndFormatted);
+        getRanges(dayNum) {
+            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get().then((snapshot) => {
+                snapshot.forEach(doc => {
+                    var bothRanges = doc.id.split("-");
+                    var reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
+                    this.ranges[dayNum].push(reversedAndFormatted);
+                });
             });
         }
-    },
+    }
 }
 </script>
