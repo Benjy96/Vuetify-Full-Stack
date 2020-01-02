@@ -45,7 +45,7 @@
           <v-container>
             <v-form @submit.prevent="addEvent">
               <p>Book an appointment</p>
-              <v-btn type="submit" color="primary" class="mr-4" @click.stop="dialog = false">
+              <v-btn type="submit" color="primary" @click.stop="dialog = false">
                 Book
               </v-btn>
             </v-form>
