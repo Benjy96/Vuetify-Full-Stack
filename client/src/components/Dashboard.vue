@@ -99,10 +99,12 @@ export default {
             let bothRanges = range.split(" - ");
             let dbFormat = bothRanges[1] += '-' + bothRanges[0];
 
-            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).doc(dbFormat).delete();
-            this.getRanges(dayNum);
+            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).doc(dbFormat).delete().then(
+                this.getRanges(dayNum)
+            );
         },
         getRanges(dayNum) {
+            this.ranges[dayNum] = [];
             db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get().then((snapshot) => {
                 snapshot.forEach(doc => {
                     let bothRanges = doc.id.split("-");
