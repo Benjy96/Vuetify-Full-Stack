@@ -127,9 +127,9 @@ export class DateUtils {
      * start of their workday on the 4th of January. The function would return true, as the 2nd of
      * January at 03:30 am is within this range.
      */
-    static timeWithinDateRange(date, hour, minute, dateRange, timeRange) {
+    // static timeWithinDateRange(date, hour, minute, dateRange, timeRange) {
 
-    }
+    // }
 }
 
 export const daysOfWeek = [
