@@ -29,7 +29,7 @@
                                         <v-list-item v-for="range in ranges[day.value]" :key="'dayRange' + day.value + range">
                                             {{range}}
                                             <v-list-item-action>
-                                                <v-btn icon @click="deleteTimeRange">
+                                                <v-btn icon @click="deleteTimeRange(day.value, range)">
                                                     <v-icon>mdi-close</v-icon>
                                                 </v-btn>
                                             </v-list-item-action>
@@ -94,14 +94,19 @@ export default {
         })
     },
     methods: {
-        deleteTimeRange() {
-            //TODO: Implement
+        deleteTimeRange(dayNum, range) {
+            //TODO: Performance? - just store this value instead of converting to db format? Why is db diff format?
+            let bothRanges = range.split(" - ");
+            let dbFormat = bothRanges[1] += '-' + bothRanges[0];
+
+            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).doc(dbFormat).delete();
+            this.getRanges(dayNum);
         },
         getRanges(dayNum) {
             db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get().then((snapshot) => {
                 snapshot.forEach(doc => {
-                    var bothRanges = doc.id.split("-");
-                    var reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
+                    let bothRanges = doc.id.split("-");
+                    let reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
                     this.ranges[dayNum].push(reversedAndFormatted);
                 });
             });
