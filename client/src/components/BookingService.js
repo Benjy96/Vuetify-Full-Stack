@@ -13,7 +13,7 @@ class BookingService {
         return bookings;
     }
 
-    static async getUnavailableTimeRanges(uid, weekday){
+    static async getRegularUnavailability(uid, weekday){
         let ranges = [];
         let snapshot = await db.collection(`businesses/${uid}/unavailable/days/${weekday}`).get();
         snapshot.forEach(doc => {

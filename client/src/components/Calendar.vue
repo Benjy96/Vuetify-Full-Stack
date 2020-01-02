@@ -177,7 +177,7 @@ export default {
   created () {
     this.getBookedDays()
     this.getBookings()
-    this.getUnavailableRanges()
+    this.getRegularUnavailability()
   },
   computed: {
     title () {
@@ -211,6 +211,7 @@ export default {
     }
   },
   methods: {
+
     async getBookedDays() {
       let snapshot = await db.collection(`businesses/${this.id}/unavailable_days`).get()
       let bookedDays = {}
@@ -261,9 +262,6 @@ export default {
         return true;
       }
     },
-    test(obj) {
-      alert(JSON.stringify(obj));
-    },
     async getBookings () {
       //TODO: Realtime DB not priced on read/writes - may be better for retrieving these
       let snapshot = await db.collection(`businesses/${this.id}/bookings`).get()
@@ -274,10 +272,10 @@ export default {
       })
       this.events = events;
     },
-    async getUnavailableRanges() {
+    async getRegularUnavailability() {
       for(var i = 0; i < 8; i++){
         if(this.unavailableTimeRanges[i] == null) {
-          this.unavailableTimeRanges[i] = await BookingService.getUnavailableTimeRanges(this.id, i);
+          this.unavailableTimeRanges[i] = await BookingService.getRegularUnavailability(this.id, i);
         }
       }
     },
@@ -303,51 +301,6 @@ export default {
     },
     async addEvent () {
       await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({});
-      /* What needs to happen when we try to make a booking?
-
-        1. Add to firebase collection
-        2. Mark the booking as no longer isAvailableDay
-            Q: How to store and retrieve "taken" booking timeslots? 
-            
-                Collection for each day populated with bookings
-
-                  When view month, retrieve day availabilities - like filled slot example on Vuetify calendar docs, an array
-                  When click day, retrieve day bookings
-                    Put booking into interval events
-
-                OR:
-
-                  Just a big events array
-
-                  How to make a button un-clickable if there's an existing event?
-                    How was it we populated the days with events, again?
-                      events prop on calendar
-                        each event will be passed in
-
-                        button
-                        unless event
-                        then unclickable button
-
-                          Could have some sort of dictionary with the date to match?
-
-                            E.g., v-if="!dict[key]"
-
-      */
-    },
-    editEvent () {
-      // this.currentlyEditing = ev.id
-    },
-    async updateEvent () {
-/*       await db.collection('calEvent').doc(this.currentlyEditing).update({
-        details: ev.details
-      })
-      this.selectedOpen = false,
-      this.currentlyEditing = null */
-    },
-    async deleteEvent () {
-/*       await db.collection("calEvent").doc(ev).delete()
-      this.selectedOpen = false,
-      this.getBookings() */
     },
     showEvent ({ nativeEvent, event }) {
       const open = () => {
