@@ -107,8 +107,6 @@ export default {
       day: 'Day',
       '4day': '4 Days',
     },
-    name: null,
-    details: null,
     start: null,
     end: null,
     currentlyEditing: null,
