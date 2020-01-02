@@ -3,7 +3,7 @@
 <v-container>
     <!-- Date Range -->
     <v-row>
-        <v-col cols="11" sm="5">
+        <v-col>
             <v-dialog
             ref="fromDateDialog"
             v-model="fromDateDialogToggle"
@@ -30,7 +30,7 @@
             </v-dialog>
         </v-col>
 
-        <v-col cols="11" sm="5">
+        <v-col>
             <v-dialog
             ref="toDateDialog"
             v-model="toDateDialogToggle"
@@ -59,7 +59,7 @@
 
     <!-- Time Range -->
     <v-row>
-        <v-col cols="11" sm="5">
+        <v-col>
             <v-dialog
                 ref="fromTimeDialog"
                 v-model="fromTimeDialogToggle"
@@ -88,33 +88,38 @@
             </v-dialog>
         </v-col>
 
-        <v-col cols="11" sm="5">
+        <v-col>
             <v-dialog
                 ref="toTimeDialog"
                 v-model="toTimeDialogToggle"
                 :return-value.sync="time"
                 persistent
-                width="290px"
-            >
-                <template v-slot:activator="{ on }">
-                <v-text-field
+                width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model="toTime"
+                            label="To time"
+                            readonly
+                            v-on="on"
+                        ></v-text-field>
+                    </template>
+
+                    <v-time-picker
+                    v-if="toTimeDialogToggle"
                     v-model="toTime"
-                    label="To time"
-                    readonly
-                    v-on="on"
-                ></v-text-field>
-                </template>
-                <v-time-picker
-                v-if="toTimeDialogToggle"
-                v-model="toTime"
-                full-width
-                :min="fromTime"
-                >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="toTimeDialogToggle = false">Cancel</v-btn>
-                <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">OK</v-btn>
-                </v-time-picker>
+                    full-width
+                    :min="fromTime">
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">Cancel</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">OK</v-btn>
+                    </v-time-picker>
             </v-dialog>
+        </v-col>
+    </v-row>
+
+    <v-row>
+        <v-col>
+            <v-btn @click="add">Add</v-btn>
         </v-col>
     </v-row>
 </v-container>
@@ -134,5 +139,10 @@
         toTimeDialogToggle: false,
       }
     },
+    methods: {
+        add() {
+
+        }
+    }
   }
 </script>

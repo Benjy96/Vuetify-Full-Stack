@@ -211,7 +211,7 @@ export default {
     }
   },
   methods: {
-    async getBookedDays(){
+    async getBookedDays() {
       let snapshot = await db.collection(`businesses/${this.id}/unavailable_days`).get()
       let bookedDays = {}
       snapshot.forEach(doc => {
@@ -220,7 +220,7 @@ export default {
       this.bookedDays = bookedDays;
     },
     isAvailableDay(day){
-      if(this.bookedDays[day.date] == true){
+      if(this.bookedDays[day.date] == true) {
         return false;
       } else{
         return true;
@@ -250,7 +250,7 @@ export default {
       }
 
       // Special / Booking Availability
-      if(this.isAvailableDay(dateObject) == false){
+      if(this.isAvailableDay(dateObject) == false) {
         return false;
       }
 
