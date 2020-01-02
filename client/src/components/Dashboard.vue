@@ -55,11 +55,8 @@
                         <v-col class="red lighten-3">
                             <v-container>
                                 <v-row>
-                                    <v-col cols=6>
-                                        <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>
-                                    </v-col>
-                                    <v-col cols=6>
-                                        <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>    
+                                    <v-col>
+                                        <DateRangePicker/>
                                     </v-col>
                                 </v-row>
                             </v-container>
@@ -102,12 +99,14 @@ import { daysOfWeek } from './DateUtils';
 import firebase from 'firebase';
 import Bookings from './Bookings';
 import TimeRangePicker from './TimeRangePicker';
+import DateRangePicker from './DateRangePicker';
 
 export default {
     name: 'Dashboard',
     components: {
         Bookings,
-        TimeRangePicker
+        TimeRangePicker,
+        DateRangePicker
     },
     data() {
         return {
