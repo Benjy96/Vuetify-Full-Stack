@@ -2,6 +2,54 @@ export class DateUtils {
 
     /**
      * 
+     * @param {String} range splits a string of format "00:00-17:00" into two strings
+     * @returns {object} a times object with a "left" and "right" property containing an "hour" and "minute"
+     */
+    static getTimesFromRangeString(range) {
+        let splitRange = range.split("-");
+
+        let leftHour = parseInt(splitRange[0].split(":")[0]);   //00
+        let leftMinute = parseInt(splitRange[0].split(":")[1]);
+
+        let rightHour = parseInt(splitRange[1].split(":")[0]);  //17
+        let rightMinute = parseInt(splitRange[1].split(":")[1]);
+
+        let times = {
+            left: {
+                hour: leftHour,
+                minute: leftMinute
+            },
+            right: {
+                hour: rightHour,
+                minute: rightMinute
+            }
+        }
+
+        return times;
+    }
+
+    /**
+     * @param {String} range a String of format "00:00-17:00"
+     */
+    static fromToDifference(range) {
+        let times = this.getTimesFromRangeString(range);
+
+        let hourDiff = times.left.hour - times.right.hour;    //-17
+        let minDiff = times.left.minute - times.right.minute; //0
+
+        if(hourDiff < 0){
+            hourDiff = -hourDiff;
+        }
+
+        if(minDiff < 0){
+            minDiff = -minDiff;
+        }
+
+        return hourDiff + (minDiff / 60);
+    }
+
+    /**
+     * 
      * @param {String} range a String in the format "00:00-23:59".
      * 
      */

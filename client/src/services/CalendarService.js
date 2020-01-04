@@ -1,18 +1,85 @@
+
+import { DateUtils } from '../components/DateUtils';
+import firebase from 'firebase';
+import { db } from '../firebaseInit';
+
 class CalendarService {
     /*
         Day PoV CRUD Operations.
     */
 
-    /** Cal-Day-CREATE */
-    static async createBooking() {
-        //A booking will require 4 or 5 operations becuase of meta-data and admin availability.
+    /** Cal-Day-CREATE 
+     * 
+     * TODO: Make into a transaction for error handling:
+     * https://firebase.google.com/docs/firestore/manage-data/transactions
+     * 
+    */
+    static async createBooking(uid, year, month, day, weekday, from, to) {
+        //1. Write to availability collection - TODO: Handle failures?
+        db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`)
+        .set({
+            "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
+                    "from": from,
+                    "to": to
+                })
+            }, 
+            {merge: true}
+        );
+
+        //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
+        db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
+        .set({
+            "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
+                    "from": from,
+                    "to": to
+                })
+            }, 
+            {merge: true}
+        );
+
+        //3. Read meta-data object
+        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
+        let admin_bookings = [];
+        if(metaDataDocRef.exists) {
+            admin_bookings = metaDataDocRef.data().admin_bookings;
+        }
+
+        //4. Read current day's remaining hours object
+        let updatedDayRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
+        let booked_hours = [];
+        if(updatedDayRef.exists) {
+            booked_hours = updatedDayRef.data().customer_bookings;
+        }
+
+        //5. Read regular hours object
+        let regularHoursRef = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
+        let regularHours = [];
+        if(regularHoursRef.exists) {
+            regularHours = regularHoursRef.data().weekday;
+        }
         
-        //Write to availability collection
-        //Write to more detailed owner bookings collection
-        //Read meta-data object
-        //Read current day's remaining hours object
-            //Sum remaining hours + admin hours if exists
-                //If no remaining hours, add day to unavailable days meta-data
+        //6. Sum remaining hours + admin hours if exists
+        let remainingHours = 24;
+        for(var regularRanges in regularHours){
+            remainingHours -= DateUtils.fromToDifference(regularRanges);
+        }
+
+        for(var bookedRanges in booked_hours){
+            remainingHours -= DateUtils.fromToDifference(bookedRanges);
+        }
+
+        for(var adminRanges in admin_bookings){
+            remainingHours -= DateUtils.fromToDifference(adminRanges);
+        }
+
+        //7. If no remaining hours, add day to uanvailable days meta-data
+        if(remainingHours <= 0){
+            db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
+                "availableDays": {
+                    day: false
+                }
+            });
+        }
     }
 
     /** Cal-Day-READ */
@@ -29,8 +96,15 @@ class CalendarService {
         Month PoV CRUD Operations.
     */
 
-    /** Cal-Month-READ */
-    static async getUnavailableDays() {
-        //Read from meta-data doc.
+    /** READ from a month's meta-data document */
+    static async getUnavailableDays(uid, year, month) {
+        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
+        let unavailableDays = {};
+        if(metaDataDocRef.exists) {
+            unavailableDays = metaDataDocRef.data().unavailableDays;
+        }
+        return unavailableDays;
     }
 }
+
+export default CalendarService;

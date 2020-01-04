@@ -69,18 +69,17 @@
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
-
-  <template v-slot:day="day">
-    <v-sheet v-if="isAvailableDay(day)" height="100%" color="green">
+  <template v-slot:day="{ day }">
+    <v-sheet v-if="dayAvailable(day)" height="100%" color="green">
     </v-sheet>
   </template>
 
-  <template v-slot:interval="object">
-    <!-- TODO: Check if event exists for this element -->
-    <v-btn v-if="availableAtTime(object) == true"
+<!-- TODO: Check if event exists for this element -->
+  <!-- <template v-slot:interval="object">
+    <v-btn v-if="1"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
     ></v-btn>
-  </template>
+  </template> -->
 
   </v-calendar>
   
@@ -91,9 +90,9 @@
 </template>
 
 <script>
-import { db } from '../firebaseInit';
-import BookingService from '../services/BookingService';
-import { DateUtils } from './DateUtils';
+// import { db } from '../firebaseInit';
+// import BookingService from '../services/BookingService';
+import CalendarService from '../services/CalendarService';
 
 export default {
   props: ['id'],
@@ -107,24 +106,20 @@ export default {
       day: 'Day',
       '4day': '4 Days',
     },
-    start: null,
+    start: null,  //TODO: What/who populates this? The child calendar component?
     end: null,
     currentlyEditing: null,
-    events: {},
-    // events: [],
     dialog: false,
     dialogDate: false,
-    //Ben - Adding for unique key
-    addEventKey: null,
-    bookedDays: {},
-    unavailableTimeRanges: {}
+    unavailableDays: null
   }),
   created () {
-    this.getBookedDays()
-    this.getBookings()
-    this.getRegularUnavailability()
+    //Month Viewed Upon Load
+    //1. Check unavailable days meta-data
+    //this.getUnavailableDays(); //TODO: What if you click next? The unavailable_days obj on user cal should be multidimensional.
   },
   computed: {
+    //must be called by the calendar?
     title () {
       const { start, end } = this
       if (!start || !end) {
@@ -156,72 +151,34 @@ export default {
     }
   },
   methods: {
-    async getBookedDays() {
-      let snapshot = await db.collection(`businesses/${this.id}/unavailable_days`).get()
-      let bookedDays = {}
-      snapshot.forEach(doc => {
-        bookedDays[doc.id] = true
-      })
-      this.bookedDays = bookedDays;
+    async getUnavailableDays() {
+      this.unavailableDays = await CalendarService.getUnavailableDays(this.id, this.today.substr(0, 4), this.today.substr(5, 2));
     },
-    isAvailableDay(day){
-      if(this.bookedDays[day.date] == true) {
-        return false;
-      } else{
-        return true;
+    dayAvailable(day) {
+      //TODO: Just specify month straight away as it seems to be calling more than this month
+      if(day < 10){
+        day = "0"+day;
       }
+      //TODO: Specify month because there is pagination with prev() / next()
+      //TODO: 2/3 are being set for all months at the beginning? How many times is dayAvailable getting called on load?
+      if(this.unavailableDays == null){
+        this.getUnavailableDays().then(() => {
+          if(this.unavailableDays != null) this.dayAvailable(day);
+        })
+      }else{
+        //TODO: add a month layer to the unavailableDays (if it's calling dayAvailable for every day of year?)
+        if(day in this.unavailableDays) {
+          return false;
+        } else {
+          return true;
+        }
+      }
+
+
     },
     openDialog(dateObject) {
       this.dialog = true;
       this.addEventKey = `${dateObject.date}${dateObject.time}`;
-    },
-    availableAtTime(dateObject) {
-      //TODO: once per day
-
-      // Standard Availability
-      if(this.unavailableTimeRanges[dateObject.weekday] != null) {
-        // Check if hour in range
-
-        //TODO: wasn't returning from forEach..why? I guess it was returning the for each method itself
-        for(var i = 0; i < this.unavailableTimeRanges[dateObject.weekday].length; i++){
-          //1. Split string
-          //2. Convert to number
-          //3. Check larger than left, check lower than right
-            //If true, return false
-          if(DateUtils.timeWithinRange(dateObject.hour, dateObject.minute, this.unavailableTimeRanges[dateObject.weekday][i])){
-            return false;
-          }
-        }
-      }
-
-      // Special / Booking Availability
-      if(this.isAvailableDay(dateObject) == false) {
-        return false;
-      }
-
-      let key = dateObject.date + dateObject.time
-      if(this.events[key] != null){
-        return false;
-      } else {
-        return true;
-      }
-    },
-    async getBookings () {
-      //TODO: Realtime DB not priced on read/writes - may be better for retrieving these
-      let snapshot = await db.collection(`businesses/${this.id}/bookings`).get()
-      let events = {};
-      snapshot.forEach(doc => {
-        let appData = doc.data()
-        events[doc.id] = appData
-      })
-      this.events = events;
-    },
-    async getRegularUnavailability() {
-      for(var i = 0; i < 8; i++){
-        if(this.unavailableTimeRanges[i] == null) {
-          this.unavailableTimeRanges[i] = await BookingService.getRegularUnavailability(this.id, i);
-        }
-      }
     },
     setDialogDate({ date }) {
       this.dialogDate = true
@@ -239,9 +196,6 @@ export default {
     },
     next () {
       this.$refs.calendar.next()
-    },
-    async addEvent () {
-      await db.collection(`businesses/${this.id}/bookings`).doc(this.addEventKey).set({});
     },
     //start & end objects passed in with a .month proeprty, properly indexed.
     updateRange ({ start, end }) {
