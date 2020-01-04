@@ -92,7 +92,7 @@
 
 <script>
 import { db } from '../firebaseInit';
-import BookingService from './BookingService';
+import BookingService from '../services/BookingService';
 import { DateUtils } from './DateUtils';
 
 export default {

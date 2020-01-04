@@ -13,7 +13,7 @@
 <script>
 import firebase from 'firebase';
 
-import BookingService from './BookingService';
+import BookingService from '../services/BookingService';
 
 export default {
     name: 'Bookings',
