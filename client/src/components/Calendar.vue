@@ -112,8 +112,7 @@ export default {
     currentlyEditing: null,
     dialog: false,
     dialogDate: false,
-    unavailableDays: null,
-    unavailableDaysCounter: 0
+    unavailableDays: null
   }),
   created () {
     //Month Viewed Upon Load
