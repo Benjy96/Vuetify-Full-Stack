@@ -169,7 +169,6 @@ export default {
           }
         });
       } else {
-        //TODO: add a month layer to the unavailableDays (if it's calling dayAvailable for every day of year?)
         if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, date)) {
           return false;
         } else {
