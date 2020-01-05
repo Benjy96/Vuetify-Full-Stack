@@ -103,7 +103,16 @@ class CalendarService {
         if(metaDataDocRef.exists) {
             unavailableDays = metaDataDocRef.data().unavailableDays;
         }
-        return unavailableDays;
+
+        let dateObj = {
+            [year]: {
+                [month]: {
+                    ...unavailableDays
+                }
+            }
+        }
+
+        return dateObj;
     }
 }
 

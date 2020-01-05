@@ -64,13 +64,13 @@
   :now="today"
   :type="type"
   @click:more="viewDay"
-  @click:date="viewDay"
+  @click:date="test"
   @click:day="viewDay"
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
-  <template v-slot:day="{ day }">
-    <v-sheet v-if="dayAvailable(day)" height="100%" color="green">
+  <template v-slot:day="{ date }">
+    <v-sheet v-if="dayAvailable(date)" height="100%" color="green">
     </v-sheet>
   </template>
 
@@ -93,6 +93,7 @@
 // import { db } from '../firebaseInit';
 // import BookingService from '../services/BookingService';
 import CalendarService from '../services/CalendarService';
+import {DateUtils} from './DateUtils';
 
 export default {
   props: ['id'],
@@ -111,7 +112,8 @@ export default {
     currentlyEditing: null,
     dialog: false,
     dialogDate: false,
-    unavailableDays: null
+    unavailableDays: null,
+    unavailableDaysCounter: 0
   }),
   created () {
     //Month Viewed Upon Load
@@ -152,29 +154,28 @@ export default {
   },
   methods: {
     async getUnavailableDays() {
-      this.unavailableDays = await CalendarService.getUnavailableDays(this.id, this.today.substr(0, 4), this.today.substr(5, 2));
+      this.unavailableDays = await CalendarService.getUnavailableDays(this.id, 
+        DateUtils.getYearFromDate(this.today), 
+        DateUtils.getMonthFromDate(this.today)
+      );
     },
-    dayAvailable(day) {
-      //TODO: Just specify month straight away as it seems to be calling more than this month
-      if(day < 10){
-        day = "0"+day;
-      }
-      //TODO: Specify month because there is pagination with prev() / next()
-      //TODO: 2/3 are being set for all months at the beginning? How many times is dayAvailable getting called on load?
-      if(this.unavailableDays == null){
+    dayAvailable(date) {
+      if(this.unavailableDays == null) {
         this.getUnavailableDays().then(() => {
-          if(this.unavailableDays != null) this.dayAvailable(day);
-        })
-      }else{
+          if(this.unavailableDays != null) {
+            return this.dayAvailable(date);
+          } else {
+            return true;
+          }
+        });
+      } else {
         //TODO: add a month layer to the unavailableDays (if it's calling dayAvailable for every day of year?)
-        if(day in this.unavailableDays) {
+        if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, date)) {
           return false;
         } else {
           return true;
         }
       }
-
-
     },
     openDialog(dateObject) {
       this.dialog = true;
@@ -206,6 +207,9 @@ export default {
       return d > 3 && d < 21
       ? 'th'
       : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
+    },
+    test() {
+      alert(this.unavailableDaysCounter);
     }
   }
 }

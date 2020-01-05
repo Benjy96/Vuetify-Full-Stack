@@ -1,5 +1,53 @@
 export class DateUtils {
 
+    static nestedYearMonthDayExists(nestedDateObj, date) {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
+
+        if(nestedDateObj[year] && nestedDateObj[year][month] && day in nestedDateObj[year][month]){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @param {String} date "DD from YYYY-MM-DD"
+     */
+    static getDayFromDate(date) {
+        if(typeof date == 'string') {
+            return date.substr(8, 2);
+        }else if(typeof date == 'number') {
+            return date.toString().substr(8, 2);
+        }
+        
+    }
+
+    /**
+     * 
+     * @param {String} date "MM from YYYY-MM-DD"
+     */
+    static getMonthFromDate(date) {
+        if(typeof date == 'string') {
+            return date.substr(5, 2);
+        }else if (typeof date == 'number') {
+            return date.toString().substr(5, 2);
+        }
+    }
+
+    /**
+     * 
+     * @param {String} date YYYY from "YYYY-MM-DD"
+     */
+    static getYearFromDate(date) {
+        if(typeof date == 'string') {
+            return date.substr(0, 4);
+        }else if (typeof date == 'number') {
+            return date.toString().substr(0, 4);
+        }
+    }
+
     /**
      * 
      * @param {String} range splits a string of format "00:00-17:00" into two strings
