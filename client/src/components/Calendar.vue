@@ -64,7 +64,7 @@
   :now="today"
   :type="type"
   @click:more="viewDay"
-  @click:date="test"
+  @click:date="viewDay"
   @click:day="viewDay"
   @change="updateRange"
   >
@@ -206,9 +206,6 @@ export default {
       return d > 3 && d < 21
       ? 'th'
       : ['th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th'][d % 10]
-    },
-    test() {
-      alert(this.unavailableDaysCounter);
     }
   }
 }
