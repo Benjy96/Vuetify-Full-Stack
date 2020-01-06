@@ -14,7 +14,8 @@ class CalendarService {
      * https://firebase.google.com/docs/firestore/manage-data/transactions
      * 
     */
-    static async createBooking(uid, year, month, day, weekday, from, to) {
+   //TODO: Use weekday? Are we checking regular hours?
+    static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
         db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`)
         .set({
@@ -54,24 +55,24 @@ class CalendarService {
         //5. Read regular hours object
         let regularHoursRef = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
         let regularHours = [];
+        let remainingHours = 24;
         if(regularHoursRef.exists) {
             regularHours = regularHoursRef.data().weekday;
+
+            //6. Sum remaining hours + admin hours if exists
+            for(var regularRanges in regularHours){
+                remainingHours -= DateUtils.fromToDifference(regularRanges);
+            }
+
+            for(var bookedRanges in booked_hours){
+                remainingHours -= DateUtils.fromToDifference(bookedRanges);
+            }
+
+            for(var adminRanges in admin_bookings){
+                remainingHours -= DateUtils.fromToDifference(adminRanges);
+            }
         }
         
-        //6. Sum remaining hours + admin hours if exists
-        let remainingHours = 24;
-        for(var regularRanges in regularHours){
-            remainingHours -= DateUtils.fromToDifference(regularRanges);
-        }
-
-        for(var bookedRanges in booked_hours){
-            remainingHours -= DateUtils.fromToDifference(bookedRanges);
-        }
-
-        for(var adminRanges in admin_bookings){
-            remainingHours -= DateUtils.fromToDifference(adminRanges);
-        }
-
         //7. If no remaining hours, add day to uanvailable days meta-data
         if(remainingHours <= 0){
             db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({

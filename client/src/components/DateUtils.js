@@ -11,6 +11,50 @@ export class DateUtils {
         return false;
     }
 
+    static formatMinuteToMM(minute) {
+        if(typeof minute == 'number'){
+            if(minute < 10){
+                return "0"+minute;
+            }
+        }else{
+            return minute;
+        }
+    }
+
+    static formatHourToHH(hour) {
+        if(typeof hour == 'number'){
+            if(hour < 10){
+                return "0"+hour;
+            }
+        }else{
+            return hour;
+        }
+    }
+
+    static getHourMinFormattedHHMM(hour, minute) {
+        hour = this.formatHourToHH(hour);
+        minute = this.formatMinuteToMM(minute);
+        return hour + ":" + minute;
+    }
+
+    /**
+     * 
+     * @param {*} from 
+     * @param {*} interval 
+     */
+    static getToTimeFormattedHHMM(fromHour, fromMinute, intervalDuration) {
+        //TODO: subtract 60 from each 60 above 60 in future.. variable
+        if(intervalDuration == 60){
+            intervalDuration = intervalDuration /= 60;
+
+            fromHour += intervalDuration;
+
+            return this.getHourMinFormattedHHMM(fromHour, fromMinute);
+        }else {
+            throw "TODO: Implement interval durations smaller or larger than 1 hour";
+        }
+    }
+
     /**
      * 
      * @param {String} date "DD from YYYY-MM-DD"

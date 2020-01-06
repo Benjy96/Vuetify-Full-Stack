@@ -43,7 +43,7 @@
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
           <v-container>
-            <v-form @submit.prevent="addEvent">
+            <v-form @submit.prevent="addBooking">
               <p>Book an appointment</p>
               <v-btn type="submit" color="primary" @click.stop="dialog = false">
                 Book
@@ -108,12 +108,13 @@ export default {
     },
     start: null,  //TODO: What/who populates this? The child calendar component?
     end: null,
-    currentlyEditing: null,
     dialog: false,
     dialogDate: false,
+    addBookingDateObject: null,
     unavailableDays: null,
     customer_bookings: null,
-    admin_bookings: null
+    admin_bookings: null,
+    defaultSlotInterval: 60
   }),
   created () {
     //Month Viewed Upon Load
@@ -168,8 +169,18 @@ export default {
 
       this.viewDay(date)
     },
-    async getAdminBookings({ date }) {
-      //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
+    // async getAdminBookings({ date }) {
+    //   //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
+    // },
+    async addBooking() {
+      let year = DateUtils.getYearFromDate(this.addBookingDateObject.date);
+      let month = DateUtils.getMonthFromDate(this.addBookingDateObject.date);
+      let day = DateUtils.getDayFromDate(this.addBookingDateObject.date);
+
+      let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
+      let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
+
+      await CalendarService.createBooking(this.id, year, month, day, from, to);
     },
     dayAvailable(date) {
       //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
@@ -232,11 +243,7 @@ export default {
     },
     openDialog(dateObject) {
       this.dialog = true;
-      this.addEventKey = `${dateObject.date}${dateObject.time}`;
-    },
-    setDialogDate({ date }) {
-      this.dialogDate = true
-      this.focus = date
+      this.addBookingDateObject = dateObject;
     },
     viewDay ({ date }) {
       this.focus = date
