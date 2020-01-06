@@ -74,7 +74,6 @@
     </v-sheet>
   </template>
 
-<!-- TODO: Check if event exists for this element -->
   <template v-slot:interval="object">
     <v-btn v-if="slotAvailable(object)"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
