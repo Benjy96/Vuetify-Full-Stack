@@ -64,7 +64,7 @@
   :now="today"
   :type="type"
   @click:more="viewDay"
-  @click:date="viewDay"
+  @click:date="getDayBookings"
   @click:day="viewDay"
   @change="updateRange"
   >
@@ -75,11 +75,11 @@
   </template>
 
 <!-- TODO: Check if event exists for this element -->
-  <!-- <template v-slot:interval="object">
-    <v-btn v-if="1"
+  <template v-slot:interval="object">
+    <v-btn v-if="slotAvailable(object)"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
     ></v-btn>
-  </template> -->
+  </template>
 
   </v-calendar>
   
@@ -112,7 +112,8 @@ export default {
     currentlyEditing: null,
     dialog: false,
     dialogDate: false,
-    unavailableDays: null
+    unavailableDays: null,
+    customer_bookings: null
   }),
   created () {
     //Month Viewed Upon Load
@@ -159,6 +160,10 @@ export default {
       );
     },
     dayAvailable(date) {
+      //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
+        //And add an obj to check if we've checked for that year/month already? TO prevent always checking?
+          //Unless we just check upon created, rather than every time
+            //TODO: find order of methods: I think created is called too late after day available method
       if(this.unavailableDays == null) {
         this.getUnavailableDays().then(() => {
           if(this.unavailableDays != null) {
@@ -174,6 +179,53 @@ export default {
           return true;
         }
       }
+    },
+    async getDayBookings({ date }) {
+      this.customer_bookings = await CalendarService.getBookings(this.id, 
+        DateUtils.getYearFromDate(date),
+        DateUtils.getMonthFromDate(date),
+        DateUtils.getDayFromDate(date)
+      );
+
+      this.viewDay(date)
+    },
+    slotAvailable(dateObject) {
+      //1. Check if day unavailable
+      if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, dateObject.date)){
+        return false;
+      }
+
+      //TODO: FIX BENEATH
+      //TODO: Why storing in array instead of a nested map of hours? like the days? Worth? Any actual perf diff?
+        //Would be nice to test actual timings
+      /*
+
+        2020: {
+          01: {
+            17: {
+              "09:00": "10:00"
+            },
+            18: {
+              "10:00": "11:00"
+            }
+          }
+        }
+
+      */
+
+      //2. Check if already booked
+      if(this.customer_bookings != null) {
+        for(var x = 0; x < this.customer_bookings.length; x++) {
+          //TODO: Could we not iterate thorugh this for every hour? Perhaps every hour just access a key?
+          if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, this.customer_bookings[x])) {
+            return false;
+          }
+        }
+      }
+
+      return true;
+
+      //3. TODO: Check if in admin booking
     },
     openDialog(dateObject) {
       this.dialog = true;

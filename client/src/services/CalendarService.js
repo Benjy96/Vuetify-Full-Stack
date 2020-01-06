@@ -83,8 +83,16 @@ class CalendarService {
     }
 
     /** Cal-Day-READ */
-    static async getBookings() {
+    static async getBookings(uid, year, month, day) {
         //Read from availability collection
+        let bookingsRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
+        let customer_bookings = [];
+        if(bookingsRef.exists) {
+            customer_bookings = bookingsRef.data().customer_bookings;
+            return customer_bookings;
+        } else {
+            return null;
+        }
     }
 
     /** Cal-Day-DELETE */

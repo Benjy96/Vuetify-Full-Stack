@@ -226,6 +226,38 @@ export class DateUtils {
     // static timeWithinDateRange(date, hour, minute, dateRange, timeRange) {
 
     // }
+
+    static hourMinBetween(hour, minute, fromToMap) {
+        let fromHour = parseInt(fromToMap.from.split(":")[0]);
+        let fromMinute = parseInt(fromToMap.from.split(":")[1]);
+
+        let toHour = parseInt(fromToMap.to.split(":")[0]);
+        let toMinute = parseInt(fromToMap.to.split(":")[1]);
+
+        //Do all true cases, then just return false
+
+        //17:31 with 17:30 -> 18:00 - Diff right hour
+        if(hour == fromHour && toHour > hour && minute >= fromMinute){
+            return true;
+        }
+
+        //17:15 with 17:00 -> 17:30 - Same both hours
+        if(hour == fromHour && hour == toHour && (minute >= fromMinute || minute <= toMinute)){
+            return true;
+        }
+
+        //17:00 with fromTo 16:00 -> 18:00 - Diff both hours
+        if(hour > fromHour && hour < toHour){
+            return true;
+        }
+
+        //17:00 with 13:00 -> 17:30 - Diff left hour
+        if(hour > fromHour && hour == toHour && minute <= toMinute){
+            return true;
+        }
+
+        return false;
+    }
 }
 
 export const daysOfWeek = [
