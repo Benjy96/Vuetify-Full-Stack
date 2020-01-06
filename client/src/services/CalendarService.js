@@ -95,18 +95,6 @@ class CalendarService {
         }
     }
 
-    static async getAdminBookings(uid, year, month) {
-        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
-        let admin_bookings = [];
-        if(metaDataDocRef.exists) {
-            admin_bookings = metaDataDocRef.data().admin_bookings;
-            return admin_bookings;
-        } else {
-            //TODO: Check traversy apps - waht does he do when null? exception? message?
-            return null;
-        }
-    }
-
     /** Cal-Day-DELETE */
     static async cancelBooking() {
 
@@ -133,6 +121,21 @@ class CalendarService {
         }
 
         return dateObj;
+    }
+
+    /*
+        Month / Day PoV CRUD Operations
+    */
+    static async getAdminBookings(uid, year, month) {
+        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
+        let admin_bookings = [];
+        if(metaDataDocRef.exists) {
+            admin_bookings = metaDataDocRef.data().admin_bookings;
+            return admin_bookings;
+        } else {
+            //TODO: Check traversy apps - waht does he do when null? exception? message?
+            return null;
+        }
     }
 }
 
