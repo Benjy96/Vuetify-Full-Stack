@@ -112,7 +112,8 @@ export default {
     dialog: false,
     dialogDate: false,
     unavailableDays: null,
-    customer_bookings: null
+    customer_bookings: null,
+    admin_bookings: null
   }),
   created () {
     //Month Viewed Upon Load
@@ -158,6 +159,18 @@ export default {
         DateUtils.getMonthFromDate(this.today)
       );
     },
+    async getDayBookings({ date }) {
+      this.customer_bookings = await CalendarService.getBookings(this.id, 
+        DateUtils.getYearFromDate(date),
+        DateUtils.getMonthFromDate(date),
+        DateUtils.getDayFromDate(date)
+      );
+
+      this.viewDay(date)
+    },
+    async getAdminBookings({ date }) {
+      //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
+    },
     dayAvailable(date) {
       //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
         //And add an obj to check if we've checked for that year/month already? TO prevent always checking?
@@ -178,15 +191,6 @@ export default {
           return true;
         }
       }
-    },
-    async getDayBookings({ date }) {
-      this.customer_bookings = await CalendarService.getBookings(this.id, 
-        DateUtils.getYearFromDate(date),
-        DateUtils.getMonthFromDate(date),
-        DateUtils.getDayFromDate(date)
-      );
-
-      this.viewDay(date)
     },
     slotAvailable(dateObject) {
       //1. Check if day unavailable
