@@ -234,15 +234,25 @@ export class DateUtils {
         let toHour = parseInt(fromToMap.to.split(":")[0]);
         let toMinute = parseInt(fromToMap.to.split(":")[1]);
 
-        //Do all true cases, then just return false
+        //Returning falses may be more performant? As true is more specific?
 
-        //17:31 with 17:30 -> 18:00 - Diff right hour
+        //12:00 with 10:00->12:00
+        // if(hour > toHour) {
+        //     return false;
+        // }
+
+        // //12:00 with 10:00 -> 12:00
+        // if(hour == toHour && minute == toMinute) {
+        //     return false;
+        // }
+
+        //17:31 with 17:30 -> 18:00 - Diff right hour / Same left hour
         if(hour == fromHour && toHour > hour && minute >= fromMinute){
             return true;
         }
 
         //17:15 with 17:00 -> 17:30 - Same both hours
-        if(hour == fromHour && hour == toHour && (minute >= fromMinute || minute <= toMinute)){
+        if(hour == fromHour && hour == toHour && (minute >= fromMinute || minute < toMinute)){
             return true;
         }
 
@@ -251,8 +261,8 @@ export class DateUtils {
             return true;
         }
 
-        //17:00 with 13:00 -> 17:30 - Diff left hour
-        if(hour > fromHour && hour == toHour && minute <= toMinute){
+        //17:00 with 13:00 -> 17:30 - Diff left hour / Same right hour
+        if(hour > fromHour && hour == toHour && minute < toMinute){
             return true;
         }
 
