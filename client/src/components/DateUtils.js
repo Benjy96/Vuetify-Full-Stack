@@ -236,15 +236,12 @@ export class DateUtils {
 
         //Returning falses may be more performant? As true is more specific?
 
-        //12:00 with 10:00->12:00
-        // if(hour > toHour) {
-        //     return false;
-        // }
+        //13:00 with 10:00 -> 12:00 or 09:00 with 10:00 -> 12:00
+        if(hour > toHour || hour < fromHour) {
+            return false;
+        }
 
-        // //12:00 with 10:00 -> 12:00
-        // if(hour == toHour && minute == toMinute) {
-        //     return false;
-        // }
+        //Specific cases - return true, fallback false
 
         //17:31 with 17:30 -> 18:00 - Diff right hour / Same left hour
         if(hour == fromHour && toHour > hour && minute >= fromMinute){
