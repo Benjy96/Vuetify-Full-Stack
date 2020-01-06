@@ -63,9 +63,9 @@
   color="primary"
   :now="today"
   :type="type"
-  @click:more="viewDay"
+  @click:more="getDayBookings"
   @click:date="getDayBookings"
-  @click:day="viewDay"
+  @click:day="getDayBookings"
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
