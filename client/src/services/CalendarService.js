@@ -81,9 +81,10 @@ class CalendarService {
         } */
         
         //7. If no remaining hours, add day to uanvailable days meta-data
+        //TODO: Simpler calculations? Could just check if num booking entries / interval size == 24 (or max) ?
         if(remainingHours <= 0){
             db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
-                "availableDays": {
+                "unavailableDays": {
                     [day]: null
                     }
                 },
