@@ -18,9 +18,7 @@ class CalendarService {
 
 /*    TODO:
 
-    - Fix DateUtils functions
     - Fix CalendarService.createBooking - add null checks
-    - Clear out the bookings array in Calendar.vue as it's retaining info when it shouldn't be?
      */
     static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
@@ -87,9 +85,9 @@ class CalendarService {
             db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
                 "availableDays": {
                     [day]: null
-                }
-            },
-            {merge: true}
+                    }
+                },
+                {merge: true}
             );
         }
     }
