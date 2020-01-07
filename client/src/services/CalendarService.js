@@ -1,5 +1,5 @@
 
-// import { DateUtils } from '../components/DateUtils';
+import { DateUtils } from '../components/DateUtils';
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 
@@ -24,8 +24,9 @@ class CalendarService {
      */
     static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
-        db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`)
-        .set({
+
+        let bookedDayDocRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+        bookedDayDocRef.set({
             "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
                     "from": from,
                     "to": to
@@ -45,50 +46,50 @@ class CalendarService {
             {merge: true}
         );
 
-        /*
-        //3. Read meta-data object
-        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
+        //3. Read meta-data object for admin bookings
+        /* let metaDataDocSnapshot = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
         let admin_bookings = [];
-        if(metaDataDocRef.exists) {
-            admin_bookings = metaDataDocRef.data().admin_bookings;
+        if(metaDataDocSnapshot.exists) {
+            admin_bookings = metaDataDocSnapshot.data().admin_bookings;
+        } */
+        
+        //4. Get booked day's customer bookings
+        let bookedDayDocSnapshot = await bookedDayDocRef.get();
+        let customer_bookings = [];
+        if(bookedDayDocSnapshot.exists) {
+            customer_bookings = bookedDayDocSnapshot.data().customer_bookings;
         }
-
-        //4. Read current day's remaining hours object
-        let updatedDayRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
-        let booked_hours = [];
-        if(updatedDayRef.exists) {
-            booked_hours = updatedDayRef.data().customer_bookings;
-        }
-
+        
         //5. Read regular hours object
-        let regularHoursRef = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
+        let regularHoursSnapshot = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
         let regularHours = [];
         let remainingHours = 24;
-        if(regularHoursRef.exists) {
-            regularHours = regularHoursRef.data().weekday;
+        if(regularHoursSnapshot.exists) {
+            regularHours = regularHoursSnapshot.data().weekday;
 
             //6. Sum remaining hours + admin hours if exists
             for(var regularRanges in regularHours){
-                remainingHours -= DateUtils.fromToDifference(regularRanges);
-            }
-
-            for(var bookedRanges in booked_hours){
-                remainingHours -= DateUtils.fromToDifference(bookedRanges);
-            }
-
-            for(var adminRanges in admin_bookings){
-                remainingHours -= DateUtils.fromToDifference(adminRanges);
+                remainingHours -= DateUtils.calcFromToDifference(regularHours[regularRanges]);
             }
         }
+
+        for(var bookedRanges in customer_bookings){
+            remainingHours -= DateUtils.calcFromToDifference(customer_bookings[bookedRanges]);
+        }
+
+        //TODO: how to calculate this across days?
+        /* for(var adminRanges in admin_bookings){
+            remainingHours -= DateUtils.calcFromToDifference(admin_bookings[adminRanges]);
+        } */
         
         //7. If no remaining hours, add day to uanvailable days meta-data
         if(remainingHours <= 0){
             db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
                 "availableDays": {
-                    day: false
+                    day: null
                 }
             });
-        } */
+        }
     }
 
     /** Cal-Day-READ */

@@ -14,20 +14,20 @@ export class DateUtils {
     static formatMinuteToMM(minute) {
         if(typeof minute == 'number'){
             if(minute < 10){
-                return "0"+minute;
+                return "0" + minute;
+            } else {
+                return minute.toString();
             }
-        }else{
-            return minute;
         }
     }
 
     static formatHourToHH(hour) {
         if(typeof hour == 'number'){
-            if(hour < 10){
-                return "0"+hour;
+            if(hour < 10) {
+                return "0" + hour;
+            } else {
+                return hour.toString();
             }
-        }else{
-            return hour;
         }
     }
 
@@ -123,11 +123,32 @@ export class DateUtils {
     /**
      * @param {String} range a String of format "00:00-17:00"
      */
-    static fromToDifference(range) {
+    static calcRangeDifference(range) {
         let times = this.getTimesFromRangeString(range);
 
         let hourDiff = times.left.hour - times.right.hour;    //-17
         let minDiff = times.left.minute - times.right.minute; //0
+
+        if(hourDiff < 0){
+            hourDiff = -hourDiff;
+        }
+
+        if(minDiff < 0){
+            minDiff = -minDiff;
+        }
+
+        return hourDiff + (minDiff / 60);
+    }
+
+    static calcFromToDifference(fromToMap) {
+        let fromHour = fromToMap.from.split(":")[0];
+        let fromMin = fromToMap.from.split(":")[1];
+
+        let toHour = fromToMap.to.split(":")[0];
+        let toMin = fromToMap.to.split(":")[1];
+
+        let hourDiff = fromHour - toHour;    //-17
+        let minDiff = fromMin - toMin; //0
 
         if(hourDiff < 0){
             hourDiff = -hourDiff;
