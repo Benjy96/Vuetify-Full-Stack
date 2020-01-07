@@ -160,6 +160,7 @@ export default {
         DateUtils.getMonthFromDate(this.today)
       );
     },
+    //TODO: Move to back-end / add extra checks - like meta-data first, perhaps?
     async refreshDayBookings(year, month, day) {
       this.customer_bookings = await CalendarService.getBookings(this.id, year, month, day);
     },

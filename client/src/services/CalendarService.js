@@ -34,7 +34,7 @@ class CalendarService {
             {merge: true}
         );
 
-        /* //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
+        //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
         db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
         .set({
             "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
@@ -45,6 +45,7 @@ class CalendarService {
             {merge: true}
         );
 
+        /*
         //3. Read meta-data object
         let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
         let admin_bookings = [];
