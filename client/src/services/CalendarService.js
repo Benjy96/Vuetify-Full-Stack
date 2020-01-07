@@ -86,9 +86,11 @@ class CalendarService {
         if(remainingHours <= 0){
             db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
                 "availableDays": {
-                    day: null
+                    [day]: null
                 }
-            });
+            },
+            {merge: true}
+            );
         }
     }
 
