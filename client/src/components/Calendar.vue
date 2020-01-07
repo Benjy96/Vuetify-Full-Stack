@@ -167,7 +167,7 @@ export default {
         DateUtils.getDayFromDate(date)
       );
 
-      this.viewDay(date)
+      this.viewDay(date);
     },
     // async getAdminBookings({ date }) {
     //   //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
@@ -245,7 +245,7 @@ export default {
       this.dialog = true;
       this.addBookingDateObject = dateObject;
     },
-    viewDay ({ date }) {
+    viewDay (date) {
       this.focus = date
       this.type = 'day'
     },

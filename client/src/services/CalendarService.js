@@ -1,5 +1,5 @@
 
-import { DateUtils } from '../components/DateUtils';
+// import { DateUtils } from '../components/DateUtils';
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 
@@ -15,6 +15,13 @@ class CalendarService {
      * 
     */
    //TODO: Use weekday? Are we checking regular hours?
+
+/*    TODO:
+
+    - Fix DateUtils functions
+    - Fix CalendarService.createBooking - add null checks
+    - Clear out the bookings array in Calendar.vue as it's retaining info when it shouldn't be
+     */
     static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
         db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`)
@@ -27,7 +34,7 @@ class CalendarService {
             {merge: true}
         );
 
-        //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
+        /* //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
         db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
         .set({
             "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
@@ -80,7 +87,7 @@ class CalendarService {
                     day: false
                 }
             });
-        }
+        } */
     }
 
     /** Cal-Day-READ */
