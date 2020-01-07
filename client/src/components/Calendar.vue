@@ -160,6 +160,9 @@ export default {
         DateUtils.getMonthFromDate(this.today)
       );
     },
+    async refreshDayBookings(year, month, day) {
+      this.customer_bookings = await CalendarService.getBookings(this.id, year, month, day);
+    },
     async getDayBookings({ date }) {
       this.customer_bookings = await CalendarService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
@@ -181,6 +184,8 @@ export default {
       let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
 
       await CalendarService.createBooking(this.id, year, month, day, from, to);
+
+      this.refreshDayBookings(year, month, day);
     },
     dayAvailable(date) {
       //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)

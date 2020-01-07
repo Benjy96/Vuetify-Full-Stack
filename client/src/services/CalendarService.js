@@ -20,7 +20,7 @@ class CalendarService {
 
     - Fix DateUtils functions
     - Fix CalendarService.createBooking - add null checks
-    - Clear out the bookings array in Calendar.vue as it's retaining info when it shouldn't be
+    - Clear out the bookings array in Calendar.vue as it's retaining info when it shouldn't be?
      */
     static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
