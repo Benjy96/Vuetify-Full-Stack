@@ -12,7 +12,6 @@
 </template>
 
 <script>
-import date from 'date-and-time';
 import { db } from '../firebaseInit';
 import { daysOfWeek } from './DateUtils';
 import firebase from 'firebase';
@@ -49,38 +48,19 @@ export default {
         validate() {
             //TODO: Maybe a dropdown is better.....? (Although less control) 
                 //Any other date pickers? Get working for now in DB side though
-            let parsedFrom = date.parse(this.from, 'hh:mm');
-            let parsedTo = date.parse(this.to, 'hh:mm');
-
             if(this.from > this.to){
                 alert('From should be earlier than To!');
             } else {
-                let formattedFromHours = this.getDoubleDigitTime(parsedFrom.getHours());
-                let formattedFromMins = this.getDoubleDigitTime(parsedFrom.getMinutes());
-
-                let formattedToHour = this.getDoubleDigitTime(parsedTo.getHours());
-                let formattedToMins = this.getDoubleDigitTime(parsedTo.getMinutes());
-
-                parsedTo = `${formattedToHour}:${formattedToMins}`;
-                parsedFrom = `${formattedFromHours}:${formattedFromMins}`;
-
                 //Add to db...
                 db.collection(`businesses/${this.id}/availability/`).doc('regular')
                     .update({
                         [this.day]: firebase.firestore.FieldValue.arrayUnion({
-                            from: parsedFrom,
-                            to: parsedTo
+                            from: this.from,
+                            to: this.to
                         })
                     })
                     .then(this.$emit('saved-time-range', this.day)
                 );
-            }
-        },
-        getDoubleDigitTime(intMinOrHour){
-            if(intMinOrHour < 10) {
-                return `0${intMinOrHour}`;
-            } else {
-                return intMinOrHour;
             }
         }
     }

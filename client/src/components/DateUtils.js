@@ -21,6 +21,7 @@ export class DateUtils {
         }
     }
 
+    //TODO: How to handle 24 in db and across days? For admin bookings?
     static formatHourToHH(hour) {
         if(typeof hour == 'number'){
             if(hour < 10) {
