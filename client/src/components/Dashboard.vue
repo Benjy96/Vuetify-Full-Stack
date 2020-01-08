@@ -18,7 +18,7 @@
                             <v-container>
                                 <v-card-title>Regular Hours</v-card-title>
                                 <!-- Days of Week -->
-                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day.value">
+                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day.text">
                                     <!-- Day -->
                                     <v-col class="red lighten-2">
                                         {{day.text}}
@@ -26,10 +26,10 @@
 
                                     <!-- Time Ranges for Day-->
                                     <v-col class="red lighten-3">
-                                        <v-list-item v-for="range in ranges[day.value]" :key="'dayRange' + day.value + range">
-                                            {{range}}
+                                        <v-list-item v-for="range in ranges[day.text]" :key="'dayRange' + day.text + range.from + range.to">
+                                            {{range.from + " - " + range.to}}
                                             <v-list-item-action>
-                                                <v-btn icon @click="deleteTimeRange(day.value, range)">
+                                                <v-btn icon @click="deleteTimeRange(day.text, range)">
                                                     <v-icon>mdi-close</v-icon>
                                                 </v-btn>
                                             </v-list-item-action>
@@ -112,41 +112,42 @@ export default {
         return {
             id: null,
             ranges: {
-                1: [],
-                2: [],
-                3: [],
-                4: [],
-                5: [],
-                6: [],
-                7: []
+                "Monday": [],
+                "Tuesday": [],
+                "Wednesday": [],
+                "Thursday": [],
+                "Friday": [],
+                "Saturday": [],
+                "Sunday": []
             },
             daysOfWeek: daysOfWeek
         }
     },
     created() {
         this.id = firebase.auth().currentUser.uid;
-        this.daysOfWeek.forEach(day => {
-            this.getRanges(day.value);
-        });
+        this.getRanges();
     },
     methods: {
-        deleteTimeRange(dayNum, range) {
-            //TODO: Performance? - just store this value instead of converting to db format? Why is db diff format?
-            let bothRanges = range.split(" - ");
-            let dbFormat = bothRanges[1] += '-' + bothRanges[0];
+        deleteTimeRange(day, range) {
+            let dayRef = db.collection(`businesses/${this.id}/availability`).doc('regular');
+            let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
+            this.ranges[day] = dayArray;
 
-            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).doc(dbFormat).delete().then(
-                this.getRanges(dayNum)
-            );
+            dayRef.update({
+                [day]: dayArray
+            });
         },
-        getRanges(dayNum) {
-            this.ranges[dayNum] = [];
-            db.collection(`businesses/${this.id}/unavailable/days/${dayNum}`).get().then((snapshot) => {
-                snapshot.forEach(doc => {
-                    let bothRanges = doc.id.split("-");
-                    let reversedAndFormatted = bothRanges[1] += ' - ' + bothRanges[0];
-                    this.ranges[dayNum].push(reversedAndFormatted);
-                });
+        getRanges() {
+            db.collection(`businesses/${this.id}/availability/`).doc('regular').get().then((snapshot) => {
+                let regularDoc = snapshot.data();
+                this.daysOfWeek.forEach(day => {
+                    let weekday = day.text;
+                    if(regularDoc[weekday]){
+                        regularDoc[weekday].forEach(range => {
+                            this.ranges[weekday].push(range);
+                        });
+                    }
+                })
             });
         }
     }

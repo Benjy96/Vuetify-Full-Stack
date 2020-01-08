@@ -92,7 +92,7 @@
             <v-dialog
                 ref="toTimeDialog"
                 v-model="toTimeDialogToggle"
-                :return-value.sync="time"
+                :return-value.sync="toTime"
                 persistent
                 width="290px">
                     <template v-slot:activator="{ on }">

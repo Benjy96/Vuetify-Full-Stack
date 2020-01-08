@@ -15,6 +15,7 @@
 import date from 'date-and-time';
 import { db } from '../firebaseInit';
 import { daysOfWeek } from './DateUtils';
+import firebase from 'firebase';
 
 export default {
     props: ['id'],
@@ -64,10 +65,15 @@ export default {
                 parsedFrom = `${formattedFromHours}:${formattedFromMins}`;
 
                 //Add to db...
-                db.collection(`businesses/${this.id}/unavailable/days/${this.day}`)
-                    .doc(`${parsedTo}-${parsedFrom}`).set({}).then(
-                        this.$emit('saved-time-range', this.day)
-                    );  
+                db.collection(`businesses/${this.id}/availability/`).doc('regular')
+                    .update({
+                        [this.day]: firebase.firestore.FieldValue.arrayUnion({
+                            from: parsedFrom,
+                            to: parsedTo
+                        })
+                    })
+                    .then(this.$emit('saved-time-range', this.day)
+                );
             }
         },
         getDoubleDigitTime(intMinOrHour){

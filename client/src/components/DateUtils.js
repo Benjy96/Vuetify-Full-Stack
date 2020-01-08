@@ -332,7 +332,7 @@ export class DateUtils {
     }
 }
 
-export const daysOfWeek = [
+export const daysOfWeekNumbered = [
     {text: "Monday", value: 1},
     {text: "Tuesday", value: 2},
     {text: "Wednesay", value: 3},
@@ -340,4 +340,14 @@ export const daysOfWeek = [
     {text: "Friday", value: 5},
     {text: "Saturday", value: 6},
     {text: "Sunday", value: 7}
+];
+
+export const daysOfWeek = [
+    {text: "Monday"},
+    {text: "Tuesday"},
+    {text: "Wednesay"},
+    {text: "Thursday"},
+    {text: "Friday"},
+    {text: "Saturday"},
+    {text: "Sunday"}
 ];
