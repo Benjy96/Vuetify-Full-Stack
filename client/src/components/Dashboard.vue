@@ -130,6 +130,8 @@ export default {
     methods: {
         deleteTimeRange(day, range) {
             let dayRef = db.collection(`businesses/${this.id}/availability`).doc('regular');
+            //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
+            //- matched by EXCLUSION
             let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
             this.ranges[day] = dayArray;
 
@@ -142,6 +144,7 @@ export default {
                 let regularDoc = snapshot.data();
                 this.daysOfWeek.forEach(day => {
                     let weekday = day.text;
+                    this.ranges[weekday] = [];
                     if(regularDoc[weekday]){
                         regularDoc[weekday].forEach(range => {
                             this.ranges[weekday].push(range);

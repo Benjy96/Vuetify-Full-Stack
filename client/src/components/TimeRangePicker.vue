@@ -52,7 +52,7 @@ export default {
             let parsedFrom = date.parse(this.from, 'hh:mm');
             let parsedTo = date.parse(this.to, 'hh:mm');
 
-            if(parsedFrom > parsedTo){
+            if(this.from > this.to){
                 alert('From should be earlier than To!');
             } else {
                 let formattedFromHours = this.getDoubleDigitTime(parsedFrom.getHours());
