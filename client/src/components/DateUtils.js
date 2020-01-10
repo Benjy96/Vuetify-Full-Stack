@@ -1,5 +1,10 @@
 export class DateUtils {
 
+    /**
+     * 
+     * @param {*} nestedDateObj "year.month.day object"
+     * @param {*} date "YYYY-MM-DD"
+     */
     static nestedYearMonthDayExists(nestedDateObj, date) {
         let year = DateUtils.getYearFromDate(date);
         let month = DateUtils.getMonthFromDate(date);

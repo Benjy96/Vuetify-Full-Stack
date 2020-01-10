@@ -69,6 +69,7 @@
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
+  <!-- Might be better for a v-bound array of 31 day booleans to prevent retarded async shit? -->
   <template v-slot:day="{ date }">
     <v-sheet v-if="dayAvailable(date)" height="100%" color="green">
     </v-sheet>
@@ -119,7 +120,7 @@ export default {
   created () {
     //Month Viewed Upon Load
     //1. Check unavailable days meta-data
-    //this.getUnavailableDays(); //TODO: What if you click next? The unavailable_days obj on user cal should be multidimensional.
+    this.getUnavailableDays(); //TODO: What if you click next? The unavailable_days obj on user cal should be multidimensional.
   },
   computed: {
     //must be called by the calendar?
@@ -190,48 +191,20 @@ export default {
     },
     dayAvailable(date) {
       //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
-        //And add an obj to check if we've checked for that year/month already? TO prevent always checking?
-          //Unless we just check upon created, rather than every time
-            //TODO: find order of methods: I think created is called too late after day available method
-      if(this.unavailableDays == null) {
-        this.getUnavailableDays().then(() => {
-          if(this.unavailableDays != null) {
-            return this.dayAvailable(date);
-          } else {
-            return true;
-          }
-        });
-      } else {
+      if(this.unavailableDays != null) {
         if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, date)) {
           return false;
         } else {
           return true;
         }
       }
+      return true;
     },
     slotAvailable(dateObject) {
       //1. Check if day unavailable
       if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, dateObject.date)){
         return false;
       }
-
-      //TODO: FIX BENEATH
-      //TODO: Why storing in array instead of a nested map of hours? like the days? Worth? Any actual perf diff?
-        //Would be nice to test actual timings
-      /*
-
-        2020: {
-          01: {
-            17: {
-              "09:00": "10:00"
-            },
-            18: {
-              "10:00": "11:00"
-            }
-          }
-        }
-
-      */
 
       //2. Check if already booked
       if(this.customer_bookings != null) {
