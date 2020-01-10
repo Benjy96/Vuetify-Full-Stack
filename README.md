@@ -2,7 +2,7 @@
 
 https://fir-payment-test.firebaseapp.com/
 
-Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions. Integrated with the Timekit API.
+Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions.
 
 
 ## Quick Start
