@@ -3,7 +3,6 @@
     <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
         <v-btn to="/" class="router-button mr-4">Home</v-btn>
           <!-- v-btn extends router-link -->
-        <v-btn to="/about" class="router-button">About</v-btn>
       <v-spacer></v-spacer>
         <!-- <v-btn v-if="!currentUser" to="/register" class="mr-2">Register</v-btn> -->
         <v-btn v-if="currentUser" to="/dashboard">Dashboard</v-btn>
