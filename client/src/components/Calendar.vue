@@ -233,9 +233,9 @@ export default {
           if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
             this.regular_availability[dayOfWeek][i]))
           {
-            return false;
-          } else {
             return true;
+          } else {
+            return false;
           }
         }
       }
