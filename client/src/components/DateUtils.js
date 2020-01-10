@@ -282,22 +282,8 @@ export class DateUtils {
     }
 
     /**
-     * 
-     * @param {String} date the date you want to check is in the date & time range
-     * @param {String} hour the hour of the date
-     * @param {String} minute the minute of the date
-     * @param {String} dateRange a set of from/to dates in the format "YYYY-MM-DD/YYYY-MM-DD"
-     * @param {String} timeRange a set of from/to times in the format "00:00-23:59"
-     * 
-     * For example, timeWithinDayRange(2020-01-02, 03, 30, 2020-01-01/2020-01-04, 17:00-09:00) would
-     * imply someone is on holiday from the end of their work day on the 1st of January until the
-     * start of their workday on the 4th of January. The function would return true, as the 2nd of
-     * January at 03:30 am is within this range.
+     * Returns true if an HH:MM is >= a "from" time and < than a "to" time.
      */
-    // static timeWithinDateRange(date, hour, minute, dateRange, timeRange) {
-
-    // }
-
     static hourMinBetween(hour, minute, fromToMap) {
         let fromHour = parseInt(fromToMap.from.split(":")[0]);
         let fromMinute = parseInt(fromToMap.from.split(":")[1]);

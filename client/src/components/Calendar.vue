@@ -90,10 +90,9 @@
 </template>
 
 <script>
-// import { db } from '../firebaseInit';
-// import BookingService from '../services/BookingService';
 import CalendarService from '../services/CalendarService';
-import {DateUtils} from './DateUtils';
+import { DateUtils } from './DateUtils';
+import { daysOfWeek } from './DateUtils';
 
 export default {
   props: ['id'],
@@ -115,12 +114,14 @@ export default {
     unavailableDays: null,
     customer_bookings: null,
     admin_bookings: null,
+    regular_availability: null,
     defaultSlotInterval: 60
   }),
   created () {
     //Month Viewed Upon Load
     //1. Check unavailable days meta-data
     this.getUnavailableDays(); //TODO: What if you click next? The unavailable_days obj on user cal should be multidimensional.
+    this.getRegularAvailability();
   },
   computed: {
     //must be called by the calendar?
@@ -155,9 +156,14 @@ export default {
     }
   },
   methods: {
+    async getRegularAvailability() {
+      CalendarService.getRegularAvailability(this.id).then(res => {
+        this.regular_availability = res;
+      });
+    },
     async getUnavailableDays() {
       this.unavailableDays = await CalendarService.getUnavailableDays(this.id, 
-        DateUtils.getYearFromDate(this.today), 
+        DateUtils.getYearFromDate(this.today),
         DateUtils.getMonthFromDate(this.today)
       );
     },
@@ -216,9 +222,27 @@ export default {
         }
       }
 
-      return true;
+      //TODO: Remove text property and have straight string value
+      let dayOfWeek = daysOfWeek[dateObject.weekday-1].text;
 
-      //3. TODO: Check if in admin booking
+      //3. TODO: Check if in regular availability
+      if(dayOfWeek in this.regular_availability) {
+        //3.1. For each regular hour range of the day
+        for(var i in this.regular_availability[dayOfWeek]) {
+          //3.2. if current time in range, return false
+          if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
+            this.regular_availability[dayOfWeek][i]))
+          {
+            return false;
+          } else {
+            return true;
+          }
+        }
+      }
+
+      //4. TODO: Check if in admin booking
+
+      return true;
     },
     openDialog(dateObject) {
       this.dialog = true;

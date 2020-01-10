@@ -114,6 +114,7 @@ class CalendarService {
         Month PoV CRUD Operations.
     */
 
+    //TODO: IF we stored this on back-end could have a listener and only need to actually query meta data when metadata changes
     /** READ from a month's meta-data document */
     static async getUnavailableDays(uid, year, month) {
         let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
@@ -144,6 +145,17 @@ class CalendarService {
             return admin_bookings;
         } else {
             //TODO: Check traversy apps - waht does he do when null? exception? message?
+            return null;
+        }
+    }
+
+    static async getRegularAvailability(uid) {
+        let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc('regular').get();
+        let regular_availability = [];
+        if(regularHoursDoc.exists){
+            regular_availability = regularHoursDoc.data();
+            return regular_availability;
+        } else {
             return null;
         }
     }
