@@ -223,7 +223,7 @@ export default {
       }
 
       //TODO: Remove text property and have straight string value
-      let dayOfWeek = daysOfWeek[dateObject.weekday-1].text;
+      let dayOfWeek = daysOfWeek[dateObject.weekday-1];
 
       //3. TODO: Check if in regular availability
       if(dayOfWeek in this.regular_availability) {

@@ -335,11 +335,11 @@ export const daysOfWeekNumbered = [
 ];
 
 export const daysOfWeek = [
-    {text: "Monday"},
-    {text: "Tuesday"},
-    {text: "Wednesay"},
-    {text: "Thursday"},
-    {text: "Friday"},
-    {text: "Saturday"},
-    {text: "Sunday"}
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
 ];

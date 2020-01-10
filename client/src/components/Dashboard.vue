@@ -18,18 +18,18 @@
                             <v-container>
                                 <v-card-title>Regular Hours</v-card-title>
                                 <!-- Days of Week -->
-                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day.text">
+                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day">
                                     <!-- Day -->
                                     <v-col class="red lighten-2">
-                                        {{day.text}}
+                                        {{day}}
                                     </v-col>
 
                                     <!-- Time Ranges for Day-->
                                     <v-col class="red lighten-3">
-                                        <v-list-item v-for="range in ranges[day.text]" :key="'dayRange' + day.text + range.from + range.to">
+                                        <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
                                             {{range.from + " - " + range.to}}
                                             <v-list-item-action>
-                                                <v-btn icon @click="deleteTimeRange(day.text, range)">
+                                                <v-btn icon @click="deleteTimeRange(day, range)">
                                                     <v-icon>mdi-close</v-icon>
                                                 </v-btn>
                                             </v-list-item-action>
@@ -143,7 +143,7 @@ export default {
             db.collection(`businesses/${this.id}/availability/`).doc('regular').get().then((snapshot) => {
                 let regularDoc = snapshot.data();
                 this.daysOfWeek.forEach(day => {
-                    let weekday = day.text;
+                    let weekday = day;
                     this.ranges[weekday] = [];
                     if(regularDoc[weekday]){
                         regularDoc[weekday].forEach(range => {
