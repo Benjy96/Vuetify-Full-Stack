@@ -44,7 +44,6 @@ class OwnerService {
 
             bookings[year][month].push(dayObj);
         });
-        alert(JSON.stringify(bookings[year][month]));
         return bookings;
     }
 

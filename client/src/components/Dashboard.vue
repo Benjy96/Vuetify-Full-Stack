@@ -54,11 +54,7 @@
                     <v-row no-gutters>
                         <v-col class="red lighten-3">
                             <v-container>
-                                <v-row>
-                                    <v-col>
-                                        <DateRangePicker/>
-                                    </v-col>
-                                </v-row>
+                                <DateRangePicker/>
                             </v-container>
                         </v-col>
                         <v-col class="red lighten-4">
@@ -71,7 +67,6 @@
                                         Test
                                     </v-col>
                                 </v-row>
-
                             </v-container> 
                         </v-col>
                     </v-row>
@@ -81,14 +76,19 @@
 
         <!-- Bookings Box -->
         <v-row>
-            <v-col>
+            <v-col class="grey lighten-2">
                 <v-card>
-                    <v-card-title>Upcoming Bookings</v-card-title>
-                    <Bookings/>
+                <v-card-title>Upcoming Bookings</v-card-title>
+                <v-row class="grey lighten-1">
+                    <v-col class="green lighten-3">
+                        <v-container>
+                            <Bookings/>
+                        </v-container>
+                    </v-col>
+                </v-row>
                 </v-card>
             </v-col>
         </v-row>
-
     </v-container>
 </template>
 

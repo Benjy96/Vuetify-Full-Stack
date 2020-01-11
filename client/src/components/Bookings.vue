@@ -1,19 +1,31 @@
 <template>
-    <div>
+    <v-container class="red lighten-1">
         <v-row v-for="day in bookings[currentYear][currentMonth]" v-bind:key="'Day' + currentYear + currentMonth + day.day">
             <v-col>
-                {{ day.day }}
-                <v-row v-for="(booking, index) in day.customer_bookings" v-bind:key="'Bookings' + day.day + index">
-                    <v-col>
-                        <v-row v-for="(fromTo, index2) in booking" :key="'Booking' + day.day + index2">
-                            {{ fromTo.from }} - {{ fromTo. to }}
-                        </v-row>
-                    </v-col>
-                </v-row>
+                <v-sheet>
+                    {{ day.day }}/{{ currentMonth }}/{{ currentYear }}
+                    <!-- Content -->
+                    <v-container>
+                    <v-row v-for="(booking, index) in day.customer_bookings" v-bind:key="'Bookings' + day.day + index">
+                        <v-col>
+                            <v-row v-for="(fromTo, index2) in booking" :key="'Booking' + day.day + index2">
+                                <v-col>
+                                    text to go here
+                                </v-col>
+                                <v-col>
+                                    {{ fromTo.from }} - {{ fromTo. to }}
+                                </v-col>
+                                <v-col>
+                                    text to go here
+                                </v-col>
+                            </v-row>
+                        </v-col>
+                    </v-row>
+                    </v-container>
+                </v-sheet>
             </v-col>
         </v-row>
-    </div>
-        
+    </v-container>
 </template>
 
 <script>
