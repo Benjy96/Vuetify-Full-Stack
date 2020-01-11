@@ -1,4 +1,5 @@
 import { db } from '../firebaseInit';
+import { DateUtils } from '../DateUtils';
 
 class OwnerService {
 
@@ -12,14 +13,16 @@ class OwnerService {
     }
 
     /** READ */
+    //TODO: How to organise them?
     static async getUpcomingBookings(uid) {
+        let year = DateUtils.getYear();  //TODO: DateUtils dynamic.
+        let month = DateUtils.getMonth();
         let bookings = [];
-        let snapshot = await db.collection(`businesses/${uid}/bookings`).get();
+
+        let snapshot = await db.collection(`businesses/${uid}/bookings/${year}/month/${month}/days/`).get();
         snapshot.forEach(doc => {
-            bookings.push({
-                id: doc.id
-            })
-        })
+            bookings.push(doc.data());
+        });
         return bookings;
     }
 

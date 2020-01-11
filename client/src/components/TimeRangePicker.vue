@@ -13,7 +13,7 @@
 
 <script>
 import { db } from '../firebaseInit';
-import { daysOfWeek } from './DateUtils';
+import { daysOfWeek } from '../DateUtils';
 import firebase from 'firebase';
 
 export default {

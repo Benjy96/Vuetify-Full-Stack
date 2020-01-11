@@ -1,5 +1,5 @@
 
-import { DateUtils } from '../components/DateUtils';
+import { DateUtils } from '../DateUtils';
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 

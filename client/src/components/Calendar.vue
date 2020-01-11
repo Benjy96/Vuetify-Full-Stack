@@ -91,8 +91,8 @@
 
 <script>
 import CalendarService from '../services/CalendarService';
-import { DateUtils } from './DateUtils';
-import { daysOfWeek } from './DateUtils';
+import { DateUtils } from '../DateUtils';
+import { daysOfWeek } from '../DateUtils';
 
 export default {
   props: ['id'],
