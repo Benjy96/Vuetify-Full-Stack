@@ -1,3 +1,5 @@
+import { db } from '../firebaseInit';
+
 class OwnerService {
 
     /*
@@ -10,8 +12,15 @@ class OwnerService {
     }
 
     /** READ */
-    static async getUpcomingBookings() {
-
+    static async getUpcomingBookings(uid) {
+        let bookings = [];
+        let snapshot = await db.collection(`businesses/${uid}/bookings`).get();
+        snapshot.forEach(doc => {
+            bookings.push({
+                id: doc.id
+            })
+        })
+        return bookings;
     }
 
     /** READ */
@@ -24,3 +33,5 @@ class OwnerService {
 
     }
 }
+
+export default OwnerService;

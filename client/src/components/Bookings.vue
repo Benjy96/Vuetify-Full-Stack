@@ -13,7 +13,7 @@
 <script>
 import firebase from 'firebase';
 
-import BookingService from '../services/BookingService';
+import OwnerService from '../services/OwnerService';
 
 export default {
     name: 'Bookings',
@@ -24,7 +24,7 @@ export default {
         }
     },
     created() {
-        BookingService.getBookings(firebase.auth().currentUser.uid).then((res) => {
+        OwnerService.getBookings(firebase.auth().currentUser.uid).then((res) => {
             this.bookings = res;
         });
     }
