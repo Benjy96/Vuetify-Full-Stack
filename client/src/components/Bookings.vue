@@ -1,9 +1,9 @@
 <template>
 
     <div>
-        <v-row v-for="booking in bookings" v-bind:key="'Booking' + booking.id">
+        <v-row v-for="day in bookings[currentYear][currentMonth]" v-bind:key="'Day' + currentYear + currentMonth + day">
             <v-col>
-                {{ booking.id }}
+                {{ day.day }}
             </v-col>
         </v-row>
     </div>
@@ -15,17 +15,25 @@ import firebase from 'firebase';
 
 import OwnerService from '../services/OwnerService';
 
+import { DateUtils } from '../DateUtils';
+
 export default {
     name: 'Bookings',
     data() {
         return {
-            bookings: [],
-            err: ''
+            bookings: {},
+            err: '',
+            currentYear: null,
+            currentMonth: null
         }
     },
     created() {
-        OwnerService.getBookings(firebase.auth().currentUser.uid).then((res) => {
+        this.currentYear = DateUtils.getCurrentYearString();
+        this.currentMonth = DateUtils.getCurrentMonthString();
+
+        OwnerService.getUpcomingBookings(firebase.auth().currentUser.uid).then((res) => {
             this.bookings = res;
+            alert(JSON.stringify(this.bookings[this.currentYear][this.currentMonth]));
         });
     }
 }

@@ -20,14 +20,18 @@ export const daysOfWeek = [
 
 export class DateUtils {
 
-    static getCurrentMonth() {
+    static getCurrentMonthString() {
         let d = new Date();
-        return d.getMonth() + 1;
+        d = d.getMonth() + 1;
+        if(d < 10){
+            d = "0" + d;
+        }
+        return d;
     }
 
-    static getCurrentYear() {
+    static getCurrentYearString() {
         let d = new Date();
-        return d.getFullYear();
+        return d.getFullYear().toString();
     }
 
     /**

@@ -15,14 +15,25 @@ class OwnerService {
     /** READ */
     //TODO: How to organise them?
     static async getUpcomingBookings(uid) {
-        let year = DateUtils.getYear();  //TODO: DateUtils dynamic.
-        let month = DateUtils.getMonth();
-        let bookings = [];
+        let year = DateUtils.getCurrentYearString();
+        let month = DateUtils.getCurrentMonthString();
 
-        let snapshot = await db.collection(`businesses/${uid}/bookings/${year}/month/${month}/days/`).get();
+        let bookings = {
+            [year]: {
+                [month]: []
+            }
+        };
+
+        let snapshot = await db.collection(`businesses/${uid}/bookings/${year}/month/${month}/days`).get();
         snapshot.forEach(doc => {
-            bookings.push(doc.data());
+            let dayObj = {
+                day: doc.id,
+                bookings: doc.data()
+            }
+
+            bookings[year][month].push(dayObj);
         });
+        alert(JSON.stringify(bookings[year][month]));
         return bookings;
     }
 
