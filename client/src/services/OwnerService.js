@@ -18,6 +18,17 @@ class OwnerService {
         let year = DateUtils.getCurrentYearString();
         let month = DateUtils.getCurrentMonthString();
 
+
+        /*
+
+        month: {
+            03: {
+                
+            }
+        }
+
+
+        */
         let bookings = {
             [year]: {
                 [month]: []
@@ -28,7 +39,7 @@ class OwnerService {
         snapshot.forEach(doc => {
             let dayObj = {
                 day: doc.id,
-                bookings: doc.data()
+                customer_bookings: doc.data()
             }
 
             bookings[year][month].push(dayObj);
