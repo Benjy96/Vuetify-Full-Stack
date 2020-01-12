@@ -41,14 +41,15 @@ export default {
             bookings: {},
             err: '',
             currentYear: null,
-            currentMonth: null
+            currentMonth: null,
+            dayLimit: 7
         }
     },
     created() {
         this.currentYear = DateUtils.getCurrentYearString();
         this.currentMonth = DateUtils.getCurrentMonthString();
 
-        OwnerService.getUpcomingBookings(firebase.auth().currentUser.uid).then((res) => {
+        OwnerService.getUpcomingBookings(firebase.auth().currentUser.uid, this.dayLimit).then((res) => {
             this.bookings = res;
         });
     }

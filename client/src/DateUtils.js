@@ -20,6 +20,30 @@ export const daysOfWeek = [
 
 export class DateUtils {
 
+    static getDaysInMonth(year, month) {
+        return new Date(year, month, 0).getDate();
+    }
+
+    /**
+     * If you add more days than the month has, the function returns the max day of the month
+     * @param {number} increment 
+     */
+    static getFutureDayString(increment) {
+        let d = new Date();
+        d.setDate(d.getDate() + increment);
+        d = this.getDDFormatedDay(d.getDate());
+        if(d <= this.getCurrentDayString() && increment > 0){
+            return this.getDaysInMonth();
+        }else{
+            alert(typeof d);
+            return d;
+        }
+    }
+
+    static getCurrentDayString() {
+        return this.getDDFormatedDay(new Date().getDate());
+    }
+
     static getCurrentMonthString() {
         let d = new Date();
         d = d.getMonth() + 1;
@@ -105,7 +129,16 @@ export class DateUtils {
         }else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         }
-        
+    }
+
+    static getDDFormatedDay(day) {
+        if(typeof day == 'number' && day < 10){
+            return "0" + day;
+        }else if(typeof day == 'string' && day.length < 2){
+            return "0" + day;
+        }else if(typeof day == 'number'){
+            return day.toString();
+        }
     }
 
     /**
