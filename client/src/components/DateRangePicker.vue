@@ -108,7 +108,7 @@
                     v-if="toTimeDialogToggle"
                     v-model="toTime"
                     full-width
-                    :min="fromTime">
+                    :min="minFromTime">
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="toTimeDialogToggle = false">Cancel</v-btn>
                         <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">OK</v-btn>
@@ -126,6 +126,8 @@
 </template>
 
 <script>
+// import { DateUtils } from '../DateUtils';
+
   export default {
     data () {
       return {
@@ -141,7 +143,24 @@
     },
     methods: {
         add() {
-
+            if(this.fromDate && this.toDate && this.fromTime && this.toTime){
+                let adminBooking = {
+                    fromDate: this.fromDate,
+                    fromTime: this.fromTime,
+                    toDate: this.toDate,
+                    toTime: this.toTime
+                }; 
+                this.$emit('saved-admin-booking', adminBooking);
+            } 
+        }
+    },
+    computed: {
+        minFromTime() {
+            if(this.toDate == this.fromDate){
+                return this.fromTime;
+            }else{
+                return "00:00";
+            }
         }
     }
   }
