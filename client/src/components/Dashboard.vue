@@ -54,7 +54,7 @@
                     <v-row no-gutters>
                         <v-col class="red lighten-3">
                             <v-container>
-                                <DateRangePicker/>
+                                <DateRangePicker v-on:saved-admin-booking="createAdminBooking($event)"/>
                             </v-container>
                         </v-col>
                         <v-col class="red lighten-4">
@@ -100,6 +100,7 @@ import firebase from 'firebase';
 import Bookings from './Bookings';
 import TimeRangePicker from './TimeRangePicker';
 import DateRangePicker from './DateRangePicker';
+import OwnerService from '../services/OwnerService';
 
 export default {
     name: 'Dashboard',
@@ -152,6 +153,9 @@ export default {
                     }
                 })
             });
+        },
+        createAdminBooking(eventData) {
+            OwnerService.createAdminBooking(this.id, eventData);
         }
     }
 }

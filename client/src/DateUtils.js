@@ -20,6 +20,18 @@ export const daysOfWeek = [
 
 export class DateUtils {
 
+    /**
+     * Converts "YYYY-DD-MM" to "YYYY-MM-DD"
+     */
+    static formatAmericanDateToUK(date) {
+        let splitString = date.split("-");
+        let year = splitString[0];
+        let month = splitString[2];
+        let day = splitString[1];
+
+        return year + "-" + month + "-" + day;
+    }
+
     static getDaysInMonth(year, month) {
         return new Date(year, month, 0).getDate();
     }
@@ -35,7 +47,6 @@ export class DateUtils {
         if(d <= this.getCurrentDayString() && increment > 0){
             return this.getDaysInMonth();
         }else{
-            alert(typeof d);
             return d;
         }
     }
@@ -119,6 +130,16 @@ export class DateUtils {
         }
     }
 
+    static getDDFormatedDay(day) {
+        if(typeof day == 'number' && day < 10){
+            return "0" + day;
+        }else if(typeof day == 'string' && day.length < 2){
+            return "0" + day;
+        }else if(typeof day == 'number'){
+            return day.toString();
+        }
+    }
+
     /**
      * 
      * @param {String} date "DD from YYYY-MM-DD"
@@ -128,16 +149,6 @@ export class DateUtils {
             return date.substr(8, 2);
         }else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
-        }
-    }
-
-    static getDDFormatedDay(day) {
-        if(typeof day == 'number' && day < 10){
-            return "0" + day;
-        }else if(typeof day == 'string' && day.length < 2){
-            return "0" + day;
-        }else if(typeof day == 'number'){
-            return day.toString();
         }
     }
 
