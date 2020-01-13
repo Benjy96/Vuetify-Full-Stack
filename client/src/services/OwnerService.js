@@ -101,9 +101,14 @@ class OwnerService {
             dayLimit = DateUtils.getFutureDayString(dayLimit);
 
             snapshot = await db.collection(`businesses/${uid}/bookings/${year}/month/${month}/days`)
-            .where(firebase.firestore.FieldPath.documentId(), '>=', day)
+            //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
+            .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
             .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
             .get();
+
+            //TODO: How to return future hours?
+            //If doing multiple days in future it won't work!!
+                //Would work for single day: where day == day && from > currentTime
         } 
         catch(e) 
         {
@@ -121,8 +126,10 @@ class OwnerService {
     }
 
     /** READ */
-    static async getAdminBookings() {
+    static async getAdminBookings(uid) {
         //Fetch from meta-data document.
+        let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
+        return snapshot.data()[DateUtils.getCurrentYearString()];
     }
 
     /** DELETE/UPDATE */

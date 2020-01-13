@@ -34,7 +34,6 @@
                                                 </v-btn>
                                             </v-list-item-action>
                                         </v-list-item>
-                                        
                                     </v-col>
                                 </v-row>
 
@@ -64,7 +63,14 @@
                                 <v-row class="red lighten-1">
                                     <!-- Day -->
                                     <v-col class="red lighten-2">
-                                        Test
+                                        <v-list-item v-for="adminBooking in adminBookings" :key="'adminBooking' + adminBooking">
+                                            {{adminBooking}}
+                                            <v-list-item-action>
+                                                <v-btn icon @click="deleteAdminBooking(adminBooking)">
+                                                    <v-icon>mdi-close</v-icon>
+                                                </v-btn>
+                                            </v-list-item-action>
+                                        </v-list-item>
                                     </v-col>
                                 </v-row>
                             </v-container> 
@@ -121,12 +127,14 @@ export default {
                 "Saturday": [],
                 "Sunday": []
             },
+            adminBookings: null,
             daysOfWeek: daysOfWeek
         }
     },
     created() {
         this.id = firebase.auth().currentUser.uid;
         this.getRanges();
+        this.getAdminBookings();
     },
     methods: {
         deleteTimeRange(day, range) {
@@ -153,6 +161,11 @@ export default {
                     }
                 })
             });
+        },
+        getAdminBookings() {
+            OwnerService.getAdminBookings(this.id).then(res => {
+                this.adminBookings = res;
+            })
         },
         createAdminBooking(eventData) {
             OwnerService.createAdminBooking(this.id, eventData);
