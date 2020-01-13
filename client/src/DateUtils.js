@@ -21,6 +21,41 @@ export const daysOfWeek = [
 export class DateUtils {
 
     /**
+     * The first and last days will contain the from and to.
+     * @returns {*} { years: 
+     * [2020: { 
+     *          months: [
+     *                  01: [
+     *                          1: {
+     *                              from: "17:30"
+     *                          } , 2, 3 .... 31
+     *                  ],
+     *                  02: [
+     *                          1,2,3,
+     *                          4: {
+     *                              times: [
+     *                                      {
+     *                                          to: "09:00"
+     *                                      }
+     *                                  ]
+     *                          }
+     *                      ]
+     *              ]
+     *          }
+     */
+    static getYearsMonthsDaysInRange(from, to){
+        let fromSplit = from.split("-");
+        let toSplit = to.split("-");
+
+        let fromYear = fromSplit[0];
+        let fromMonth = fromSplit[1];
+
+        let toYear = toSplit[0];
+        let toMonth = toSplit[1];
+
+    }
+
+    /**
      * Converts "YYYY-DD-MM" to "YYYY-MM-DD"
      */
     static formatAmericanDateToUK(date) {
