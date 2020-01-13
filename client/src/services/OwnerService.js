@@ -6,6 +6,11 @@ class OwnerService {
 
     /*
         Owner/Business PoV CRUD Operations.
+
+        Read should check meta-data before EXPENSIVE operations. 
+        Add and Delete should check and modify meta-data after ANY operation.
+
+        TODO: Check each operation follows above guidelines.
     */
 
     /**
