@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 import { DateUtils } from '../DateUtils';
+import MetaDataHelper from './MetaDataHelper';
 
 class OwnerService {
 
@@ -8,12 +9,28 @@ class OwnerService {
         Owner/Business PoV CRUD Operations.
 
         Read should check meta-data before EXPENSIVE operations. 
-        Add and Delete should check and modify meta-data after ANY operation.
+        Add/Create and Delete should check and modify meta-data after ANY operation.
 
         TODO: Check each operation follows above guidelines.
+
+        ---- For metadata additions..... 
+
+        Could we have a generic function to handle add operations? If we're always adding a RANGE, possibly. 
+
+        -- How to check and mark days unavailable? --
+
+        For admin bookings:
+
+            1. Add every day clearly within range
+            2. If to a single day:
+                2.1. Check day
+                2.2. Mark day
+
+
     */
 
     /**
+     * CREATE - TODO: Meta-data
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
      */
     static async createAdminBooking(uid, adminBooking) {
@@ -55,8 +72,6 @@ class OwnerService {
                         ]
 
             */
-
-        //TODO: What if we also added a month array? How to separate? Cost is again logic v storage
         if(fromYear == toYear){
             db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
@@ -66,6 +81,8 @@ class OwnerService {
                     })
                 }
             );
+
+            MetaDataHelper.markDaysUnavailable();
         } else {
             db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
@@ -84,6 +101,8 @@ class OwnerService {
                     })
                 }
             );
+
+            MetaDataHelper.markDaysUnavailable();
         }
     }
 
@@ -137,7 +156,7 @@ class OwnerService {
         return snapshot.data()[DateUtils.getCurrentYearString()];
     }
 
-    /** DELETE/UPDATE */
+    /** DELETE/UPDATE - TODO: Meta-data */
     static cancelBooking() {
 
     }

@@ -9,13 +9,13 @@ export const daysOfWeekNumbered = [
 ];
 
 export const daysOfWeek = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday",
-    "Sunday"
+    "Saturday"
 ];
 
 export class DateUtils {
@@ -43,20 +43,78 @@ export class DateUtils {
      *              ]
      *          }
      */
-    static getYearsMonthsDaysInRange(from, to){
-        let fromSplit = from.split("-");
-        let toSplit = to.split("-");
+    // static getYearsMonthsDaysInRange(from, to){
+    //     let fromSplit = from.split("-");
+    //     let toSplit = to.split("-");
 
-        let fromYear = fromSplit[0];
-        let fromMonth = fromSplit[1];
+    //     let fromYear = fromSplit[0];
+    //     let fromMonth = fromSplit[1];
 
-        let toYear = toSplit[0];
-        let toMonth = toSplit[1];
+    //     let toYear = toSplit[0];
+    //     let toMonth = toSplit[1];
 
+    // }
+
+    // static getDaysInRange(from, to) {
+    //     //TODO: Add onto the getMonthsInRange array 
+    // }
+
+    // static getMonthsInRange(from, to) {
+    //     //TODO: Add onto the years array from getYearsInRange
+    // }
+
+    /**
+     * @returns {String[]} years
+     */
+    static getYearsInRange(from, to) {
+        let fromYear = parseInt(from.split("-")[0]);
+        let toYear = parseInt(to.split("-")[0]);
+
+        let years = [];
+        for(let i = fromYear; i <= toYear; i++){
+            years.push(i);
+        }
+
+        return years;
     }
 
     /**
-     * Converts "YYYY-DD-MM" to "YYYY-MM-DD"
+     * @returns {number} 1 if the same month in the from and to dates
+     */
+    static getNumMonthsInRange(from, to) {
+        let numMonths = 0;
+        let years = this.getNumYearsInRange(from, to);
+
+        if(years > 1) {
+            //Subtract smallest and largest to their "terminal" month
+            let monthsToEndFirstYear = 12 - parseInt(this.getMonthFromDate(from)); // Month -----> End of Year
+            let monthsInLaterYear = parseInt(this.getMonthFromDate(to)); // Start of Year <----- Month
+
+            numMonths = monthsToEndFirstYear + monthsInLaterYear;
+
+            //go through the middle years - add 12 for in-between years
+            for(let i = 1; i < years - 1; i++){
+                numMonths += 12;
+            }
+
+            return numMonths;
+
+        } else {
+            let fromMonth = parseInt(this.getMonthFromDate(from));
+            let toMonth = parseInt(this.getMonthFromDate(to));
+
+            numMonths = toMonth - fromMonth;
+
+            return numMonths + 1;
+        }
+    }
+
+    static getNumYearsInRange(from, to) {
+        return this.getYearsInRange(from, to).length;
+    }
+
+    /**
+     * @returns {String} "YYYY-DD-MM" as "YYYY-MM-DD"
      */
     static formatAmericanDateToUK(date) {
         let splitString = date.split("-");
@@ -188,8 +246,8 @@ export class DateUtils {
     }
 
     /**
-     * 
      * @param {String} date "MM from YYYY-MM-DD"
+     * @returns {String}
      */
     static getMonthFromDate(date) {
         if(typeof date == 'string') {
@@ -259,12 +317,16 @@ export class DateUtils {
         return hourDiff + (minDiff / 60);
     }
 
-    static calcFromToDifference(fromToMap) {
-        let fromHour = fromToMap.from.split(":")[0];
-        let fromMin = fromToMap.from.split(":")[1];
+    /**
+     * @param {*} from a String of format "09:00"
+     * @param {*} to a String of format "17:00"
+     */
+    static calcFromToDifference(from, to) {
+        let fromHour = from.split(":")[0];
+        let fromMin = from.split(":")[1];
 
-        let toHour = fromToMap.to.split(":")[0];
-        let toMin = fromToMap.to.split(":")[1];
+        let toHour = to.split(":")[0];
+        let toMin = to.split(":")[1];
 
         let hourDiff = fromHour - toHour;    //-17
         let minDiff = fromMin - toMin; //0
@@ -434,5 +496,36 @@ export class DateUtils {
         }
 
         return false;
+    }
+
+    /**
+     * 
+     * @returns true if the date > from and < to - i.e., from 2020-01-01 and date 2020-01-01 is FALSE
+     */
+    static dateBetween(date, from, to) {
+        let midDate = new Date(date);
+        let fromDate = new Date(from);
+        let toDate = new Date(to);
+
+        if(fromDate < midDate && midDate < toDate) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @returns true if date >= from and < to - i.e., from 2020-01-01 and date 2020-01-01 is TRUE
+     */
+    static dateWithin(date, from, to) {
+        let midDate = new Date(date);
+        let fromDate = new Date(from);
+        let toDate = new Date(to);
+
+        if(fromDate <= midDate && midDate < toDate) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

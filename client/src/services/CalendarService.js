@@ -71,12 +71,13 @@ class CalendarService {
 
             //6. Sum remaining hours + admin hours if exists
             for(var regularRanges in regularHours){
-                remainingHours -= DateUtils.calcFromToDifference(regularHours[regularRanges]);
+                //TODO: Update these date methods / check still applicable with new db structure
+                remainingHours -= DateUtils.calcRangeDifference(regularHours[regularRanges]);
             }
         }
 
         for(var bookedRanges in customer_bookings){
-            remainingHours -= DateUtils.calcFromToDifference(customer_bookings[bookedRanges]);
+            remainingHours -= DateUtils.calcRangeDifference(customer_bookings[bookedRanges]);
         }
 
         //TODO: how to calculate this across days?
