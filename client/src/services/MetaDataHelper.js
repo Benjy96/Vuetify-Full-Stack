@@ -74,8 +74,6 @@ class MetaDataHelper {
 
                 if(remainingHours <= 0) {
                     return false;
-                } else {
-                    return true;
                 }
             }   
         }
@@ -87,9 +85,9 @@ class MetaDataHelper {
         let weekday = daysOfWeek[new Date(date).getDay()];
         if(regularHoursDoc.exists) {
             regularHours = regularHoursDoc.data()[weekday];
-
+            
             for(var range in regularHours){
-                remainingHours -= DateUtils.calcRangeDifference(regularHours[range]);
+                remainingHours -= DateUtils.calcFromToDifference(regularHours[range].from, regularHours[range].to);
             }
         }
 
