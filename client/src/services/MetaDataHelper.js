@@ -57,13 +57,13 @@ class MetaDataHelper {
             //Get the relevant admin booking for this day
             for(var i in admin_bookings) {
                 //The day is in the middle of a large range of time
-                if(DateUtils.dateBetween(date, admin_bookings[i].from, admin_bookings[i].to)) {
+                if(DateUtils.dateBetween(date, admin_bookings[i].fromDate, admin_bookings[i].toDate)) {
                     return false;
                 }
 
                 //Admin Booking on one day
                 if(admin_bookings[i].fromDate == date && admin_bookings[i].toDate == date) {
-                    remainingHours -= DateUtils.calcFromToDifference(admin_bookings[i].from, admin_bookings[i]. to);
+                    remainingHours -= DateUtils.calcFromToDifference(admin_bookings[i].fromTime, admin_bookings[i].toTime);
                 } else if(admin_bookings[i].fromDate == date) {
                     //The day is on the admin booking "from" date
                     remainingHours -= DateUtils.calcFromToDifference(admin_bookings[i].fromTime, "24:00");
@@ -74,6 +74,8 @@ class MetaDataHelper {
 
                 if(remainingHours <= 0) {
                     return false;
+                } else {
+                    return true;
                 }
             }   
         }
