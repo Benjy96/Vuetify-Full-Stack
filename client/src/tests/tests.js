@@ -16,7 +16,7 @@ Open browser on localhost:8080
 */
 
 import MetaDataHelperTests from './MetaDataHelperTests';
-// MetaDataHelperTests.runSingleAdminBookingTests();
+MetaDataHelperTests.runSingleAdminBookingTests();
 MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
 
 

@@ -7,6 +7,9 @@ class MetaDataHelperTests {
         db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability/2020/month/01/days').doc('01').delete();
     }
 
+    /**
+     * Adds 2x one hour-long customer bookings at 09:00 and 16:00
+     */
     static async setCustomerBookings() {
         db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability/2020/month/01/days').doc('01').set({
             "customer_bookings": [
@@ -66,6 +69,7 @@ class MetaDataHelperTests {
      * This test assumes:
      * 
      * - Customer bookings at 09:00 -> 10:00 and 16:00 -> 17:00
+     * - Regular availability of 09:00 -> 17:00
      */
     static async runSingleAdminBookingTestsWithCustomerBookings() {
         this.setCustomerBookings();
