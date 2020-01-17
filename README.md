@@ -28,6 +28,22 @@ cd functions
 firebase deploy
 ```
 
+## Run tests in front-end
+
+If you type "vue", you will see in the list of commands:
+
+  serve [options] [entry]                    serve a .js or .vue file in development mode with zero config
+
+This allows us to run a JS file in the front-end.
+
+Therefore, to run the tests:
+
+```
+cd client/src/tests
+vue serve tests.js
+Open browser on localhost:8080
+```
+
 ### Author
 
 Benjamin Dickey

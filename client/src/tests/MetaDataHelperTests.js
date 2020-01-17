@@ -53,7 +53,8 @@ class MetaDataHelperTests {
     static async runSingleAdminBookingTests() {
         await this.setup();
 
-        try
+        //For date 2020-01-01:
+        try 
         {
             //Admin booking 2020-01-01 17:00 -> 2020-01-01 17:00 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:00", "2020-01-01", "17:00", true);
