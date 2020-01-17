@@ -76,7 +76,7 @@ class MetaDataHelper {
             let month = DateUtils.getMonthFromDate(date);
             let day = DateUtils.getDayFromDate(date);
 
-            //1. Check bookings for day
+            //2 - Check bookings for day
             let dayDoc = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
             let customer_bookings = [];
             //TODO: TEST THIS - NO BOOKING FOR TESTED DATE
@@ -101,7 +101,7 @@ class MetaDataHelper {
                 }
             }
             
-            //2. Check admin bookings for day
+            //3 - Check admin bookings for day
             let adminDoc = await db.collection(`/businesses/${uid}/bookings`).doc('admin').get();
             let admin_bookings = [];
             if(adminDoc.exists) {
@@ -114,50 +114,21 @@ class MetaDataHelper {
                         return false;
                     }
 
-                    /* The from and to default to reg, and become admin if admin is WITHIN.
+                    /* 
 
-                        For each regular hour range, (admin / reg):
+                        ** We only need to count the hours in the reg range! **
+                        I.e., 
+                        count to reg To if largest To
+                        count from reg from if admin from >= reg from
 
-                        This is how we can do it: Use logic to determine the inside and outisde of each range:
-                        
-                            10:00->14:00 / 09:00->12:30 = 
-                                if admin to > reg to 
-                                &&
-                                if admin from > reg from:
-                                    count from admin from -> reg to
-                                && admin from > reg from:
-                                    count from admin from to reg to
-                                    subtract from this range's remaining hours
+                        Simply need to determine the largest/smallest from and to:
 
+                        if adFrom > regFrom, countFrom = regFrom (reg hours are what we're subtracting from)
+                        else countFrom = adminFrom
+                        if adTo > regTo, countTo = regTo
+                        else countTo = adTo
 
-                                    ** We only need to count the hours in the reg range! **
-                                    I.e., 
-                                    count to reg To if largest To
-                                    count from reg from if admin from >= reg from
-
-                                    Simply need to determine the largest/smallest from and to:
-
-                                    if adFrom > regFrom, countFrom = regFrom (reg hours are what we're subtracting from)
-                                    else countFrom = adminFrom
-                                    if adTo > regTo, countTo = regTo
-                                    else countTo = adTo
-
-
-                            Does the day the admin booking is on affect anything? Yes, the from or to
-
-                                Already excluded all "inbetween" days, e.g., 2 between 1 and 3 admin booking
-                                Now we have dates == to the admin to or from, or both
-
-                                if admin from day == date, count from admin from
-                                if admin to day == date, count from reg hour to admin to
-
-                                Are they definitely the same?
-
-                                if admin day == date, count from the inner-most
-                                
-
-
-                        */
+                    */
 
                     //Admin Booking on one day - take from the regular hours of that day
                     for(let rangeIndex in remainingTime) {
@@ -202,7 +173,7 @@ class MetaDataHelper {
                 }   
             }
             
-            //4. Time left?
+            //4 - Time left?
             if(this.isTimeLeft(remainingTime) == false) {
                 return false;
             } else {

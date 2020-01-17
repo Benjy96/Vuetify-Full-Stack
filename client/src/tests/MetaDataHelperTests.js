@@ -44,26 +44,26 @@ class MetaDataHelperTests {
             //Admin booking 2020-01-01 00:00 -> 2020-01-03 00:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-03", "00:00", false);
 
-            //Admin booking 2020-01-01 00:00 -> 2020-01-02 = FALSE
+            //Admin booking 2020-01-01 00:00 -> 2020-01-02 00:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-02", "00:00", false);
 
-            //Admin booking 2020-01-01 00:00 -> 2020-01-01 00:05 = TRUE
-            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-01", "00:05", true);
+            //Admin booking 2020-01-01 00:00 -> 2020-01-01 00:05 = FALSE
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-01", "00:05", false);
 
             //Admin booking 2020-01-01 00:00 -> 2020-01-01 14:00 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-01", "14:00", true);
 
             //Admin booking 2019-10-01 17:00 -> 2020-01-01 24:00 = FALSE
-            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:00", "2020-01-01", "24:00", false);
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:00", "2020-01-01", "24:00", false);
 
             //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:30 (Wednesday Regular Hours 09:00->17:00) = FALSE
-            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:30", "2020-01-01", "17:30", false);
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "17:30", false);
 
             //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:00, Wednesday Regular Hours 09:00->17:00 = FALSE
-            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:30", "2020-01-01", "17:00", false);
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "17:00", false);
 
             //Admin booking 2019-10-01 17:30 -> 2020-01-01 16:30, Wednesday Regular Hours 09:00->17:00 = TRUE
-            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:30", "2020-01-01", "16:30", true);
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "16:30", true);
         }
         catch(e)
         {
@@ -71,7 +71,7 @@ class MetaDataHelperTests {
             return;
         }
 
-        alert('All tests passed');
+        alert('All tests for a single admin booking passed');
     }
 }
 
