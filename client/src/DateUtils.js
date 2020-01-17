@@ -297,6 +297,14 @@ export class DateUtils {
         return times;
     }
 
+    static getLeftTimeFromRangeString(range) {
+        return range.split("-")[0];
+    }
+
+    static getRightTimeFromRangeString(range) {
+        return range.split("-")[1];
+    }
+
     /**
      * @param {String} range a String of format "00:00-17:00"
      */
@@ -347,7 +355,7 @@ export class DateUtils {
      * @param {String} range a String in the format "00:00-23:59".
      * 
      */
-    static timeWithinHourRange(hour, minute, range) {
+    static hourMinWithinHourRange(hour, minute, range) {
         let splitRange = range.split("-");
 
         let leftHour = parseInt(splitRange[0].split(":")[0]);   //00
@@ -355,6 +363,52 @@ export class DateUtils {
 
         let rightHour = parseInt(splitRange[1].split(":")[0]);  //23
         let rightMinute = parseInt(splitRange[1].split(":")[1]);
+
+        //Same hour - 00:00 -> 00:45 or 17:00 -> 17:45
+        if(hour == leftHour && hour == rightHour) {
+            if(minute >= leftMinute && minute <= rightMinute) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //No Reset - 17:00 -> 23:59
+        if(leftHour < rightHour) {
+            if(hour > leftHour && hour < rightHour) {
+                return true;
+            } else if(hour == leftHour) {
+                if(minute >= leftHour) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if(hour == rightHour) {
+                if(minute <= rightMinute) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+
+    /**
+     * 
+     * @param {String} range a String in the format "00:00-23:59".
+     * 
+     */
+    static timeWithinHourRange(time, range) {
+        let splitRange = range.split("-");
+
+        let leftHour = parseInt(splitRange[0].split(":")[0]);   //00
+        let leftMinute = parseInt(splitRange[0].split(":")[1]);
+
+        let rightHour = parseInt(splitRange[1].split(":")[0]);  //23
+        let rightMinute = parseInt(splitRange[1].split(":")[1]);
+
+        let hour = time.split(":")[0];
+        let minute = time.split(":")[1];
 
         //Same hour - 00:00 -> 00:45 or 17:00 -> 17:45
         if(hour == leftHour && hour == rightHour) {
