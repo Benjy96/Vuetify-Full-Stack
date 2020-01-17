@@ -3,13 +3,29 @@ import MetaDataHelper from '../services/MetaDataHelper';
 
 class MetaDataHelperTests {
 
-    static async setDbTestData(fromDate, fromTime, toDate, toTime) {
+    /**
+     * Test pack assumes the user:
+     * 
+     * - Has regular availability of 09:00-17:00
+     */
+    static async setup() {
+        db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability').doc('regular').set({
+            "Wednesday": [
+                {
+                    from: "09:00",
+                    to: "17:00"
+                }
+            ]
+        });
+    }
+
+    static async createAdminBooking(fromDate, fromTime, toDate, toTime) {
         await db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/bookings').doc('admin').set({
             admin_bookings: [
                 {
                     fromDate: fromDate,
-                    toDate: toDate,
                     fromTime: fromTime,
+                    toDate: toDate,
                     toTime: toTime
                 }
             ]
@@ -17,7 +33,7 @@ class MetaDataHelperTests {
     }
 
     static async testDateAvailabilityWithAdminBooking(date, fromDate, fromTime, toDate, toTime, expectedBoolean) {
-        await this.setDbTestData(fromDate, fromTime, toDate, toTime);
+        await this.createAdminBooking(fromDate, fromTime, toDate, toTime);
         let res = await MetaDataHelper.isDateAvailable("6c6qWcNvsOhBpF0CgUox4LsG2v62", date);
         if(res != expectedBoolean) {
             let errString = "FAIL: Got " + !expectedBoolean + " for " + date + " with admin booking: " +
@@ -36,6 +52,8 @@ class MetaDataHelperTests {
      * - Regular availability of 09:00 -> 17:00
      */
     static async runSingleAdminBookingTests() {
+        await this.setup();
+
         try
         {
             //Admin booking 2020-01-01 17:00 -> 2020-01-01 17:00 = TRUE
