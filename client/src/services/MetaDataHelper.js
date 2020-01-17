@@ -136,6 +136,10 @@ class MetaDataHelper {
                             //accessing the regular hour wrong.. its the left of the key i need                
                             let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
                             let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
+
+                            if(admin_bookings[i].toTime < countFrom){
+                                continue;
+                            }
     
                             if(admin_bookings[i].fromTime > countFrom && admin_bookings[i].fromTime <= countTo) {
                                 countFrom = admin_bookings[i].fromTime;
@@ -145,7 +149,7 @@ class MetaDataHelper {
                                 countTo = admin_bookings[i].toTime;
                             }
     
-                            //If admin doesn't intersect inside, it is outside, and ALL reg hours should be subtracted
+                            //If admin doesn't intersect inside, it is outside, and ALL reg hours should be subtracted                   
                             remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
                         //Admin from == date or Admin to == date
                         } else if(admin_bookings[i].toDate == date) {
