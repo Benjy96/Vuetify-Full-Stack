@@ -64,7 +64,7 @@ class MetaDataHelperTests {
             //Admin booking 2020-01-01 00:00 -> 2020-01-02 00:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-02", "00:00", false);
 
-            //Admin booking 2020-01-01 00:00 -> 2020-01-01 00:05 = FALSE
+            //Admin booking 2020-01-01 00:00 -> 2020-01-01 00:05 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-01", "00:05", true);
 
             //Admin booking 2020-01-01 00:00 -> 2020-01-01 14:00 = TRUE
