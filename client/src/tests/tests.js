@@ -16,9 +16,12 @@ Open browser on localhost:8080
 */
 
 import MetaDataHelperTests from './MetaDataHelperTests';
-MetaDataHelperTests.runSingleAdminBookingTests();
+// MetaDataHelperTests.runSingleAdminBookingTests();
+MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
 
-// Did the beneath tests by manually updating data in the firestore db
+
+///// ***** MANUAL TESTING ***** \\\\\
+
 // import MetaDataHelper from './services/MetaDataHelper';
 
 // try {

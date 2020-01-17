@@ -62,6 +62,8 @@ class MetaDataHelper {
         like an admin booking & customer booking?
 
         TODO: Move to back-end? Listener? Any time you add to booking or admin or regular hours collection?
+
+        TODO: Test with bookings
     */
    /** 
     * Checks regular hours & admin/customer bookings
@@ -76,14 +78,12 @@ class MetaDataHelper {
             let month = DateUtils.getMonthFromDate(date);
             let day = DateUtils.getDayFromDate(date);
 
-            //2 - Check bookings for day
+            //2 - Check bookings for day - TODO: Test
             let dayDoc = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
             let customer_bookings = [];
-            //TODO: TEST THIS - NO BOOKING FOR TESTED DATE
             if(dayDoc.exists) {
                 customer_bookings = dayDoc.data().customer_bookings;
-                for(let rangeIndex in remainingTime) {
-                    
+                for(let rangeIndex in remainingTime) {                  
                     for(var bookedRanges in customer_bookings) {
                         let bookingFromTime = customer_bookings[bookedRanges].from;
                         let bookingToTime = customer_bookings[bookedRanges].to;
@@ -100,6 +100,8 @@ class MetaDataHelper {
                     return false;
                 }
             }
+
+
             
             //3 - Check admin bookings for day
             let adminDoc = await db.collection(`/businesses/${uid}/bookings`).doc('admin').get();
