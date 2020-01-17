@@ -46,10 +46,9 @@ class MetaDataHelperTests {
     /**
      * Tests the "isDateAvailable" method against a set of admin bookings enclosing a single date ("2020-01-01")
      * 
-     * The test assumes the user has:
+     * This test assumes, in addition to the setup, that the user has:
      * 
-     * - No bookings
-     * - Regular availability of 09:00 -> 17:00
+     * - No bookings on 2020-01-01
      */
     static async runSingleAdminBookingTests() {
         await this.setup();
