@@ -16,8 +16,13 @@ Open browser on localhost:8080
 */
 
 import MetaDataHelperTests from './MetaDataHelperTests';
-MetaDataHelperTests.runSingleAdminBookingTests();
-MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
+
+async function testSuite() {
+    await MetaDataHelperTests.runSingleAdminBookingTests();
+    await MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
+}
+
+testSuite();
 
 
 ///// ***** MANUAL TESTING ***** \\\\\
