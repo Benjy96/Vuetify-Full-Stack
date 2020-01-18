@@ -162,6 +162,10 @@ export class DateUtils {
         return d.getFullYear().toString();
     }
 
+    static getCurrentDateString() {
+        return `${this.getCurrentYearString()}-${this.getCurrentMonthString()}-${this.getCurrentDayString()}`;
+    }
+
     /**
      * 
      * @param {*} nestedDateObj "year.month.day object"
