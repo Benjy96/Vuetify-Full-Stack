@@ -85,7 +85,8 @@ class OwnerService {
         }
     }
 
-    /** READ */
+    /* ----- READ ----- */
+
     static async getUpcomingBookings(uid, dayLimit) {
         let year = DateUtils.getCurrentYearString();
         let month = DateUtils.getCurrentMonthString();
@@ -128,16 +129,29 @@ class OwnerService {
         return bookings;
     }
 
-    /** READ */
     static async getAdminBookings(uid) {
         //Fetch from meta-data document.
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
         return snapshot.data()["admin_bookings"];
     }
 
-    /** DELETE/UPDATE - TODO: Meta-data */
+    /* ----- DELETE/UPDATE ------ */
+
     static cancelBooking() {
 
+    }
+
+    static async deleteAdminBooking(uid, adminBooking) {
+        let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
+        let admin_bookings = (await adminDocRef.get()).data().admin_bookings;
+
+        let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != JSON.stringify(adminBooking));
+
+        adminDocRef.update({
+            admin_bookings: newAdminBookingsArray
+        });
+
+        return newAdminBookingsArray;
     }
 }
 
