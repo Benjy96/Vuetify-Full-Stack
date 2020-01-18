@@ -13,6 +13,7 @@ class OwnerService {
         let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
 
         for(var i in affectedDates) {
+            alert('awaiting');
             let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
             if(!dateAvailable) {
                 MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
@@ -140,9 +141,43 @@ class OwnerService {
             admin_bookings: newAdminBookingsArray
         });
 
-        //TODO: Will the await inside updateMetaData slow things down? Single-threaded JS? What happens here?
         this.updateMetaData(uid, adminBooking);
 
+        /*
+
+        Answering question of will above async slow the program? Answer: No
+
+        Async works like this:
+
+        with this.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
+                awaiting
+                returning
+                awaiting
+                awaiting
+                awaiting
+
+        with await this.updateMetaData (which has an await inside):
+
+            awaiting
+            awaiting
+            awaiting
+            awaiting
+            returning
+
+
+            Async works like this:
+
+        - No Await: The parent waits for the child to go do something, but if the child waits for someone else, 
+            the parent leaves.
+        - With await: The parent waits for the child to go do something. If the child waits for someone else, 
+            the parent keeps waiting on the child. He won't leave until the person the child is waiting for is 
+            finished and then the child comes back to the parent.
+
+        That is, with no await, the parent will leave the child if the child waits for someone to finish in the toilet
+        They probably think their kid is too lenient and should've broken in. They have no patience. 
+
+        With an await, the parent realises we live in a society.
+        */
         return newAdminBookingsArray;
     }
 }
