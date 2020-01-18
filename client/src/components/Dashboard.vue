@@ -63,7 +63,7 @@
                                 <v-row class="red lighten-1">
                                     <!-- Day -->
                                     <v-col class="red lighten-2">
-                                        <v-list-item v-for="adminBooking in adminBookings" :key="'adminBooking' + adminBooking">
+                                        <v-list-item v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
                                             {{adminBooking}}
                                             <v-list-item-action>
                                                 <v-btn icon @click="deleteAdminBooking(adminBooking)">

@@ -25,6 +25,7 @@ class CalendarService {
 
     - Fix CalendarService.createBooking - add null checks
      */
+    //TODO: Remove the meta-data stuff as it's done in meta data helper
     static async createBooking(uid, year, month, day, from, to) {
         //1. Write to availability collection - TODO: Handle failures?
         let bookedDayDocRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);

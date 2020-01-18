@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import { db } from '../firebaseInit';
 import { DateUtils } from '../DateUtils';
 import { daysOfWeek } from '../DateUtils';
@@ -101,8 +102,6 @@ class MetaDataHelper {
                 }
             }
 
-
-            
             //3 - Check admin bookings for day
             let adminDoc = await db.collection(`/businesses/${uid}/bookings`).doc('admin').get();
             let admin_bookings = [];
@@ -187,6 +186,19 @@ class MetaDataHelper {
             }
         }
         return false;
+    }
+
+    static async markDateUnavailable(uid, date) {
+        alert(' in mark date unavailable ');
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
+
+        db.collection(`/businesses/${uid}/availability/${year}/month`).doc(`${month}`).update(
+            {
+                unavailableDays: firebase.firestore.FieldValue.arrayUnion(day)
+            }
+        );
     }
 }
 

@@ -78,8 +78,10 @@ class OwnerService {
         let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
 
         for(var i in affectedDates) {
-            if(!MetaDataHelper.isDateAvailable(affectedDates[i])) {
-                MetaDataHelper.markDateUnavailable(affectedDates[i]);
+            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
+            alert(dateAvailable);
+            if(!dateAvailable) {
+                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
             }
         }
     }
