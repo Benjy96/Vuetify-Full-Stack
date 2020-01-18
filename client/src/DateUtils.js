@@ -244,8 +244,10 @@ export class DateUtils {
     static getDayFromDate(date) {
         if(typeof date == 'string') {
             return date.substr(8, 2);
-        }else if(typeof date == 'number') {
+        } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
+        } else if (typeof date == 'object') {
+            return date.toISOString().split("-")[2].split("T")[0];
         }
     }
 
@@ -256,8 +258,10 @@ export class DateUtils {
     static getMonthFromDate(date) {
         if(typeof date == 'string') {
             return date.substr(5, 2);
-        }else if (typeof date == 'number') {
+        } else if (typeof date == 'number') {
             return date.toString().substr(5, 2);
+        } else if (typeof date == 'object') {
+            return date.toISOString().split("-")[1];
         }
     }
 
@@ -268,9 +272,19 @@ export class DateUtils {
     static getYearFromDate(date) {
         if(typeof date == 'string') {
             return date.substr(0, 4);
-        }else if (typeof date == 'number') {
+        } else if (typeof date == 'number') {
             return date.toString().substr(0, 4);
+        } else if (typeof date == 'object') {
+            return date.toISOString().split("-")[0];
         }
+    }
+
+    /**
+     * Converts a JavaScript Date object to YYYY-MM-DD
+     * @param {String} date 
+     */
+    static convertDateToYYYYMMDD(date) {
+        return `${this.getYearFromDate(date)}-${this.getMonthFromDate(date)}-${this.getDayFromDate(date)}`;
     }
 
     /**
@@ -585,5 +599,20 @@ export class DateUtils {
         } else {
             return false;
         }
+    }
+
+    /**
+     * @returns {String[]}
+     */
+    static getDatesBetweenInclusive(startDate, endDate) {
+        var dateList = [];
+        let currentDate = new Date(startDate);
+        endDate = new Date(endDate);
+
+        while(currentDate <= endDate) {
+            dateList.push(this.convertDateToYYYYMMDD(currentDate));
+            currentDate.setDate(currentDate.getDate() + 1);
+        }
+        return dateList;
     }
 }

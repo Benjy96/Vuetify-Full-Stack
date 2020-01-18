@@ -132,7 +132,7 @@ class MetaDataHelperTests {
         {
             //Admin booking 2020-01-01 17:00 -> 2020-01-01 17:00 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:00", "2020-01-01", "17:00", true);
-
+            alert('hi');
             //Admin booking 2020-01-01 00:00 -> 2020-01-03 00:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-03", "00:00", false);
 
@@ -167,4 +167,25 @@ class MetaDataHelperTests {
     }
 }
 
-export default MetaDataHelperTests;
+/** 
+
+To run these tests in the front-end, the setup is: npm install -g @vue/cli-service-global to
+install the ability to use "vue serve" to serve any file.
+
+If you type "vue", you will see in the list of commands:
+
+  serve [options] [entry]                    serve a .js or .vue file in development mode with zero config
+
+To run tests:
+
+cd client/src/tests
+vue serve tests.js
+Open browser on localhost:8080
+
+*/
+async function metaDataTestSuite() {
+    await MetaDataHelperTests.runSingleAdminBookingTests();
+    await MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
+}
+  
+metaDataTestSuite();
