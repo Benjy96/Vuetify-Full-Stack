@@ -11,31 +11,12 @@ class OwnerService {
         Read should check meta-data before EXPENSIVE operations. 
         Add/Create and Delete should check and modify meta-data after ANY operation.
 
-        TODO: Check each operation follows above guidelines.
-
-        ---- For metadata additions..... 
-
-        Could we have a generic function to handle add operations? If we're always adding a RANGE, possibly. 
-
-        -- How to check and mark days unavailable? --
-
-        For admin bookings:
-
-            1. Add every day clearly within range
-            2. If to a single day:
-                2.1. Check day
-                2.2. Mark day
-
-
     */
 
     /**
-     * CREATE - TODO: Meta-data
+     * Creates an admin booking, checks whether the day is still
+     * available, and then adds to the "unavailableDays" meta data for a month if it is not
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
-     * TODO: 
-     *  1. Get the days marked for admin booking
-     *  2. Check if day unavailable
-     *  3. Mark day unavailable
      */
     static async createAdminBooking(uid, adminBooking) {
 
