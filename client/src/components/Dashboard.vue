@@ -167,8 +167,9 @@ export default {
                 this.adminBookings = res;
             });
         },
-        createAdminBooking(eventData) {
-            OwnerService.createAdminBooking(this.id, eventData);
+        createAdminBooking(adminBooking) {
+            this.adminBookings.push(adminBooking);
+            OwnerService.createAdminBooking(this.id, adminBooking);
         },
         deleteAdminBooking(adminBooking) {
             OwnerService.deleteAdminBooking(this.id, adminBooking).then(res => {
