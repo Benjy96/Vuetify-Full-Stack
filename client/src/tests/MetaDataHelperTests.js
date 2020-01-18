@@ -3,6 +3,14 @@ import MetaDataHelper from '../services/MetaDataHelper';
 
 class MetaDataHelperTests {
 
+    static async clearUnavailableDays() {
+        db.collection(`/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability/2020/month`).doc('01').update(
+            {
+                unavailableDays: null
+            }
+        );
+    }
+
     static async clearCustomerBookings() {
         db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability/2020/month/01/days').doc('01').delete();
     }
@@ -73,10 +81,14 @@ class MetaDataHelperTests {
      */
     static async runSingleAdminBookingTestsWithCustomerBookings() {
         this.setCustomerBookings();
+        this.clearUnavailableDays();
         await this.setRegularHours();
 
         try
         {
+            //Admin booking 2020-01-01 17:00 -> 2020-01-01 17:00 = TRUE
+            await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "00:00", "2020-01-05", "00:00", false);
+
             //Admin booking 2020-01-01 17:00 -> 2020-01-01 17:00 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2020-01-01", "17:00", "2020-01-01", "17:00", true);
 
@@ -125,6 +137,7 @@ class MetaDataHelperTests {
      */
     static async runSingleAdminBookingTests() {
         this.clearCustomerBookings();
+        this.clearUnavailableDays();
         await this.setRegularHours();
 
         //For date 2020-01-01:
@@ -185,7 +198,7 @@ Open browser on localhost:8080
 */
 async function metaDataTestSuite() {
     await MetaDataHelperTests.runSingleAdminBookingTests();
-    await MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
+    //await MetaDataHelperTests.runSingleAdminBookingTestsWithCustomerBookings();
 }
   
 metaDataTestSuite();

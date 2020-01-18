@@ -63,13 +63,12 @@ class MetaDataHelper {
         like an admin booking & customer booking?
 
         TODO: Move to back-end? Listener? Any time you add to booking or admin or regular hours collection?
-
-        TODO: Test with bookings
     */
    /** 
     * Checks regular hours & admin/customer bookings
     * @returns {boolean}
     */
+   //TODO: Conduct manual admin booking testing - some days weren't getting added to unavailableDays (1st Jan Wed)
     static async isDateAvailable(uid, date) {
         //1 - Set remaining hours based on regular hours
         let remainingTime = await this.getRegularHoursWithTimeRemaining(uid, date);
@@ -79,7 +78,7 @@ class MetaDataHelper {
             let month = DateUtils.getMonthFromDate(date);
             let day = DateUtils.getDayFromDate(date);
 
-            //2 - Check bookings for day - TODO: Test
+            //2 - Check bookings for day
             let dayDoc = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
             let customer_bookings = [];
             if(dayDoc.exists) {
@@ -189,7 +188,6 @@ class MetaDataHelper {
     }
 
     static async markDateUnavailable(uid, date) {
-        alert(' in mark date unavailable ');
         let year = DateUtils.getYearFromDate(date);
         let month = DateUtils.getMonthFromDate(date);
         let day = DateUtils.getDayFromDate(date);

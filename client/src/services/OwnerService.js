@@ -79,7 +79,6 @@ class OwnerService {
 
         for(var i in affectedDates) {
             let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
-            alert(dateAvailable);
             if(!dateAvailable) {
                 MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
             }
