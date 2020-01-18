@@ -46,36 +46,41 @@ class OwnerService {
         let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
 
         if(fromYear == toYear){
-            db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
                 {
-                    [fromYear]: firebase.firestore.FieldValue.arrayUnion({
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
                         ...adminBooking
                     })
                 }
             );
-
-            MetaDataHelper.markDaysUnavailable();
         } else {
             db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
                 {
-                    [fromYear]: firebase.firestore.FieldValue.arrayUnion({
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
                         ...adminBooking
                     })
                 }
             );
 
-            db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
                 {
-                    [toYear]: firebase.firestore.FieldValue.arrayUnion({
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
                         ...adminBooking
                     })
                 }
             );
+        }
 
-            MetaDataHelper.markDaysUnavailable();
+        // Get affected dates for marking unavailable
+        let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
+
+        for(var i in affectedDates) {
+            if(!MetaDataHelper.isDateAvailable(affectedDates[i])) {
+                MetaDataHelper.markDateUnavailable(affectedDates[i]);
+            }
         }
     }
 
@@ -126,7 +131,7 @@ class OwnerService {
     static async getAdminBookings(uid) {
         //Fetch from meta-data document.
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
-        return snapshot.data()[DateUtils.getCurrentYearString()];
+        return snapshot.data()["admin_bookings"];
     }
 
     /** DELETE/UPDATE - TODO: Meta-data */
