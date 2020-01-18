@@ -229,8 +229,7 @@ export default {
           }
         }
       }
-
-      //TODO: Remove text property and have straight string value
+      
       let dayOfWeek = daysOfWeek[dateObject.weekday-1];
 
       //3. TODO: Check if in regular availability

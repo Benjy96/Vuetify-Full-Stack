@@ -9,13 +9,13 @@ export const daysOfWeekNumbered = [
 ];
 
 export const daysOfWeek = [
-    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday"
+    "Saturday",
+    "Sunday"
 ];
 
 export class DateUtils {

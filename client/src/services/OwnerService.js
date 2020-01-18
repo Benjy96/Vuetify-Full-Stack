@@ -26,8 +26,7 @@ class OwnerService {
         Read should check meta-data before EXPENSIVE operations. 
         Add/Create and Delete should check and modify meta-data after ANY operation.
 
-        TODO: After each Create or Update or Delete, run the meta data update methods
-
+        After each Create or Update or Delete, run the meta data update methods
     */
 
     /**
@@ -141,6 +140,7 @@ class OwnerService {
             admin_bookings: newAdminBookingsArray
         });
 
+        //TODO: Will the await inside updateMetaData slow things down? Single-threaded JS? What happens here?
         this.updateMetaData(uid, adminBooking);
 
         return newAdminBookingsArray;
