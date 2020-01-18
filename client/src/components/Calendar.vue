@@ -196,6 +196,10 @@ export default {
       this.refreshDayBookings(year, month, day);
     },
     dayAvailable(date) {
+      if(date < DateUtils.getCurrentDateString()) {
+        return false;
+      }
+
       //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
       if(this.unavailableDays != null) {
         if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, date)) {
@@ -207,6 +211,10 @@ export default {
       return true;
     },
     slotAvailable(dateObject) {
+      if(dateObject.date < DateUtils.getCurrentDateString()) {
+        return false;
+      }
+
       //1. Check if day unavailable
       if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, dateObject.date)){
         return false;

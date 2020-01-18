@@ -32,46 +32,19 @@ class OwnerService {
     /**
      * CREATE - TODO: Meta-data
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
+     * TODO: 
+     *  1. Get the days marked for admin booking
+     *  2. Check if day unavailable
+     *  3. Mark day unavailable
      */
     static async createAdminBooking(uid, adminBooking) {
 
         //1. Get from year, month, and day
         let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
-        // let fromMonth = DateUtils.getMonthFromDate(adminBooking.fromDate);
-        // let fromDay = DateUtils.getMonthFromDate(adminBooking.fromDate);
-        // let fromTime = adminBooking.fromTime;
 
         //2. Get to year, month, and day
         let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
-        // let toMonth = DateUtils.getMonthFromDate(adminBooking.toDate);
-        // let toDay = DateUtils.getMonthFromDate(adminBooking.toDate);
-        // let toTime = adminBooking.toTime;
 
-            //Better solution: Add to a top level collection and just delete the entries which are passed?
-
-            /*
-
-                bookings
-                    admin meta-data document:
-                        2020 [
-                                {
-                                fromDate
-                                fromTime
-                                toDate
-                                toTime
-                                overlapYear: true
-                            }
-                        ],
-                        2021 [
-                                {
-                                fromDate
-                                fromTime
-                                toDate
-                                toTime
-                            }
-                        ]
-
-            */
         if(fromYear == toYear){
             db.collection(`/businesses/${uid}/bookings/`).doc('admin')
             .update(
