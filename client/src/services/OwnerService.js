@@ -5,11 +5,28 @@ import MetaDataHelper from './MetaDataHelper';
 
 class OwnerService {
 
+    /**
+     * Checks if dates are unavailable and marks them as so
+     */
+    static async updateMetaData(uid, adminBooking) {
+        // Meta-data Get affected dates for marking unavailable
+        let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
+
+        for(var i in affectedDates) {
+            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
+            if(!dateAvailable) {
+                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
+            }
+        }
+    }
+
     /*
         Owner/Business PoV CRUD Operations.
 
         Read should check meta-data before EXPENSIVE operations. 
         Add/Create and Delete should check and modify meta-data after ANY operation.
+
+        TODO: After each Create or Update or Delete, run the meta data update methods
 
     */
 
@@ -55,15 +72,7 @@ class OwnerService {
             );
         }
 
-        // Get affected dates for marking unavailable
-        let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
-
-        for(var i in affectedDates) {
-            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
-            if(!dateAvailable) {
-                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
-            }
-        }
+        this.updateMetaData(uid, adminBooking);
     }
 
     /* ----- READ ----- */
@@ -131,6 +140,8 @@ class OwnerService {
         adminDocRef.update({
             admin_bookings: newAdminBookingsArray
         });
+
+        this.updateMetaData(uid, adminBooking);
 
         return newAdminBookingsArray;
     }
