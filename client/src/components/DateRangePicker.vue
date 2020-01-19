@@ -32,6 +32,39 @@
 
         <v-col>
             <v-dialog
+                ref="fromTimeDialog"
+                v-model="fromTimeDialogToggle"
+                :return-value.sync="fromTime"
+                persistent
+                width="290px">
+                <template v-slot:activator="{ on }">
+                <v-text-field
+                    v-model="fromTime"
+                    label="From time"
+                    readonly
+                    v-on="on"
+                ></v-text-field>
+                </template>
+                <v-time-picker
+                format="24hr"
+                v-if="fromTimeDialogToggle"
+                v-model="fromTime"
+                full-width
+                @click:minute="$refs.fromTimeDialog.save(fromTime)"
+                :max = "toTime"
+                >
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="fromTimeDialogToggle = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">OK</v-btn>
+                </v-time-picker>
+            </v-dialog>
+        </v-col>
+    </v-row>
+
+    <!-- Time Range -->
+    <v-row>
+        <v-col>
+            <v-dialog
             ref="toDateDialog"
             v-model="toDateDialogToggle"
             :return-value.sync="toDate"
@@ -55,38 +88,6 @@
                 </v-date-picker>
             </v-dialog>
         </v-col>
-    </v-row>
-
-    <!-- Time Range -->
-    <v-row>
-        <v-col>
-            <v-dialog
-                ref="fromTimeDialog"
-                v-model="fromTimeDialogToggle"
-                :return-value.sync="fromTime"
-                persistent
-                width="290px">
-                <template v-slot:activator="{ on }">
-                <v-text-field
-                    v-model="fromTime"
-                    label="From time"
-                    readonly
-                    v-on="on"
-                ></v-text-field>
-                </template>
-                <v-time-picker
-                v-if="fromTimeDialogToggle"
-                v-model="fromTime"
-                full-width
-                @click:minute="$refs.fromTimeDialog.save(fromTime)"
-                :max = "toTime"
-                >
-                <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="fromTimeDialogToggle = false">Cancel</v-btn>
-                <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">OK</v-btn>
-                </v-time-picker>
-            </v-dialog>
-        </v-col>
 
         <v-col>
             <v-dialog
@@ -105,6 +106,7 @@
                     </template>
 
                     <v-time-picker
+                    format="24hr"
                     v-if="toTimeDialogToggle"
                     v-model="toTime"
                     full-width
@@ -144,21 +146,31 @@
     methods: {
         add() {
             if(this.fromDate && this.toDate && this.fromTime && this.toTime){
+                //How to handle booking to the end of the day?
                 let adminBooking = {
                     fromDate: this.fromDate,
                     fromTime: this.fromTime,
                     toDate: this.toDate,
                     toTime: this.toTime
                 }; 
+
+                //TODO: Is this really needed? How to handle booking a whole day off?
+                //Better for user to just book to midnight/start of the following day?
+                if(adminBooking.fromDate == adminBooking.toDate && 
+                    adminBooking.fromTime == "00:00" && adminBooking.toTime == "00:00")
+                {
+                    adminBooking.toTime = "24:00";
+                }
+
                 this.$emit('saved-admin-booking', adminBooking);
             } 
         }
     },
     computed: {
         minFromTime() {
-            if(this.toDate == this.fromDate){
+            if(this.toDate == this.fromDate) {
                 return this.fromTime;
-            }else{
+            } else {
                 return "00:00";
             }
         }
