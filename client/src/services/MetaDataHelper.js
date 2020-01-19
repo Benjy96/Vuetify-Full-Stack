@@ -38,6 +38,7 @@ class MetaDataHelper {
 
     /**
      * @returns the amount of available time a user has on a date
+     * TODO: Fix - If regular hours not set returns not avialable
      */
     static async getRegularHoursWithTimeRemaining(uid, date) {
         let remainingTime = [];

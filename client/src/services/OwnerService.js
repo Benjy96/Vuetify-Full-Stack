@@ -8,9 +8,9 @@ class OwnerService {
     /**
      * Checks if dates are unavailable and marks them as so
      */
-    static async updateMetaData(uid, adminBooking) {
+    static async updateMetaData(uid, affectedFromDate, affectedToDate) {
         // Meta-data Get affected dates for marking unavailable
-        let affectedDates = DateUtils.getDatesBetweenInclusive(adminBooking.fromDate, adminBooking.toDate);
+        let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
         for(var i in affectedDates) {
             let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
@@ -71,7 +71,7 @@ class OwnerService {
             );
         }
 
-        this.updateMetaData(uid, adminBooking);
+        this.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
     }
 
     /* ----- READ ----- */
@@ -81,19 +81,13 @@ class OwnerService {
         let month = DateUtils.getCurrentMonthString();
         let day = DateUtils.getCurrentDayString();
 
-        let bookings = {
-            [year]: {
-                [month]: []
-            }
-        };
-
         let snapshot;
         try 
         {
             //limiting by a week
             dayLimit = DateUtils.getFutureDayString(dayLimit);
 
-            snapshot = await db.collection(`businesses/${uid}/bookings/${year}/month/${month}/days`)
+            snapshot = await db.collection(`businesses/${uid}/availability/${year}/month/${month}/days`)
             //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
             .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
             .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
@@ -107,14 +101,17 @@ class OwnerService {
         {
             alert(e.message);
         }
-        snapshot.forEach(doc => {
-            let dayObj = {
-                day: doc.id,
-                customer_bookings: doc.data()
-            }
 
-            bookings[year][month].push(dayObj);
+        let bookings = {
+            [year]: {
+                [month]: {}
+            }
+        };
+
+        snapshot.forEach(doc => {
+            bookings[year][month][doc.id] = doc.data().customer_bookings;
         });
+
         return bookings;
     }
 
@@ -126,21 +123,41 @@ class OwnerService {
 
     /* ----- DELETE/UPDATE ------ */
 
-    static cancelBooking() {
+    static async cancelBooking(uid, date, booking) {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
 
+        let docRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+
+        let data = (await docRef.get()).data().customer_bookings;
+
+        booking = JSON.stringify(booking);
+
+        let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
+
+        if(customer_bookings.length == 0) {
+            docRef.delete().then(this.updateMetaData(uid, date, date));
+        } else {
+            docRef.update({
+                customer_bookings: customer_bookings
+            }).then(this.updateMetaData(uid, date, date));
+        }
+
+        return customer_bookings;      
     }
 
     static async deleteAdminBooking(uid, adminBooking) {
         let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
         let admin_bookings = (await adminDocRef.get()).data().admin_bookings;
 
-        let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != JSON.stringify(adminBooking));
+        let adminBookingString = JSON.stringify(adminBooking);
+
+        let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != adminBookingString);
 
         adminDocRef.update({
             admin_bookings: newAdminBookingsArray
-        });
-
-        this.updateMetaData(uid, adminBooking);
+        }).then(this.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
 
         /*
 

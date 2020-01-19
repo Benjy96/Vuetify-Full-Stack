@@ -1,24 +1,19 @@
 <template>
     <v-container class="red lighten-1">
-        <v-row v-for="day in bookings[currentYear][currentMonth]" v-bind:key="'Day' + currentYear + currentMonth + day.day">
+        <v-row v-for="(bookingArray, dayKey) in bookings[currentYear][currentMonth]" v-bind:key="'Day' + currentYear + currentMonth + dayKey">
             <v-col>
                 <v-sheet>
-                    {{ day.day }}/{{ currentMonth }}/{{ currentYear }}
+                    {{ dayKey }}/{{ currentMonth }}/{{ currentYear }}
                     <!-- Content -->
                     <v-container>
-                    <v-row v-for="(booking, index) in day.customer_bookings" v-bind:key="'Bookings' + day.day + index">
+                    <v-row v-for="(booking, index2) in bookingArray" v-bind:key="'Booking' + index2">
                         <v-col>
-                            <v-row v-for="(fromTo, index2) in booking" :key="'Booking' + day.day + index2">
-                                <v-col>
-                                    text to go here
-                                </v-col>
-                                <v-col>
-                                    {{ fromTo.from }} - {{ fromTo. to }}
-                                </v-col>
-                                <v-col>
-                                    text to go here
-                                </v-col>
-                            </v-row>
+                            {{ booking.from }} - {{ booking.to }}
+                        </v-col>
+                        <v-col>
+                            <v-btn icon @click="cancelBooking(booking, currentYear, currentMonth, dayKey)">
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
                         </v-col>
                     </v-row>
                     </v-container>
@@ -42,16 +37,29 @@ export default {
             err: '',
             currentYear: null,
             currentMonth: null,
-            dayLimit: 7
+            dayLimit: 7,
+            uid: null
         }
     },
     created() {
         this.currentYear = DateUtils.getCurrentYearString();
         this.currentMonth = DateUtils.getCurrentMonthString();
+        this.uid = firebase.auth().currentUser.uid;
 
         OwnerService.getUpcomingBookings(firebase.auth().currentUser.uid, this.dayLimit).then((res) => {
             this.bookings = res;
         });
+    },
+    methods: {
+        cancelBooking(booking, year, month, day) {
+            OwnerService.cancelBooking(this.uid, `${year}-${month}-${day}`, booking).then(res => {
+                if(res.length == 0) {
+                    this.bookings[year][month] = null;
+                } else { 
+                    this.bookings[year][month][day] = res;
+                }
+            });
+        }
     }
 }
 </script>
