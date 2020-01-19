@@ -1,13 +1,76 @@
 <template>
     <div class="grey lighten-2">
-        <!-- v-bind:items because it tells Vue it's not a string -->
-        <v-form>
-            <v-select v-bind:items="days" label="Day" v-model="day"/>
-            <!-- v-text-field extends v-input: how do mixins work? -->
-            <v-text-field label="From" placeholder="09:00" v-model="from" :rules="dateRules"/>
-            <v-text-field label="To" placeholder="17:00" v-model="to" :rules="dateRules"/>
-            <v-btn @click="validate">Save</v-btn>
-        </v-form>
+    <v-form>
+        <v-row>
+            <v-col>
+                <v-select v-bind:items="days" label="Day" v-model="day"/>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-dialog
+                    ref="fromTimeDialog"
+                    v-model="fromTimeDialogToggle"
+                    :return-value.sync="fromTime"
+                    persistent
+                    width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model="fromTime"
+                            label="From time"
+                            readonly
+                            v-on="on"
+                        ></v-text-field>
+                    </template>
+                    <v-time-picker
+                    format="24hr"
+                    v-if="fromTimeDialogToggle"
+                    v-model="fromTime"
+                    full-width
+                    @click:minute="$refs.fromTimeDialog.save(fromTime)"
+                    :max = "toTime"
+                    >
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">Cancel</v-btn>
+                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">OK</v-btn>
+                    </v-time-picker>
+                </v-dialog>
+            </v-col>
+            <v-col>
+                <v-dialog
+                ref="toTimeDialog"
+                v-model="toTimeDialogToggle"
+                :return-value.sync="toTime"
+                persistent
+                width="290px">
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model="toTime"
+                            label="To time"
+                            readonly
+                            v-on="on"
+                        ></v-text-field>
+                    </template>
+
+                    <v-time-picker
+                    format="24hr"
+                    v-if="toTimeDialogToggle"
+                    v-model="toTime"
+                    full-width
+                    :min="minFromTime">
+                        <v-spacer></v-spacer>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">Cancel</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">OK</v-btn>
+                    </v-time-picker>
+                </v-dialog>
+            </v-col>
+        </v-row>
+        <v-row>
+            <v-col>
+                <v-btn @click="validate">Save</v-btn>
+            </v-col>
+        </v-row>
+    </v-form>
     </div>
 </template>
 
@@ -20,14 +83,11 @@ export default {
     props: ['id'],
     data() {
         return {
+            fromTime: null,
+            toTime: null,
+            fromTimeDialogToggle: false,
+            toTimeDialogToggle: false,
             day: 'Monday',
-            from: '09:00',
-            to: '17:00',
-            dateRules: [
-                v => !!v || 'A time is required!',
-                v => (v && v.length == 5 ) || 'Time must be in the 24:00 format',
-                v => /^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/.test(v) || 'Time must be in the 24:00 format'
-            ],
             days: daysOfWeek
         }
     },
@@ -46,22 +106,15 @@ export default {
                             1. Do not render clickable booking slot
         */
         validate() {
-            //TODO: Maybe a dropdown is better.....? (Although less control) 
-                //Any other date pickers? Get working for now in DB side though
-            if(this.from > this.to){
-                alert('From should be earlier than To!');
-            } else {
-                //Add to db...
-                db.collection(`businesses/${this.id}/availability/`).doc('regular')
-                    .update({
-                        [this.day]: firebase.firestore.FieldValue.arrayUnion({
-                            from: this.from,
-                            to: this.to
-                        })
+            db.collection(`businesses/${this.id}/availability/`).doc('regular')
+                .update({
+                    [this.day]: firebase.firestore.FieldValue.arrayUnion({
+                        from: this.fromTime,
+                        to: this.toTime
                     })
-                    .then(this.$emit('saved-time-range', this.day)
-                );
-            }
+                })
+                .then(this.$emit('saved-time-range', this.day)
+            );
         }
     }
 }
