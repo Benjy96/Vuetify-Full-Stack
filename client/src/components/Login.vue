@@ -8,12 +8,14 @@
                 required
                 v-bind:rules="emailRules"
                 label="email" prepend-icon="mdi-account-circle"
+                @keyup.enter="login"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
                 label="password" prepend-icon="mdi-lock" 
+                @keyup.enter="login"
                 />
             </v-form>
         </v-card-text>
