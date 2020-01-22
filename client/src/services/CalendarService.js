@@ -5,6 +5,21 @@ import MetaDataHelper from './MetaDataHelper';
 import { DateUtils } from '../DateUtils';
 
 class CalendarService {
+
+    static sendBookingEmail(recipientEmail, bookingDate, from, to) {
+        let docRef = db.collection('mail').doc();
+        docRef.set({
+            to: recipientEmail,
+            message: {
+                subject: 'Booking Confirmation',
+                html: `Hi there!
+                <br>This is a confirmation of your booking on ${bookingDate} from ${from}-${to}.
+                <br>Your booking confirmation code is: 
+                <blockquote>${docRef.id}</blockquote>
+                <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.`
+            }
+        });
+    }
     /*
         Day PoV CRUD Operations.
 
@@ -46,6 +61,9 @@ class CalendarService {
 
         let affectedDate = DateUtils.convertYearMonthDayToDate(year, month, day);
         MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
+
+        //3. Send an email
+        this.sendBookingEmail(email, affectedDate, from, to);
     }
 
     /** Cal-Day-DELETE */
