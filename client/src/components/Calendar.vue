@@ -204,7 +204,7 @@ export default {
         let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
         let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
 
-        await CalendarService.createBooking(this.id, year, month, day, from, to);
+        await CalendarService.createBooking(this.id, this.email, year, month, day, from, to);
 
         this.refreshDayBookings(year, month, day);
       }
