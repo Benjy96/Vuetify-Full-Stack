@@ -166,22 +166,6 @@ export class DateUtils {
         return `${this.getCurrentYearString()}-${this.getCurrentMonthString()}-${this.getCurrentDayString()}`;
     }
 
-    /**
-     * 
-     * @param {*} nestedDateObj "year.month.day object"
-     * @param {*} date "YYYY-MM-DD"
-     */
-    static nestedYearMonthDayExists(nestedDateObj, date) {
-        let year = DateUtils.getYearFromDate(date);
-        let month = DateUtils.getMonthFromDate(date);
-        let day = DateUtils.getDayFromDate(date);
-
-        if(nestedDateObj[year] && nestedDateObj[year][month] && day in nestedDateObj[year][month]){
-            return true;
-        }
-        return false;
-    }
-
     static formatMinuteToMM(minute) {
         if(typeof minute == 'number'){
             if(minute < 10){
