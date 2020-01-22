@@ -279,6 +279,10 @@ export class DateUtils {
         }
     }
 
+    static convertYearMonthDayToDate(year, month, day) {
+        return `${year}-${month}-${day}`;
+    }
+
     /**
      * Converts a JavaScript Date object to YYYY-MM-DD
      * @param {String} date 

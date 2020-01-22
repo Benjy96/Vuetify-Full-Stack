@@ -5,6 +5,21 @@ import { daysOfWeek } from '../DateUtils';
 
 class MetaDataHelper {
 
+    /**
+     * Checks if dates are unavailable and marks them as so
+     */
+    static async updateMetaData(uid, affectedFromDate, affectedToDate) {
+        // Meta-data Get affected dates for marking unavailable
+        let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
+
+        for(var i in affectedDates) {
+            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
+            if(!dateAvailable) {
+                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
+            }
+        }
+    }
+
     static isTimeLeft(remainingTime) {
         let y = 0;
         for(var x in remainingTime) {

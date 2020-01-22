@@ -5,21 +5,6 @@ import MetaDataHelper from './MetaDataHelper';
 
 class OwnerService {
 
-    /**
-     * Checks if dates are unavailable and marks them as so
-     */
-    static async updateMetaData(uid, affectedFromDate, affectedToDate) {
-        // Meta-data Get affected dates for marking unavailable
-        let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
-
-        for(var i in affectedDates) {
-            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
-            if(!dateAvailable) {
-                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
-            }
-        }
-    }
-
     /*
         Owner/Business PoV CRUD Operations.
 
@@ -71,7 +56,7 @@ class OwnerService {
             );
         }
 
-        this.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
+        MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
     }
 
     /* ----- READ ----- */
@@ -137,11 +122,11 @@ class OwnerService {
         let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
 
         if(customer_bookings.length == 0) {
-            docRef.delete().then(this.updateMetaData(uid, date, date));
+            docRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
         } else {
             docRef.update({
                 customer_bookings: customer_bookings
-            }).then(this.updateMetaData(uid, date, date));
+            }).then(MetaDataHelper.updateMetaData(uid, date, date));
         }
 
         return customer_bookings;      
@@ -157,7 +142,7 @@ class OwnerService {
 
         adminDocRef.update({
             admin_bookings: newAdminBookingsArray
-        }).then(this.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
+        }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
 
         /*
 
@@ -165,14 +150,14 @@ class OwnerService {
 
         Async works like this:
 
-        with this.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
+        with MetaDataHelper.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
                 awaiting
                 returning
                 awaiting
                 awaiting
                 awaiting
 
-        with await this.updateMetaData (which has an await inside):
+        with await MetaDataHelper.updateMetaData (which has an await inside):
 
             awaiting
             awaiting

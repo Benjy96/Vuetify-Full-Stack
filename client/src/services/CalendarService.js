@@ -1,6 +1,8 @@
 
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
+import MetaDataHelper from './MetaDataHelper';
+import { DateUtils } from '../DateUtils';
 
 class CalendarService {
     /*
@@ -41,19 +43,9 @@ class CalendarService {
             }, 
             {merge: true}
         );
-    }
 
-    /** Cal-Day-READ */
-    static async getBookings(uid, year, month, day) {
-        //Read from availability collection
-        let bookingsRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
-        let customer_bookings = [];
-        if(bookingsRef.exists) {
-            customer_bookings = bookingsRef.data().customer_bookings;
-            return customer_bookings;
-        } else {
-            return null;
-        }
+        let affectedDate = DateUtils.convertYearMonthDayToDate(year, month, day);
+        MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
     }
 
     /** Cal-Day-DELETE */
@@ -62,7 +54,7 @@ class CalendarService {
     }
 
     /* 
-        Month PoV CRUD Operations.
+        Month PoV READ Operations.
     */
 
     //TODO: IF we stored this on back-end could have a listener and only need to actually query meta data when metadata changes
@@ -86,8 +78,22 @@ class CalendarService {
     }
 
     /*
-        Month / Day PoV CRUD Operations
+        Month / Day PoV READ Operations
     */
+
+    /** Cal-Day-READ */
+    static async getBookings(uid, year, month, day) {
+        //Read from availability collection
+        let bookingsRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
+        let customer_bookings = [];
+        if(bookingsRef.exists) {
+            customer_bookings = bookingsRef.data().customer_bookings;
+            return customer_bookings;
+        } else {
+            return null;
+        }
+    }
+
     static async getAdminBookings(uid, year, month) {
         let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
         let admin_bookings = [];
@@ -95,7 +101,6 @@ class CalendarService {
             admin_bookings = metaDataDocRef.data().admin_bookings;
             return admin_bookings;
         } else {
-            //TODO: Check traversy apps - waht does he do when null? exception? message?
             return null;
         }
     }
