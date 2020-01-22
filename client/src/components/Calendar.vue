@@ -229,7 +229,7 @@ export default {
         return false;
       }
 
-      let dayOfMonth = DateUtils.getDayFromDate(currentDate);
+      let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
 
       for(let i in this.unavailableDays) {
         if(this.unavailableDays[i] == dayOfMonth) {
@@ -248,7 +248,7 @@ export default {
       
       let dayOfWeek = daysOfWeek[dateObject.weekday-1];
 
-      //3. TODO: Check if in regular availability
+      //3. Check if in regular availability
       if(dayOfWeek in this.regular_availability) {
         //3.1. For each regular hour range of the day
         for(let i in this.regular_availability[dayOfWeek]) {
