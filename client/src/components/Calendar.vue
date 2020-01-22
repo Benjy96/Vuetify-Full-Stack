@@ -130,7 +130,7 @@ export default {
   created () {
     //Month Viewed Upon Load
     //1. Check unavailable days meta-data
-    this.getUnavailableDays(); //TODO: What if you click next? The unavailable_days obj on user cal should be multidimensional.
+    this.getUnavailableDays();
     this.getRegularAvailability();
   },
   computed: {
@@ -214,27 +214,29 @@ export default {
         return false;
       }
 
-      //TODO: Don't just check the date object, but the year/month key being null (for when we next/prev)
       if(this.unavailableDays != null) {
-        if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, date)) {
-          return false;
-        } else {
-          return true;
+        for(var i in this.unavailableDays) {
+          if(this.unavailableDays[i] == date) {
+            return false;
+          }
         }
       }
       return true;
     },
     slotAvailable(dateObject) {
-      if(dateObject.date < DateUtils.getCurrentDateString()) {
+      let currentDate = DateUtils.getCurrentDateString();
+      if(dateObject.date < currentDate) {
         return false;
       }
 
-      //1. Check if day unavailable
-      if(DateUtils.nestedYearMonthDayExists(this.unavailableDays, dateObject.date)){
-        return false;
+      let dayOfMonth = DateUtils.getDayFromDate(currentDate);
+
+      for(let i in this.unavailableDays) {
+        if(this.unavailableDays[i] == dayOfMonth) {
+          return false; //TODO: Can we skip rest of slot checks? Maybe through ref methods? Check Calendar component
+        }
       }
 
-      //2. Check if already booked
       if(this.customer_bookings != null) {
         for(var x = 0; x < this.customer_bookings.length; x++) {
           //TODO: Could we not iterate thorugh this for every hour? Perhaps every hour just access a key?
@@ -249,7 +251,7 @@ export default {
       //3. TODO: Check if in regular availability
       if(dayOfWeek in this.regular_availability) {
         //3.1. For each regular hour range of the day
-        for(var i in this.regular_availability[dayOfWeek]) {
+        for(let i in this.regular_availability[dayOfWeek]) {
           //3.2. if current time in range, return false
           if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
             this.regular_availability[dayOfWeek][i]))

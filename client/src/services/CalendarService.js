@@ -14,7 +14,7 @@ class CalendarService {
         TODO: Check each operation follows above guidelines.
     */
 
-    /** Cal-Day-CREATE 
+    /**
      * 
      * TODO: Make into a transaction for error handling:
      * https://firebase.google.com/docs/firestore/manage-data/transactions
@@ -66,22 +66,13 @@ class CalendarService {
             unavailableDays = metaDataDocRef.data().unavailableDays;
         }
 
-        let dateObj = {
-            [year]: {
-                [month]: {
-                    ...unavailableDays
-                }
-            }
-        }
-
-        return dateObj;
+        return unavailableDays;
     }
 
     /*
-        Month / Day PoV READ Operations
+        Month & Day PoV READ Operations
     */
 
-    /** Cal-Day-READ */
     static async getBookings(uid, year, month, day) {
         //Read from availability collection
         let bookingsRef = await db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`).get();
