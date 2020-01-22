@@ -43,9 +43,14 @@
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
           <v-container>
-            <v-form @submit.prevent="addBooking">
+            <v-form @submit.prevent="addBooking" ref="form">
               <p>Book an appointment</p>
-              <v-btn type="submit" color="primary" @click.stop="dialog = false">
+                <v-text-field v-model="email"
+                required
+                v-bind:rules="emailRules"
+                label="email" prepend-icon="mdi-account-circle"
+                />
+              <v-btn type="submit" color="primary">
                 Book
               </v-btn>
             </v-form>
@@ -115,7 +120,12 @@ export default {
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
-    defaultSlotInterval: 60
+    defaultSlotInterval: 60,
+    email: '',
+    emailRules: [
+                v => !!v || 'E-mail is required',
+                v => /.+@.+/.test(v) || 'E-mail must be valid',
+            ]
   }),
   created () {
     //Month Viewed Upon Load
@@ -184,16 +194,20 @@ export default {
     //   //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
     // },
     async addBooking() {
-      let year = DateUtils.getYearFromDate(this.addBookingDateObject.date);
-      let month = DateUtils.getMonthFromDate(this.addBookingDateObject.date);
-      let day = DateUtils.getDayFromDate(this.addBookingDateObject.date);
+      if(this.$refs.form.validate()) {
+        this.dialog = false;
 
-      let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
-      let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
+        let year = DateUtils.getYearFromDate(this.addBookingDateObject.date);
+        let month = DateUtils.getMonthFromDate(this.addBookingDateObject.date);
+        let day = DateUtils.getDayFromDate(this.addBookingDateObject.date);
 
-      await CalendarService.createBooking(this.id, year, month, day, from, to);
+        let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
+        let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
 
-      this.refreshDayBookings(year, month, day);
+        await CalendarService.createBooking(this.id, year, month, day, from, to);
+
+        this.refreshDayBookings(year, month, day);
+      }
     },
     dayAvailable(date) {
       if(date < DateUtils.getCurrentDateString()) {
