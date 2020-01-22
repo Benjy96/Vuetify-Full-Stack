@@ -19,7 +19,7 @@ class CalendarService {
      * 
     */
     static async createBooking(uid, email, year, month, day, from, to) {
-        //1. Write to availability collection - TODO: Handle failures?
+        //1. Write to availability collection
         let bookedDayDocRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
         bookedDayDocRef.set({
             "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
@@ -34,6 +34,7 @@ class CalendarService {
         db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
         .set({
             "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
+                    "email": email,
                     "from": from,
                     "to": to
                 })
