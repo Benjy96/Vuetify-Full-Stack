@@ -6,6 +6,9 @@ import { DateUtils } from '../DateUtils';
 
 class CalendarService {
 
+    //TODO: Move to backend - either call from service or add a listener to booking collection
+    //TODO: Add HTML template with CSS - Sendgrid has demos - figure out how to read in a html file into the JS
+        //perhaps this? https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback
     static sendBookingEmail(recipientEmail, bookingDate, from, to) {
         let docRef = db.collection('mail').doc();
         docRef.set({
