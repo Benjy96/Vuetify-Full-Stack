@@ -9,9 +9,15 @@ class CalendarService {
     //TODO: Move to backend - either call from service or add a listener to booking collection
     //TODO: Add HTML template with CSS - Sendgrid has demos - figure out how to read in a html file into the JS
         //perhaps this? https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback
-    static sendBookingEmail(recipientEmail, bookingDate, from, to) {
+    static sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
         let docRef = db.collection('mail').doc();
         docRef.set({
+            bookingInfo: {
+                date: bookingDate,
+                from: from,
+                to: to,
+                uid: businessId
+            },
             to: recipientEmail,
             message: {
                 subject: 'Booking Confirmation',
@@ -66,12 +72,42 @@ class CalendarService {
         MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
 
         //3. Send an email
-        this.sendBookingEmail(email, affectedDate, from, to);
+        this.sendBookingEmail(email, uid, affectedDate, from, to);
     }
 
-    /** Cal-Day-DELETE */
-    static async cancelBooking() {
+    /**
+     * DELETE
+     * @param {String} bookingReference The id of the document in firebase
+     * TODO: deletes from one booking collection only currently - what about other?
+     */
+    static async cancelBooking(bookingReference) {
+        let mailDoc = await db.collection('mail').doc(bookingReference).get();
+        if(mailDoc.exists) {
+            let data = mailDoc.data();
 
+            let uid = data.bookingInfo.uid;
+            let date = data.bookingInfo.date;
+            let year = DateUtils.getYearFromDate(date);
+            let month = DateUtils.getMonthFromDate(date);
+            let day = DateUtils.getDayFromDate(date);
+            let bookingFrom = data.bookingInfo.from;
+            let bookingTo = data.bookingInfo.to;
+
+            let bookingRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+            let customer_bookings = (await bookingRef.get()).data().customer_bookings;
+
+            customer_bookings = customer_bookings.filter(item => (item.from != bookingFrom) && (item.to != bookingTo));
+
+            alert(JSON.stringify(customer_bookings));
+
+            if(customer_bookings.length == 0) {
+                bookingRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
+            } else {
+                bookingRef.update({
+                    customer_bookings: customer_bookings
+                }).then(MetaDataHelper.updateMetaData(uid, date, date));
+            }
+        }
     }
 
     /* 
