@@ -3,6 +3,7 @@ import { db } from '../firebaseInit';
 import { DateUtils } from '../DateUtils';
 import { daysOfWeek } from '../DateUtils';
 
+//TODO: Move update calls to back-end
 class MetaDataHelper {
 
     /**
