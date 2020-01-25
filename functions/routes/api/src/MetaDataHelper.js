@@ -6,12 +6,9 @@ const { daysOfWeek } = require('./DateUtils');
 
 class MetaDataHelper {
 
-    static test() {
-        console.log('hi');
-    }
-
     /**
      * Checks if dates are unavailable and marks them as so
+     * TODO: listener, instead? safer? means you don't have to remember to call it
      */
     static async updateMetaData(uid, affectedFromDate, affectedToDate) {
         // Meta-data Get affected dates for marking unavailable

@@ -49,7 +49,7 @@
 
 <script>
 import firebase from 'firebase'
-import CalendarService from './services/CalendarService';
+import CustomerService from './services/CustomerService';
 
 export default {
   created() {
@@ -85,7 +85,7 @@ export default {
         this.cancelDialog = false;
         this.cancelConfirmationDialog = true;
 
-        CalendarService.cancelBooking(this.bookingReference);
+        CustomerService.cancelBooking(this.bookingReference);
       }
     }
   },

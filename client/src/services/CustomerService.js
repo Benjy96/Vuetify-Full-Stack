@@ -8,10 +8,9 @@ import { DateUtils } from '../DateUtils';
 import axios from "axios";
 
 //using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
-const apiURL = 'api/bookings/';
+const apiURL = 'api/customer/';
 
-
-class CalendarService {
+class CustomerService {
 
     //TODO: Move to backend - either call from service or add a listener to booking collection
     //TODO: Add HTML template with CSS - Sendgrid has demos - figure out how to read in a html file into the JS
@@ -149,4 +148,4 @@ class CalendarService {
     }
 }
 
-export default CalendarService;
+export default CustomerService;

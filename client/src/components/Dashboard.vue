@@ -106,7 +106,7 @@ import firebase from 'firebase';
 import Bookings from './Bookings';
 import TimeRangePicker from './TimeRangePicker';
 import DateRangePicker from './DateRangePicker';
-import OwnerService from '../services/OwnerService';
+import BusinessService from '../services/BusinessService';
 
 export default {
     name: 'Dashboard',
@@ -163,16 +163,16 @@ export default {
             });
         },
         getAdminBookings() {
-            OwnerService.getAdminBookings(this.id).then(res => {
+            BusinessService.getAdminBookings(this.id).then(res => {
                 this.adminBookings = res;
             });
         },
         createAdminBooking(adminBooking) {
             this.adminBookings.push(adminBooking);
-            OwnerService.createAdminBooking(this.id, adminBooking);
+            BusinessService.createAdminBooking(this.id, adminBooking);
         },
         deleteAdminBooking(adminBooking) {
-            OwnerService.deleteAdminBooking(this.id, adminBooking).then(res => {
+            BusinessService.deleteAdminBooking(this.id, adminBooking).then(res => {
                 this.adminBookings = res;
             });
         }

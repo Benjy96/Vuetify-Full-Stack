@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import CalendarService from '../services/CalendarService';
+import CustomerService from '../services/CustomerService';
 import { DateUtils } from '../DateUtils';
 import { daysOfWeek } from '../DateUtils';
 
@@ -167,22 +167,22 @@ export default {
   },
   methods: {
     async getRegularAvailability() {
-      CalendarService.getRegularAvailability(this.id).then(res => {
+      CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
       });
     },
     async getUnavailableDays() {
-      this.unavailableDays = await CalendarService.getUnavailableDays(this.id, 
+      this.unavailableDays = await CustomerService.getUnavailableDays(this.id, 
         DateUtils.getYearFromDate(this.today),
         DateUtils.getMonthFromDate(this.today)
       );
     },
     //TODO: Move to back-end / add extra checks - like meta-data first, perhaps?
     async refreshDayBookings(year, month, day) {
-      this.customer_bookings = await CalendarService.getBookings(this.id, year, month, day);
+      this.customer_bookings = await CustomerService.getBookings(this.id, year, month, day);
     },
     async getDayBookings({ date }) {
-      this.customer_bookings = await CalendarService.getBookings(this.id, 
+      this.customer_bookings = await CustomerService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
         DateUtils.getMonthFromDate(date),
         DateUtils.getDayFromDate(date)
@@ -204,7 +204,7 @@ export default {
         let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
         let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
 
-        await CalendarService.createBooking(this.id, this.email, year, month, day, from, to);
+        await CustomerService.createBooking(this.id, this.email, year, month, day, from, to);
 
         this.refreshDayBookings(year, month, day);
       }

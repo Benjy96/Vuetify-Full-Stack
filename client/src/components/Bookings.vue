@@ -26,7 +26,7 @@
 <script>
 import firebase from 'firebase';
 
-import OwnerService from '../services/OwnerService';
+import BusinessService from '../services/BusinessService';
 import { DateUtils } from '../DateUtils';
 
 export default {
@@ -46,13 +46,13 @@ export default {
         this.currentMonth = DateUtils.getCurrentMonthString();
         this.uid = firebase.auth().currentUser.uid;
 
-        OwnerService.getUpcomingBookings(firebase.auth().currentUser.uid, this.dayLimit).then((res) => {
+        BusinessService.getUpcomingBookings(firebase.auth().currentUser.uid, this.dayLimit).then((res) => {
             this.bookings = res;
         });
     },
     methods: {
         cancelBooking(booking, year, month, day) {
-            OwnerService.cancelBooking(this.uid, `${year}-${month}-${day}`, booking).then(res => {
+            BusinessService.cancelBooking(this.uid, `${year}-${month}-${day}`, booking).then(res => {
                 if(res.length == 0) {
                     this.bookings[year][month] = null;
                 } else { 

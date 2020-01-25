@@ -50,8 +50,9 @@ router.get('/', async (req, res) => {
     res.status(200).send(convertedDate);
 });
 
-/**
- * Cancel a booking
+/** NOTE: there are two collections with bookings. Deletes from availability but bookings still exists.
+ * Cancel a booking - finds booking based on uid and date info referenced by an email sent to the customer
+ * 
  * TODO: deletes from one booking collection only currently - what about other?
  * 
  * Security: Because the delete request can only come from the server, it will only do what's in this function. 
@@ -70,9 +71,9 @@ router.post('/', async(req, res) => {
         let bookingFrom = mailData.bookingInfo.from;
         let bookingTo = mailData.bookingInfo.to;
 
-        let bookingRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+        let dayOfBookingsRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
 
-        let bookingData = (await bookingRef.get()).data();
+        let bookingData = (await dayOfBookingsRef.get()).data();
 
         if(bookingData != undefined) {
             var customer_bookings = bookingData.customer_bookings;
@@ -80,9 +81,9 @@ router.post('/', async(req, res) => {
             customer_bookings = customer_bookings.filter(item => (item.from != bookingFrom) && (item.to != bookingTo));
 
             if(customer_bookings.length == 0) {
-                bookingRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
+                dayOfBookingsRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
             } else {
-                bookingRef.update({
+                dayOfBookingsRef.update({
                     customer_bookings: customer_bookings
                 }).then(MetaDataHelper.updateMetaData(uid, date, date));
             }

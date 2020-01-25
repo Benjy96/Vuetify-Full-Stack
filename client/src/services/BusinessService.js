@@ -1,52 +1,192 @@
+import firebase from 'firebase';
+import { db } from '../firebaseInit';
+import { DateUtils } from '../DateUtils';
+import MetaDataHelper from './MetaDataHelper';
+
+// HTTP Utils
 import axios from "axios";
 
 //using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
-const apiURL = 'api/businesses/';
+const apiURL = 'api/business/';
 
-//Front end HTTP request utility
-/*
-
-NOTE: There is a front-end and back-end SDK for Firestore. You COULD access firebase directly from
-the client. However, you need an API/Server for when you are using PRIVATE KEYS, like with StripebundleRenderer.renderToStream
-
-The beneath functions could be done purely in the front-end and would LIKELY have better performance as fewer
-requests. I.e.,: 
-
-    Front-end click -> Firestore -> Front-end,
-    vs:
-    Front-end click -> Back-end -> Firestore -> Back-end -> Front-end
-
-*/
 class BusinessService {
 
-    static getBusinesses() {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const res = await axios.get(apiURL);    //adds onto end of your server
-                const data = res.data;
-                resolve(
-                    //map is a high order function (takes a function or returns a function)
-                    data.map(business => ({
-                        ...business    //spread operator - splits item into its attributes
-                    }))
-                );
-            } catch(err) {
-                reject(err);
+    /*
+        Owner/Business PoV CRUD Operations.
+
+        Read should check meta-data before EXPENSIVE operations. 
+        Add/Create and Delete should check and modify meta-data after ANY operation.
+
+        After each Create or Update or Delete, run the meta data update methods
+    */
+
+    /**
+     * Creates an admin booking, checks whether the day is still
+     * available, and then adds to the "unavailableDays" meta data for a month if it is not
+     * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
+     */
+    static async createAdminBooking(uid, adminBooking) {
+
+        //1. Get from year, month, and day
+        let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
+
+        //2. Get to year, month, and day
+        let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
+
+        if(fromYear == toYear){
+            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+            .update(
+                {
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
+                        ...adminBooking
+                    })
+                }
+            );
+        } else {
+            db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+            .update(
+                {
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
+                        ...adminBooking
+                    })
+                }
+            );
+
+            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+            .update(
+                {
+                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
+                        ...adminBooking
+                    })
+                }
+            );
+        }
+
+        MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
+    }
+
+    /* ----- READ ----- */
+
+    static async getUpcomingBookings(uid, dayLimit) {
+        let year = DateUtils.getCurrentYearString();
+        let month = DateUtils.getCurrentMonthString();
+        let day = DateUtils.getCurrentDayString();
+
+        let snapshot;
+        try 
+        {
+            //limiting by a week
+            dayLimit = DateUtils.getFutureDayString(dayLimit);
+
+            snapshot = await db.collection(`businesses/${uid}/availability/${year}/month/${month}/days`)
+            //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
+            .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
+            .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
+            .get();
+
+            //TODO: How to return future hours?
+            //If doing multiple days in future it won't work!!
+                //Would work for single day: where day == day && from > currentTime
+        } 
+        catch(e) 
+        {
+            alert(e.message);
+        }
+
+        let bookings = {
+            [year]: {
+                [month]: {}
             }
+        };
+
+        snapshot.forEach(doc => {
+            bookings[year][month][doc.id] = doc.data().customer_bookings;
         });
+
+        return bookings;
     }
 
-/*     static insertBusiness(text) {
-        return axios.post(apiURL, {
-            text,
-            createdAt: new Date()
-        });
+    static async getAdminBookings(uid) {
+        //Fetch from meta-data document.
+        let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
+        return snapshot.data()["admin_bookings"];
     }
 
-    static deleteBusiness(id) {
-        axios.delete(`${apiURL}${id}`)
-    } */
+    /* ----- DELETE/UPDATE ------ */
+
+    static async cancelBooking(uid, date, booking) {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
+
+        let docRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+
+        let data = (await docRef.get()).data().customer_bookings;
+
+        booking = JSON.stringify(booking);
+
+        let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
+
+        if(customer_bookings.length == 0) {
+            docRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
+        } else {
+            docRef.update({
+                customer_bookings: customer_bookings
+            }).then(MetaDataHelper.updateMetaData(uid, date, date));
+        }
+
+        return customer_bookings;      
+    }
+
+    static async deleteAdminBooking(uid, adminBooking) {
+        let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
+        let admin_bookings = (await adminDocRef.get()).data().admin_bookings;
+
+        let adminBookingString = JSON.stringify(adminBooking);
+
+        let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != adminBookingString);
+
+        adminDocRef.update({
+            admin_bookings: newAdminBookingsArray
+        }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
+
+        /*
+
+        Answering question of will above async slow the program? Answer: No
+
+        Async works like this:
+
+        with MetaDataHelper.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
+                awaiting
+                returning
+                awaiting
+                awaiting
+                awaiting
+
+        with await MetaDataHelper.updateMetaData (which has an await inside):
+
+            awaiting
+            awaiting
+            awaiting
+            awaiting
+            returning
+
+
+            Async works like this:
+
+        - No Await: The parent waits for the child to go do something, but if the child waits for someone else, 
+            the parent leaves.
+        - With await: The parent waits for the child to go do something. If the child waits for someone else, 
+            the parent keeps waiting on the child. He won't leave until the person the child is waiting for is 
+            finished and then the child comes back to the parent.
+
+        That is, with no await, the parent will leave the child if the child waits for someone to finish in the toilet
+        They probably think their kid is too lenient and should've broken in. They have no patience. 
+
+        With an await, the parent realises we live in a society.
+        */
+        return newAdminBookingsArray;
+    }
 }
 
-//default export can be imported as any name in another file
 export default BusinessService;
