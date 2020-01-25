@@ -5,8 +5,6 @@ const db = require('../../firebaseDB');
 //Router object from express
 const router = express.Router();
 
-// routed from: /api/posts/
-
 /*
 
 Where I went wrong in understanding the firestore shit - I wasn't checking the TYPEs returned by each method,

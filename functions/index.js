@@ -17,12 +17,10 @@ app.use(cors());  //Enable ALL CORS requests
 //get the exported routers
 const businessesRouter = require('./routes/api/businessesRouter');
 const bookingsRouter = require('./routes/api/bookingsRouter');
-const resourcesRouter = require('./routes/api/resourcesRouter');
 
 //use([path], [callback...]) mounts a middleware FUNCTION(s) at the specified path
 app.use('/api/businesses', businessesRouter); //sends all requests to /api/posts/* to the postsRouter
 app.use('/api/bookings', bookingsRouter);
-app.use('/api/resources', resourcesRouter);
 
 // express.static is a built-in middleware function in Express. 
 // Define where to serve static files from. public is our static asset folder on prod.
