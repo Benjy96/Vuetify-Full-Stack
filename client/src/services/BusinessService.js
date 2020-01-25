@@ -20,7 +20,8 @@ class BusinessService {
         After each Create or Update or Delete, run the meta data update methods
     */
 
-    /**
+    /** This can safely be done from the client (updates/creates to business) as it's authenticated
+     * 
      * Creates an admin booking, checks whether the day is still
      * available, and then adds to the "unavailableDays" meta data for a month if it is not
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
@@ -113,79 +114,55 @@ class BusinessService {
     }
 
     /* ----- DELETE/UPDATE ------ */
-
     static async cancelBooking(uid, date, booking) {
-        let year = DateUtils.getYearFromDate(date);
-        let month = DateUtils.getMonthFromDate(date);
-        let day = DateUtils.getDayFromDate(date);
+        let customer_bookings = await axios.post(`${apiURL}/cancel`, {
+            uid,
+            date,
+            booking
+        });
 
-        let docRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
-
-        let data = (await docRef.get()).data().customer_bookings;
-
-        booking = JSON.stringify(booking);
-
-        let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
-
-        if(customer_bookings.length == 0) {
-            docRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
-        } else {
-            docRef.update({
-                customer_bookings: customer_bookings
-            }).then(MetaDataHelper.updateMetaData(uid, date, date));
-        }
-
-        return customer_bookings;      
+        return customer_bookings;
     }
 
     static async deleteAdminBooking(uid, adminBooking) {
-        let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
-        let admin_bookings = (await adminDocRef.get()).data().admin_bookings;
-
-        let adminBookingString = JSON.stringify(adminBooking);
-
-        let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != adminBookingString);
-
-        adminDocRef.update({
-            admin_bookings: newAdminBookingsArray
-        }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
-
         /*
 
-        Answering question of will above async slow the program? Answer: No
+            Answering question of will above async slow the program? Answer: No
 
-        Async works like this:
+            Async works like this:
 
-        with MetaDataHelper.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
+            with MetaDataHelper.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
                 awaiting
                 returning
                 awaiting
                 awaiting
                 awaiting
 
-        with await MetaDataHelper.updateMetaData (which has an await inside):
+            with await MetaDataHelper.updateMetaData (which has an await inside):
 
-            awaiting
-            awaiting
-            awaiting
-            awaiting
-            returning
+                awaiting
+                awaiting
+                awaiting
+                awaiting
+                returning
 
 
-            Async works like this:
+                Async works like this:
 
-        - No Await: The parent waits for the child to go do something, but if the child waits for someone else, 
-            the parent leaves.
-        - With await: The parent waits for the child to go do something. If the child waits for someone else, 
-            the parent keeps waiting on the child. He won't leave until the person the child is waiting for is 
-            finished and then the child comes back to the parent.
+            - No Await: The parent waits for the child to go do something, but if the child waits for someone else, 
+                the parent leaves.
+            - With await: The parent waits for the child to go do something. If the child waits for someone else, 
+                the parent keeps waiting on the child. He won't leave until the person the child is waiting for is 
+                finished and then the child comes back to the parent.
 
-        That is, with no await, the parent will leave the child if the child waits for someone to finish in the toilet
-        They probably think their kid is too lenient and should've broken in. They have no patience. 
+            That is, with no await, the parent will leave the child if the child waits for someone to finish in the toilet
+            They probably think their kid is too lenient and should've broken in. They have no patience. 
 
-        With an await, the parent realises we live in a society.
+            With an await, the parent realises we live in a society.
         */
-        return newAdminBookingsArray;
+        return await axios.delete(`${apiURL}`, {
+            uid, adminBooking
+        });
     }
 }
 

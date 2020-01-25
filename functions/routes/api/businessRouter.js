@@ -1,9 +1,10 @@
 const express = require('express');
+//Router object from express
+const router = express.Router();
 
 const db = require('../../firebaseDB');
 
-//Router object from express
-const router = express.Router();
+const { DateUtils } = require('./src/DateUtils');
 
 /*
 
@@ -33,21 +34,72 @@ router.get('/', async (req, res) => {
   res.send(businesses);
 });
 
-/* // Add Post - https://googleapis.dev/nodejs/firestore/latest/CollectionReference.html#add
-router.post('/', async (req, res) => {
-  await db.collection('posts').add({
-    text: req.body.text,
-    createdAt: Date.now()
-  })
+/** Cancel Booking */
+router.post('/cancel', async (req, res) => {
+  let uid = req.body.uid;
+  let date = req.body.date;
+  let booking = req.body.booking;
 
-  res.status(201).send();
+  if(!uid || !date || !booking) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}/${req.url}`);
+    return;
+  }
+
+  let year = DateUtils.getYearFromDate(date);
+  let month = DateUtils.getMonthFromDate(date);
+  let day = DateUtils.getDayFromDate(date);
+
+  let docRef = db.collection(`/businesses/${req.body.uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+  let data = (await docRef.get()).data();
+  if(data && data.customer_bookings) {
+    data = data.customer_bookings;
+    booking = JSON.stringify(booking);
+    let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
+  
+    //TODO: Test if this is faster doing in front-end, with only the bit ownards in this function in back-end?
+    res.status(202).send(customer_bookings);
+  
+    if(customer_bookings.length == 0) {
+        docRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
+    } else {
+        docRef.update({
+            customer_bookings: customer_bookings
+        }).then(MetaDataHelper.updateMetaData(uid, date, date));
+    }
+  } else {
+    res.status(404).send('Booking not found');
+  }
 });
 
-// Delete Post - req.params.id from: https://expressjs.com/en/api.html#req
-router.delete('/:id', async (req, res) => {
-  await db.doc(`posts/${req.params.id}`).delete();
-  res.status(200).send({});
-}); */
+/** Delete Admin Booking */
+router.delete('/', async(req, res) => {
+  let uid = req.body.uid;
+  let adminBooking = req.body.adminBooking;
+
+  if(!uid || adminBooking) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  }
+
+  let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
+  let data = (await adminDocRef.get()).data();
+
+  if(data && data.admin_bookings) {
+    let admin_bookings = data.admin_bookings;
+
+    let adminBookingString = JSON.stringify(adminBooking);
+
+    let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != adminBookingString);
+  
+    res.status(202).send(newAdminBookingsArray);
+  
+    adminDocRef.update({
+        admin_bookings: newAdminBookingsArray
+    }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
+  } else {
+    res.status(404).send('Admin booking not found');
+  }
+});
 
 //make router available to other packages when you require('posts.js') - it is getting this router object
 module.exports = router;

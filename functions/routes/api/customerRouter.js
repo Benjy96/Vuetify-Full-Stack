@@ -27,14 +27,6 @@ require() returns: {}
 */
 
 router.get('/', async (req, res) => {
-
-    console.log(require('./src/MetaDataHelper'));
-
-    MetaDataHelper.test();
-
-    let convertedDate = DateUtils.formatAmericanDateToUK("2020-25-01");
-    console.log(convertedDate);
-
     // https://nodejs.org/api/http.html#http_http_request_options_callback
     // Generated beneath code with POSTMAN Code button on the right-hand side of the screen
 
@@ -46,8 +38,6 @@ router.get('/', async (req, res) => {
     //         res.send(response.body);
     //     }
     // });
-
-    res.status(200).send(convertedDate);
 });
 
 /** NOTE: there are two collections with bookings. Deletes from availability but bookings still exists.
@@ -80,6 +70,8 @@ router.post('/', async(req, res) => {
 
             customer_bookings = customer_bookings.filter(item => (item.from != bookingFrom) && (item.to != bookingTo));
 
+            res.status(200).send(customer_bookings);
+
             if(customer_bookings.length == 0) {
                 dayOfBookingsRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
             } else {
@@ -87,7 +79,6 @@ router.post('/', async(req, res) => {
                     customer_bookings: customer_bookings
                 }).then(MetaDataHelper.updateMetaData(uid, date, date));
             }
-            res.status(200).send();
         } else {
             res.status(500).send('Could not find booking data for the business ' + uid);
         }
