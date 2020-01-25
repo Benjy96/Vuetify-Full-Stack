@@ -5,6 +5,9 @@ const app = express();
 
 /*
 
+  TODO: Fix proxy bug. When you are viewing a business, the api route gets /businesses added and it 
+  won't reach the API. pathRewrites?
+
   Back-end server/API.
 
   Using cloud functions & express/router.
@@ -18,9 +21,10 @@ app.use(cors());  //Enable ALL CORS requests
 const businessRouter = require('./routes/api/businessRouter');
 const customerRouter = require('./routes/api/customerRouter');
 
+//TODO: Vue rewrites?
 //use([path], [callback...]) mounts a middleware FUNCTION(s) at the specified path
-app.use('/api/business', businessRouter); //sends all requests to /api/x/* to the xRouter
-app.use('/api/customer', customerRouter);
+app.use('*/api/business', businessRouter); //sends all requests to /api/x/* to the xRouter
+app.use('*/api/customer', customerRouter);
 
 // express.static is a built-in middleware function in Express. 
 // Define where to serve static files from. public is our static asset folder on prod.
