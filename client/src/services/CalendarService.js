@@ -4,6 +4,13 @@ import { db } from '../firebaseInit';
 import MetaDataHelper from './MetaDataHelper';
 import { DateUtils } from '../DateUtils';
 
+// HTTP Utils
+import axios from "axios";
+
+//using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
+const apiURL = 'api/bookings/';
+
+
 class CalendarService {
 
     //TODO: Move to backend - either call from service or add a listener to booking collection
@@ -78,36 +85,13 @@ class CalendarService {
     /**
      * DELETE
      * @param {String} bookingReference The id of the document in firebase
-     * TODO: deletes from one booking collection only currently - what about other?
      */
     static async cancelBooking(bookingReference) {
-        let mailDoc = await db.collection('mail').doc(bookingReference).get();
-        if(mailDoc.exists) {
-            let data = mailDoc.data();
+        axios.post(apiURL, {
+            bookingReference: bookingReference
+        });
 
-            let uid = data.bookingInfo.uid;
-            let date = data.bookingInfo.date;
-            let year = DateUtils.getYearFromDate(date);
-            let month = DateUtils.getMonthFromDate(date);
-            let day = DateUtils.getDayFromDate(date);
-            let bookingFrom = data.bookingInfo.from;
-            let bookingTo = data.bookingInfo.to;
-
-            let bookingRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
-            let customer_bookings = (await bookingRef.get()).data().customer_bookings;
-
-            customer_bookings = customer_bookings.filter(item => (item.from != bookingFrom) && (item.to != bookingTo));
-
-            alert(JSON.stringify(customer_bookings));
-
-            if(customer_bookings.length == 0) {
-                bookingRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
-            } else {
-                bookingRef.update({
-                    customer_bookings: customer_bookings
-                }).then(MetaDataHelper.updateMetaData(uid, date, date));
-            }
-        }
+        //TODO: Tell user what happened? Use the response code
     }
 
     /* 
