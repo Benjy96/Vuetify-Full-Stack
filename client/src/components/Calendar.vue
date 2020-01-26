@@ -116,7 +116,7 @@ export default {
     dialog: false,
     dialogDate: false,
     addBookingDateObject: null,
-    unavailableDays: null,
+    currentMonthUnavailableDays: null,
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
@@ -130,7 +130,7 @@ export default {
   created () {
     //Month Viewed Upon Load
     //1. Check unavailable days meta-data
-    this.getUnavailableDays();
+    this.getMonthUnavailableDays();
     this.getRegularAvailability();
   },
   computed: {
@@ -171,8 +171,8 @@ export default {
         this.regular_availability = res;
       });
     },
-    async getUnavailableDays() {
-      this.unavailableDays = await CustomerService.getUnavailableDays(this.id, 
+    async getMonthUnavailableDays() {
+      this.currentMonthUnavailableDays = await CustomerService.getMonthUnavailableDays(this.id, 
         DateUtils.getYearFromDate(this.today),
         DateUtils.getMonthFromDate(this.today)
       );
@@ -212,9 +212,11 @@ export default {
         return false;
       }
 
-      if(this.unavailableDays != null) {
-        for(var i in this.unavailableDays) {
-          if(this.unavailableDays[i] == date) {
+      let dayOfMonth = DateUtils.getDayFromDate(date);
+
+      if(this.currentMonthUnavailableDays != null) {
+        for(var i in this.currentMonthUnavailableDays) {
+          if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
             return false;
           }
         }
@@ -229,8 +231,8 @@ export default {
 
       let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
 
-      for(let i in this.unavailableDays) {
-        if(this.unavailableDays[i] == dayOfMonth) {
+      for(let i in this.currentMonthUnavailableDays) {
+        if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
           return false; //TODO: Can we skip rest of slot checks? Maybe through ref methods? Check Calendar component
         }
       }
