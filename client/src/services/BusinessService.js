@@ -1,7 +1,6 @@
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 import { DateUtils } from '../DateUtils';
-import MetaDataHelper from './MetaDataHelper';
 
 // HTTP Utils
 import axios from "axios";
@@ -27,43 +26,7 @@ class BusinessService {
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
      */
     static async createAdminBooking(uid, adminBooking) {
-
-        //1. Get from year, month, and day
-        let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
-
-        //2. Get to year, month, and day
-        let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
-
-        if(fromYear == toYear){
-            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-            .update(
-                {
-                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
-                        ...adminBooking
-                    })
-                }
-            );
-        } else {
-            db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-            .update(
-                {
-                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
-                        ...adminBooking
-                    })
-                }
-            );
-
-            await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-            .update(
-                {
-                    admin_bookings: firebase.firestore.FieldValue.arrayUnion({
-                        ...adminBooking
-                    })
-                }
-            );
-        }
-
-        MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
+        axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
     }
 
     /* ----- READ ----- */
@@ -115,13 +78,15 @@ class BusinessService {
 
     /* ----- DELETE/UPDATE ------ */
     static async cancelBooking(uid, date, booking) {
-        let customer_bookings = await axios.post(`${apiURL}/cancelBooking`, {
-            uid,
-            date,
-            booking
+        let res = await axios.delete(`${apiURL}/booking`, {
+            data: {
+                uid,
+                date,
+                booking
+            }
         });
 
-        return customer_bookings;
+        return res.data;
     }
 
     static async deleteAdminBooking(uid, adminBooking) {
@@ -160,11 +125,15 @@ class BusinessService {
 
             With an await, the parent realises we live in a society.
         */
-        return await axios.delete(`${apiURL}/cancelAdmin`, {
+        let res = await axios.delete(`${apiURL}/adminBooking`, {
             data: {
                 uid, adminBooking
             }
         });
+
+        alert(JSON.stringify(res));
+
+        return res.data;
     }
 }
 

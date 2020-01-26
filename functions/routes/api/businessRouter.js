@@ -1,10 +1,11 @@
 const express = require('express');
-//Router object from express
 const router = express.Router();
 
 const db = require('../../firebaseDB');
+const admin = require('firebase-admin');
 
 const { DateUtils } = require('./src/DateUtils');
+const MetaDataHelper = require('./src/MetaDataHelper');
 
 /*
 
@@ -34,8 +35,90 @@ router.get('/', async (req, res) => {
   res.send(businesses);
 });
 
+/** Create an admin booking */
+router.post('/adminBooking', async(req, res) => {
+  let uid = req.body.uid;
+  let adminBooking = req.body.adminBooking;
+
+  if(!uid || !adminBooking) {
+    res.status(400).send();
+  } else {
+    res.status(202).send();
+  }
+
+  //1. Get from year, month, and day
+  let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
+
+  //2. Get to year, month, and day
+  let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
+
+  if(fromYear == toYear){
+      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .update(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          }
+      );
+  } else {
+      db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .update(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          }
+      );
+
+      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .update(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          }
+      );
+  }
+
+  MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
+});
+
+/** Cancel Admin Booking */
+router.delete('/adminBooking', async(req, res) => {
+  let uid = req.body.uid;
+  let adminBooking = req.body.adminBooking;
+
+  if(!uid || !adminBooking) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  }
+
+  let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
+  let data = (await adminDocRef.get()).data();
+
+  if(data && data.admin_bookings) {
+    let admin_bookings = data.admin_bookings;
+
+    let newAdminBookingsArray = admin_bookings.filter(item => 
+      (item.fromDate != adminBooking) &&
+      (item.toDate != adminBooking.toDate) &&
+      (item.fromTime != adminBooking.fromTime) &&
+      (item.toTime != adminBooking.toTime)
+    );
+  
+    res.status(202).send(newAdminBookingsArray);
+  
+    adminDocRef.update({
+        admin_bookings: newAdminBookingsArray
+    }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
+  } else {
+    res.status(404).send('Admin booking not found');
+  }
+});
+
 /** Cancel Booking */
-router.delete('/cancelBooking', async (req, res) => {
+router.delete('/booking', async (req, res) => {
   let uid = req.body.uid;
   let date = req.body.date;
   let booking = req.body.booking;
@@ -53,8 +136,8 @@ router.delete('/cancelBooking', async (req, res) => {
   let data = (await docRef.get()).data();
   if(data && data.customer_bookings) {
     data = data.customer_bookings;
-    booking = JSON.stringify(booking);
-    let customer_bookings = data.filter(item => JSON.stringify(item) != booking);
+
+    let customer_bookings = data.filter(item => (item.from != booking.from) && (item.to != booking.to));
   
     //TODO: Test if this is faster doing in front-end, with only the bit ownards in this function in back-end?
     res.status(202).send(customer_bookings);
@@ -68,36 +151,6 @@ router.delete('/cancelBooking', async (req, res) => {
     }
   } else {
     res.status(404).send('Booking not found');
-  }
-});
-
-/** Delete Admin Booking */
-router.delete('/cancelAdmin', async(req, res) => {
-  let uid = req.body.uid;
-  let adminBooking = req.body.adminBooking;
-
-  if(!uid || adminBooking) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  }
-
-  let adminDocRef = db.collection(`/businesses/${uid}/bookings`).doc('admin');
-  let data = (await adminDocRef.get()).data();
-
-  if(data && data.admin_bookings) {
-    let admin_bookings = data.admin_bookings;
-
-    let adminBookingString = JSON.stringify(adminBooking);
-
-    let newAdminBookingsArray = admin_bookings.filter(item => JSON.stringify(item) != adminBookingString);
-  
-    res.status(202).send(newAdminBookingsArray);
-  
-    adminDocRef.update({
-        admin_bookings: newAdminBookingsArray
-    }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
-  } else {
-    res.status(404).send('Admin booking not found');
   }
 });
 
