@@ -136,11 +136,11 @@ export class DateUtils {
     static getFutureDayString(increment) {
         let d = new Date();
         d.setDate(d.getDate() + increment);
-        d = this.getDDFormatedDay(d.getDate());
-        if(d <= this.getCurrentDayString() && increment > 0){
-            return this.getDaysInMonth();
-        }else{
-            return d;
+        let day = this.getDDFormatedDay(d.getDate());
+        if(day <= this.getCurrentDayString() && increment > 0){
+            return (this.getDaysInMonth(d.getFullYear(), d.getMonth())).toString();
+        } else {
+            return day.toString();
         }
     }
 
