@@ -16,7 +16,7 @@ class MetaDataHelper {
         for(var i in affectedDates) {
             let dateAvailable = await this.isDateAvailable(uid, affectedDates[i]);
             if(!dateAvailable) {
-                MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
+                this.markDateUnavailable(uid, affectedDates[i]);
             }
         }
     }

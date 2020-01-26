@@ -27,7 +27,7 @@ class CustomerService {
      */
     static async cancelBooking(bookingReference) {
         alert(bookingReference);
-        axios.delete(apiURL + '/cancelBooking', {
+        axios.delete(apiURL + '/booking', {
             data: { bookingReference: bookingReference }
         });
 

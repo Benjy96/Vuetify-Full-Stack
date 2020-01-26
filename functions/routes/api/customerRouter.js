@@ -1,5 +1,4 @@
 const express = require('express');
-const request = require('request');
 const router = express.Router();
 
 const db = require('../../firebaseDB');
@@ -28,7 +27,7 @@ require() returns: {}
 */
 
 /** Cancel a booking by email reference */
-router.delete('/cancelBooking', async(req, res) => {
+router.delete('/booking', async(req, res) => {
     if(!req.body.bookingReference) {
         res.status(400).send();
         return;
