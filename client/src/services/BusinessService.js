@@ -7,7 +7,7 @@ import MetaDataHelper from './MetaDataHelper';
 import axios from "axios";
 
 //using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
-const apiURL = 'api/business/';
+const apiURL = 'api/business';
 
 class BusinessService {
 
@@ -115,7 +115,7 @@ class BusinessService {
 
     /* ----- DELETE/UPDATE ------ */
     static async cancelBooking(uid, date, booking) {
-        let customer_bookings = await axios.post(`${apiURL}/cancel`, {
+        let customer_bookings = await axios.post(`${apiURL}/cancelBooking`, {
             uid,
             date,
             booking
@@ -160,8 +160,10 @@ class BusinessService {
 
             With an await, the parent realises we live in a society.
         */
-        return await axios.delete(`${apiURL}`, {
-            uid, adminBooking
+        return await axios.delete(`${apiURL}/cancelAdmin`, {
+            data: {
+                uid, adminBooking
+            }
         });
     }
 }

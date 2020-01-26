@@ -14,7 +14,7 @@ class MetaDataHelper {
         let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
         for(var i in affectedDates) {
-            let dateAvailable = await MetaDataHelper.isDateAvailable(uid, affectedDates[i]);
+            let dateAvailable = await this.isDateAvailable(uid, affectedDates[i]);
             if(!dateAvailable) {
                 MetaDataHelper.markDateUnavailable(uid, affectedDates[i]);
             }

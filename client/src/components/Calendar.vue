@@ -190,16 +190,14 @@ export default {
 
       this.viewDay(date);
     },
-    // async getAdminBookings({ date }) {
-    //   //TODO: When to retrieve admin bookings? For a month, on load, as it can span a large range of time?
-    // },
     async addBooking() {
       if(this.$refs.form.validate()) {
         this.dialog = false;
 
-        let year = DateUtils.getYearFromDate(this.addBookingDateObject.date);
-        let month = DateUtils.getMonthFromDate(this.addBookingDateObject.date);
-        let day = DateUtils.getDayFromDate(this.addBookingDateObject.date);
+        let date = this.addBookingDateObject.date;
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
 
         let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
         let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);

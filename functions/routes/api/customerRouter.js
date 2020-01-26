@@ -3,6 +3,7 @@ const request = require('request');
 const router = express.Router();
 
 const db = require('../../firebaseDB');
+const admin = require('firebase-admin');
 
 const { DateUtils } = require('./src/DateUtils');
 const MetaDataHelper = require('./src/MetaDataHelper');
@@ -26,29 +27,13 @@ require() returns: {}
 
 */
 
-router.get('/', async (req, res) => {
-    // https://nodejs.org/api/http.html#http_http_request_options_callback
-    // Generated beneath code with POSTMAN Code button on the right-hand side of the screen
+/** Cancel a booking by email reference */
+router.delete('/cancelBooking', async(req, res) => {
+    if(!req.body.bookingReference) {
+        res.status(400).send();
+        return;
+    }
 
-    // a node.JS request...
-    // request(options, function (error, response) { 
-    //     if (error) {
-    //         res.status(500).send(error);
-    //     } else {
-    //         res.send(response.body);
-    //     }
-    // });
-});
-
-/** NOTE: there are two collections with bookings. Deletes from availability but bookings still exists.
- * Cancel a booking - finds booking based on uid and date info referenced by an email sent to the customer
- * 
- * TODO: deletes from one booking collection only currently - what about other?
- * 
- * Security: Because the delete request can only come from the server, it will only do what's in this function. 
- * If the client was allowed to make deletes, someone could modify the javascript and paths and delete everything.
- */
-router.post('/', async(req, res) => {
     let mailDoc = await db.collection('mail').doc(req.body.bookingReference).get();
     if(mailDoc.exists) {
         let mailData = mailDoc.data();
@@ -86,6 +71,78 @@ router.post('/', async(req, res) => {
         res.status(404).send('Booking not found');
     }
 });
+
+/** Create a booking */
+//TODO: Make into a transaction for error handling: https://firebase.google.com/docs/firestore/manage-data/transactions
+router.post('/booking', async (req, res) => {
+    let uid = req.body.uid;
+    let email = req.body.email;
+    let year = req.body.year;
+    let month = req.body.month;
+    let day = req.body.day;
+    let from = req.body.from;
+    let to = req.body.to;
+
+    if(!uid || !email || !year || !month || !day || !from || !to) {
+        res.status(400).send();
+        return;
+    } else {
+        res.status(202).send();
+    }
+
+    //1. Write to availability collection
+    let bookedDayDocRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
+    bookedDayDocRef.set({
+        "customer_bookings": admin.firestore.FieldValue.arrayUnion({
+                "from": from,
+                "to": to
+            })
+        }, 
+        {merge: true}
+    );
+
+    //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
+    db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
+    .set({
+        "customer_bookings": admin.firestore.FieldValue.arrayUnion({
+                "email": email,
+                "from": from,
+                "to": to
+            })
+        }, 
+        {merge: true}
+    );
+
+    let affectedDate = DateUtils.convertYearMonthDayToDate(year, month, day);
+
+    //3. Update meta-data
+    MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
+
+    //4. Send an email
+    sendBookingEmail(email, uid, affectedDate, from, to);
+});
+
+/** TODO: template?  https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback */
+function sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
+    let docRef = db.collection('mail').doc();
+    docRef.set({
+        bookingInfo: {
+            date: bookingDate,
+            from: from,
+            to: to,
+            uid: businessId
+        },
+        to: recipientEmail,
+        message: {
+            subject: 'Booking Confirmation',
+            html: `Hi there!
+            <br>This is a confirmation of your booking on ${bookingDate} from ${from}-${to}.
+            <br>Your booking confirmation code is: 
+            <blockquote>${docRef.id}</blockquote>
+            <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.`
+        }
+    });
+}
 
 //make router available to other packages when you require('posts.js') - it is getting this router object
 module.exports = router;

@@ -1,40 +1,13 @@
 
-import firebase from 'firebase';
 import { db } from '../firebaseInit';
-import MetaDataHelper from './MetaDataHelper';
-import { DateUtils } from '../DateUtils';
 
 // HTTP Utils
 import axios from "axios";
 
 //using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
-const apiURL = 'api/customer/';
+const apiURL = 'api/customer';
 
 class CustomerService {
-
-    //TODO: Move to backend - either call from service or add a listener to booking collection
-    //TODO: Add HTML template with CSS - Sendgrid has demos - figure out how to read in a html file into the JS
-        //perhaps this? https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback
-    static sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
-        let docRef = db.collection('mail').doc();
-        docRef.set({
-            bookingInfo: {
-                date: bookingDate,
-                from: from,
-                to: to,
-                uid: businessId
-            },
-            to: recipientEmail,
-            message: {
-                subject: 'Booking Confirmation',
-                html: `Hi there!
-                <br>This is a confirmation of your booking on ${bookingDate} from ${from}-${to}.
-                <br>Your booking confirmation code is: 
-                <blockquote>${docRef.id}</blockquote>
-                <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.`
-            }
-        });
-    }
     /*
         Day PoV CRUD Operations.
 
@@ -44,41 +17,8 @@ class CustomerService {
         TODO: Check each operation follows above guidelines.
     */
 
-    /**
-     * 
-     * TODO: Make into a transaction for error handling:
-     * https://firebase.google.com/docs/firestore/manage-data/transactions
-     * 
-    */
     static async createBooking(uid, email, year, month, day, from, to) {
-        //1. Write to availability collection
-        let bookedDayDocRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
-        bookedDayDocRef.set({
-            "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
-                    "from": from,
-                    "to": to
-                })
-            }, 
-            {merge: true}
-        );
-
-        //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
-        db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
-        .set({
-            "customer_bookings": firebase.firestore.FieldValue.arrayUnion({
-                    "email": email,
-                    "from": from,
-                    "to": to
-                })
-            }, 
-            {merge: true}
-        );
-
-        let affectedDate = DateUtils.convertYearMonthDayToDate(year, month, day);
-        MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
-
-        //3. Send an email
-        this.sendBookingEmail(email, uid, affectedDate, from, to);
+        axios.post(apiURL + '/booking', {uid, email, year, month, day, from, to});
     }
 
     /**
@@ -86,8 +26,9 @@ class CustomerService {
      * @param {String} bookingReference The id of the document in firebase
      */
     static async cancelBooking(bookingReference) {
-        axios.post(apiURL, {
-            bookingReference: bookingReference
+        alert(bookingReference);
+        axios.delete(apiURL + '/cancelBooking', {
+            data: { bookingReference: bookingReference }
         });
 
         //TODO: Tell user what happened? Use the response code

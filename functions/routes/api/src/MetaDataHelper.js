@@ -1,5 +1,5 @@
-const firebase = require('firebase-admin').firebase;
 const db = require('../../../firebaseDB');
+const admin = require('firebase-admin');
 
 const { DateUtils } = require('./DateUtils');
 const { daysOfWeek } = require('./DateUtils');
@@ -212,7 +212,7 @@ class MetaDataHelper {
 
         db.collection(`/businesses/${uid}/availability/${year}/month`).doc(`${month}`).update(
             {
-                unavailableDays: firebase.firestore.FieldValue.arrayUnion(day)
+                unavailableDays: admin.firestore.FieldValue.arrayUnion(day)
             }
         );
     }

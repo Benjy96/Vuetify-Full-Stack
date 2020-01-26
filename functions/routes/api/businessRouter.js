@@ -35,13 +35,13 @@ router.get('/', async (req, res) => {
 });
 
 /** Cancel Booking */
-router.post('/cancel', async (req, res) => {
+router.delete('/cancelBooking', async (req, res) => {
   let uid = req.body.uid;
   let date = req.body.date;
   let booking = req.body.booking;
 
   if(!uid || !date || !booking) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}/${req.url}`);
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   }
 
@@ -72,7 +72,7 @@ router.post('/cancel', async (req, res) => {
 });
 
 /** Delete Admin Booking */
-router.delete('/', async(req, res) => {
+router.delete('/cancelAdmin', async(req, res) => {
   let uid = req.body.uid;
   let adminBooking = req.body.adminBooking;
 
