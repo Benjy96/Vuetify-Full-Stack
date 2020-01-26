@@ -90,41 +90,6 @@ class BusinessService {
     }
 
     static async deleteAdminBooking(uid, adminBooking) {
-        /*
-
-            Answering question of will above async slow the program? Answer: No
-
-            Async works like this:
-
-            with MetaDataHelper.updateMetaData deleting a booking from 2020-01-01 to 2020-01-04, I logged:
-                awaiting
-                returning
-                awaiting
-                awaiting
-                awaiting
-
-            with await MetaDataHelper.updateMetaData (which has an await inside):
-
-                awaiting
-                awaiting
-                awaiting
-                awaiting
-                returning
-
-
-                Async works like this:
-
-            - No Await: The parent waits for the child to go do something, but if the child waits for someone else, 
-                the parent leaves.
-            - With await: The parent waits for the child to go do something. If the child waits for someone else, 
-                the parent keeps waiting on the child. He won't leave until the person the child is waiting for is 
-                finished and then the child comes back to the parent.
-
-            That is, with no await, the parent will leave the child if the child waits for someone to finish in the toilet
-            They probably think their kid is too lenient and should've broken in. They have no patience. 
-
-            With an await, the parent realises we live in a society.
-        */
         let res = await axios.delete(`${apiURL}/adminBooking`, {
             data: {
                 uid, adminBooking

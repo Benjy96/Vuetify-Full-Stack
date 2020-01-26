@@ -1,5 +1,5 @@
 import { db } from '../firebaseInit';
-import MetaDataHelper from '../services/MetaDataHelper';
+import MetaDataHelper from '../functions/routes/api/src/MetaDataHelper';
 
 class MetaDataHelperTests {
 
