@@ -43,10 +43,10 @@ class BusinessService {
             dayLimit = DateUtils.getFutureDayString(dayLimit);
 
             snapshot = await db.collection(`businesses/${uid}/availability/${year}/month/${month}/days`)
-            //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
-            .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
-            .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
-            .get();
+                //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
+                .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
+                .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
+                .get();
 
             //TODO: How to return future hours?
             //If doing multiple days in future it won't work!!
@@ -95,8 +95,6 @@ class BusinessService {
                 uid, adminBooking
             }
         });
-
-        alert(JSON.stringify(res));
 
         return res.data;
     }

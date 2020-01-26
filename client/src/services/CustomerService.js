@@ -26,12 +26,11 @@ class CustomerService {
      * @param {String} bookingReference The id of the document in firebase
      */
     static async cancelBooking(bookingReference) {
-        alert(bookingReference);
-        axios.delete(apiURL + '/booking', {
+        let res = await axios.delete(apiURL + '/booking', {
             data: { bookingReference: bookingReference }
         });
 
-        //TODO: Tell user what happened? Use the response code
+        return res.data;    //TODO: use?
     }
 
     /* 
