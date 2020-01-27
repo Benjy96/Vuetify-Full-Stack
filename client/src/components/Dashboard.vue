@@ -41,26 +41,6 @@
                                     </tbody>
                                     </template>
                                 </v-simple-table>
-
-
-                                <!-- Days of Week
-                                <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day">
-                                    <v-col class="red lighten-2">
-                                        {{day}}
-                                    </v-col>
-
-                                    <v-col class="red lighten-3">
-                                        <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
-                                            {{range.from + " - " + range.to}}
-                                            <v-list-item-action>
-                                                <v-btn icon @click="deleteTimeRange(day, range)">
-                                                    <v-icon>mdi-close</v-icon>
-                                                </v-btn>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-col>
-                                </v-row> -->
-
                             </v-container> 
                         </v-col>
                     </v-row>
@@ -82,21 +62,34 @@
                         </v-col>
                         <v-col>
                             <v-container>
-                                <v-card-title>Unavailable</v-card-title>
-                                <!-- Days of Week -->
-                                <v-row>
-                                    <!-- Day -->
-                                    <v-col>
-                                        <v-list-item v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-                                            {{adminBooking}}
-                                            <v-list-item-action>
-                                                <v-btn icon @click="deleteAdminBooking(adminBooking)">
-                                                    <v-icon>mdi-close</v-icon>
-                                                </v-btn>
-                                            </v-list-item-action>
-                                        </v-list-item>
-                                    </v-col>
-                                </v-row>
+                                <v-simple-table>
+                                    <template v-slot:default>
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Unavailable Ranges</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
+                                            <td>
+                                                <v-list-item>
+                                                    <v-list-item-content>
+                                                    From {{ adminBooking.fromDate }} {{adminBooking.fromTime}}
+                                                    to {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+                                                    </v-list-item-content>
+                                                    
+                                                    <v-list-item-action>
+                                                        <v-btn icon @click="deleteAdminBooking(adminBooking)">
+                                                            <v-icon>mdi-close</v-icon>
+                                                        </v-btn>
+                                                    </v-list-item-action>
+
+                                                </v-list-item>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    </template>
+                                </v-simple-table>
                             </v-container> 
                         </v-col>
                     </v-row>
@@ -109,6 +102,7 @@
             <v-col>
                 <v-card>
                 <v-card-title>Upcoming Bookings</v-card-title>
+                <v-divider></v-divider>
                 <v-row>
                     <v-col>
                         <v-container>
