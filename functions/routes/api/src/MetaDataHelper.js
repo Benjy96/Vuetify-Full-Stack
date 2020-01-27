@@ -210,10 +210,11 @@ class MetaDataHelper {
         let month = DateUtils.getMonthFromDate(date);
         let day = DateUtils.getDayFromDate(date);
 
-        db.collection(`/businesses/${uid}/availability/${year}/month`).doc(`${month}`).update(
+        db.collection(`/businesses/${uid}/availability/${year}/month`).doc(`${month}`).set(
             {
                 unavailableDays: admin.firestore.FieldValue.arrayUnion(day)
-            }
+            },
+            { merge: true }
         );
     }
 }
