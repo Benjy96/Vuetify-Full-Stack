@@ -1,5 +1,5 @@
 <template>
-    <v-container class="grey lighten-3">
+    <v-container>
 
         <!-- Availability Box -->
         <!-- How to fucking format the rows and cols? -->
@@ -9,22 +9,46 @@
                     <v-card-title>Regular Availability</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
-                        <v-col class="red lighten-3">
+                        <v-col>
                             <v-container>
                                 <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>
                             </v-container>
                         </v-col>
-                        <v-col class="red lighten-4">
+                        <v-col>
                             <v-container>
-                                <v-card-title>Regular Hours</v-card-title>
-                                <!-- Days of Week -->
+                                <v-simple-table>
+                                    <template v-slot:default>
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Day</th>
+                                            <th class="text-center">Regular Hours</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr v-for="day in daysOfWeek" :key="'day' + day">
+                                            <td>{{day}}</td>
+                                            <td>
+                                                <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
+                                                    {{range.from + " - " + range.to}}
+                                                    <v-list-item-action>
+                                                        <v-btn icon @click="deleteTimeRange(day, range)">
+                                                            <v-icon>mdi-close</v-icon>
+                                                        </v-btn>
+                                                    </v-list-item-action>
+                                                </v-list-item> 
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    </template>
+                                </v-simple-table>
+
+
+                                <!-- Days of Week
                                 <v-row class="red lighten-1" v-for="day in daysOfWeek" :key="'day' + day">
-                                    <!-- Day -->
                                     <v-col class="red lighten-2">
                                         {{day}}
                                     </v-col>
 
-                                    <!-- Time Ranges for Day-->
                                     <v-col class="red lighten-3">
                                         <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
                                             {{range.from + " - " + range.to}}
@@ -35,7 +59,7 @@
                                             </v-list-item-action>
                                         </v-list-item>
                                     </v-col>
-                                </v-row>
+                                </v-row> -->
 
                             </v-container> 
                         </v-col>
@@ -51,18 +75,18 @@
                     <v-card-title>Exceptional Availability</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
-                        <v-col class="red lighten-3">
+                        <v-col>
                             <v-container>
                                 <DateRangePicker v-on:saved-admin-booking="createAdminBooking($event)"/>
                             </v-container>
                         </v-col>
-                        <v-col class="red lighten-4">
+                        <v-col>
                             <v-container>
                                 <v-card-title>Unavailable</v-card-title>
                                 <!-- Days of Week -->
-                                <v-row class="red lighten-1">
+                                <v-row>
                                     <!-- Day -->
-                                    <v-col class="red lighten-2">
+                                    <v-col>
                                         <v-list-item v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
                                             {{adminBooking}}
                                             <v-list-item-action>
@@ -82,11 +106,11 @@
 
         <!-- Bookings Box -->
         <v-row>
-            <v-col class="grey lighten-2">
+            <v-col>
                 <v-card>
                 <v-card-title>Upcoming Bookings</v-card-title>
-                <v-row class="grey lighten-1">
-                    <v-col class="green lighten-3">
+                <v-row>
+                    <v-col>
                         <v-container>
                             <Bookings/>
                         </v-container>

@@ -1,5 +1,5 @@
 <template>
-    <v-container class="red lighten-1">
+    <v-container>
         <v-row v-for="(bookingArray, dayKey) in bookings[currentYear][currentMonth]" v-bind:key="'Day' + currentYear + currentMonth + dayKey">
             <v-col>
                 <v-sheet>

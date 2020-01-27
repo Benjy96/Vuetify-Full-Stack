@@ -1,5 +1,5 @@
 <template>
-    <div class="grey lighten-2">
+    <div>
     <v-form>
         <v-row>
             <v-col>
