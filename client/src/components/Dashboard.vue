@@ -29,7 +29,10 @@
                                             <td>{{day}}</td>
                                             <td>
                                                 <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
-                                                    {{range.from + " - " + range.to}}
+                                                    <v-list-item-content>
+                                                        {{range.from + " - " + range.to}}
+                                                    </v-list-item-content>
+
                                                     <v-list-item-action>
                                                         <v-btn icon @click="deleteTimeRange(day, range)">
                                                             <v-icon>mdi-close</v-icon>
@@ -83,7 +86,6 @@
                                                             <v-icon>mdi-close</v-icon>
                                                         </v-btn>
                                                     </v-list-item-action>
-
                                                 </v-list-item>
                                             </td>
                                         </tr>
