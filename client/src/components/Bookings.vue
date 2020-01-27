@@ -53,7 +53,7 @@ export default {
     methods: {
         cancelBooking(booking, year, month, day) {
             BusinessService.cancelBooking(this.uid, `${year}-${month}-${day}`, booking).then(res => {
-                if(res.length == 0) {
+                if(res == null) {
                     this.bookings[year][month] = null;
                 } else { 
                     this.bookings[year][month][day] = res;
