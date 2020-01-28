@@ -58,9 +58,6 @@ export default {
             ]
         }
     },
-    created() {
-        alert('hi');
-    },
     methods: {
         register() {
             try{ 
@@ -68,7 +65,6 @@ export default {
                 //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
                     .then((userCredential) => {
-                        window.console.log('hi');
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             displayName: this.displayName,
                             email: this.email
