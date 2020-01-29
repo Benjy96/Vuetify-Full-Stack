@@ -11,7 +11,7 @@
                     <v-row no-gutters>
                         <v-col>
                             <v-container>
-                                <TimeRangePicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+                                <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
                             </v-container>
                         </v-col>
                         <v-col>
@@ -55,12 +55,12 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Exceptional Availability</v-card-title>
+                    <v-card-title>Holiday Bookings</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
                             <v-container>
-                                <DateRangePicker v-on:saved-admin-booking="createAdminBooking($event)"/>
+                                <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
                             </v-container>
                         </v-col>
                         <v-col>
@@ -124,16 +124,16 @@ import { daysOfWeek } from '../DateUtils';
 
 import firebase from 'firebase';
 import Bookings from './Bookings';
-import TimeRangePicker from './TimeRangePicker';
-import DateRangePicker from './DateRangePicker';
+import AdminBookingPicker from './AdminBookingPicker';
+import RegularAvailabilityPicker from './RegularAvailabilityPicker';
 import BusinessService from '../services/BusinessService';
 
 export default {
     name: 'Dashboard',
     components: {
         Bookings,
-        TimeRangePicker,
-        DateRangePicker
+        AdminBookingPicker,
+        RegularAvailabilityPicker
     },
     data() {
         return {
