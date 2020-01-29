@@ -124,6 +124,18 @@
             <v-btn @click="add">Add</v-btn>
         </v-col>
     </v-row>
+
+    <v-dialog v-model="errorDialogToggle" max-width="400">
+        <v-card>
+        <v-container>
+            <p>As we haven't yet implemented time travel, your "to" time can't be before the "from" time!</p>
+            <v-btn type="submit" color="error" @click="errorDialogToggle = !errorDialogToggle">
+            Woops
+            </v-btn>
+        </v-container>
+        </v-card>
+    </v-dialog>
+
 </v-container>
 </template>
 
@@ -141,6 +153,7 @@
         toTime: null,
         fromTimeDialogToggle: false,
         toTimeDialogToggle: false,
+        errorDialogToggle: false
       }
     },
     methods: {
@@ -155,7 +168,7 @@
                 }; 
 
                 if(adminBooking.fromDate == adminBooking.toDate && adminBooking.fromTime > adminBooking.toTime) {
-                    alert("The to time can't be before the from!");
+                    this.errorDialogToggle = true;
                     return;
                 }
 
