@@ -58,7 +58,7 @@
         </v-card>
       </v-dialog>
 
-<v-sheet height="600">
+<v-sheet height="600" v-if="!isFetchingUnavailableDays && !isFetchingRegularAvailability">
 
   <!-- ***** CALENDAR ***** -->
 
@@ -75,8 +75,8 @@
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
   <!-- Might be better for a v-bound array of 31 day booleans to prevent retarded async shit? -->
-  <template v-slot:day="{ date }">
-    <v-sheet v-if="dayAvailable(date)" height="100%" color="green">
+  <template v-slot:day="dateObject">
+    <v-sheet v-if="dayAvailable(dateObject)" height="100%" color="green">
     </v-sheet>
   </template>
 
@@ -102,6 +102,8 @@ import { daysOfWeek } from '../DateUtils';
 export default {
   props: ['id'],
   data: () => ({
+    isFetchingUnavailableDays: true,
+    isFetchingRegularAvailability: true,
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
     type: 'month',
@@ -169,6 +171,7 @@ export default {
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
+        this.isFetchingRegularAvailability = false;
       });
     },
     async getMonthUnavailableDays() {
@@ -176,6 +179,7 @@ export default {
         DateUtils.getYearFromDate(this.today),
         DateUtils.getMonthFromDate(this.today)
       );
+      this.isFetchingUnavailableDays = false;
     },
     //TODO: Move to back-end / add extra checks - like meta-data first, perhaps?
     async refreshDayBookings(year, month, day) {
@@ -207,21 +211,19 @@ export default {
         this.refreshDayBookings(year, month, day);
       }
     },
-    dayAvailable(date) {
-      if(date < DateUtils.getCurrentDateString()) {
+    dayAvailable(dateObject) {
+      if(dateObject.date < DateUtils.getCurrentDateString()) {
         return false;
       }
 
-      let dayOfMonth = DateUtils.getDayFromDate(date);
-
-      if(this.currentMonthUnavailableDays != null) {
-        for(var i in this.currentMonthUnavailableDays) {
-          if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
-            return false;
-          }
-        }
+      if(this.dateInUnavailableDays(dateObject)) return false;
+      
+      let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
+      if(dayOfWeek in this.regular_availability) {
+        return true;
       }
-      return true;
+
+      return false;
     },
     slotAvailable(dateObject) {
       let currentDate = DateUtils.getCurrentDateString();
@@ -237,22 +239,14 @@ export default {
         }
       }
 
-      if(this.customer_bookings != null) {
-        for(var x = 0; x < this.customer_bookings.length; x++) {
-          //TODO: Could we not iterate thorugh this for every hour? Perhaps every hour just access a key?
-          if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, this.customer_bookings[x])) {
-            return false;
-          }
-        }
-      }
+      if(this.dateInUnavailableDays(dateObject)) return false;
       
-      let dayOfWeek = daysOfWeek[dateObject.weekday-1];
+      let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
 
-      //3. Check if in regular availability
       if(dayOfWeek in this.regular_availability) {
-        //3.1. For each regular hour range of the day
+        // For each regular hour range of the day
         for(let i in this.regular_availability[dayOfWeek]) {
-          //3.2. if current time in range, return false
+          // If current time in range, return false
           if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
             this.regular_availability[dayOfWeek][i]))
           {
@@ -262,10 +256,22 @@ export default {
           }
         }
       }
-
+      
       //4. TODO: Check if in admin booking
 
       return true;
+    },
+    dateInUnavailableDays(dateObject) {
+      let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
+
+      if(this.currentMonthUnavailableDays != null) {
+        for(var i in this.currentMonthUnavailableDays) {
+          if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
+            return true;
+          }
+        }
+      }
+      return false;
     },
     openDialog(dateObject) {
       this.dialog = true;
