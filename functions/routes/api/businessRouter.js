@@ -54,30 +54,33 @@ router.post('/adminBooking', async(req, res) => {
 
   if(fromYear == toYear){
       await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .update(
+      .set(
           {
               admin_bookings: admin.firestore.FieldValue.arrayUnion({
                   ...adminBooking
               })
-          }
+          },
+          { merge: true }
       );
   } else {
       db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .update(
+      .set(
           {
               admin_bookings: admin.firestore.FieldValue.arrayUnion({
                   ...adminBooking
               })
-          }
+          },
+          { merge: true }
       );
 
       await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .update(
+      .set(
           {
               admin_bookings: admin.firestore.FieldValue.arrayUnion({
                   ...adminBooking
               })
-          }
+          },
+          { merge: true }
       );
   }
 
@@ -109,7 +112,7 @@ router.delete('/adminBooking', async(req, res) => {
   
     res.status(202).send(newAdminBookingsArray);
   
-    adminDocRef.update({
+    adminDocRef.set({
         admin_bookings: newAdminBookingsArray
     }).then(MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate));
   } else {
@@ -145,7 +148,7 @@ router.delete('/booking', async (req, res) => {
     if(customer_bookings.length == 0) {
         docRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
     } else {
-        docRef.update({
+        docRef.set({
             customer_bookings: customer_bookings
         }).then(MetaDataHelper.updateMetaData(uid, date, date));
     }

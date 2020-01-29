@@ -147,7 +147,7 @@ export default {
                 "Saturday": [],
                 "Sunday": []
             },
-            adminBookings: null,
+            adminBookings: [],
             daysOfWeek: daysOfWeek
         }
     },
@@ -170,16 +170,18 @@ export default {
         },
         getRanges() {
             db.collection(`businesses/${this.id}/availability/`).doc('regular').get().then((snapshot) => {
-                let regularDoc = snapshot.data();
-                this.daysOfWeek.forEach(day => {
-                    let weekday = day;
-                    this.ranges[weekday] = [];
-                    if(regularDoc[weekday]){
-                        regularDoc[weekday].forEach(range => {
-                            this.ranges[weekday].push(range);
-                        });
-                    }
-                })
+                if(snapshot.exists) {
+                    let regularDoc = snapshot.data();
+                    this.daysOfWeek.forEach(day => {
+                        let weekday = day;
+                        this.ranges[weekday] = [];
+                        if(regularDoc[weekday]){
+                            regularDoc[weekday].forEach(range => {
+                                this.ranges[weekday].push(range);
+                            });
+                        }
+                    })
+                }
             });
         },
         getAdminBookings() {

@@ -73,7 +73,8 @@ class BusinessService {
     static async getAdminBookings(uid) {
         //Fetch from meta-data document.
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
-        return snapshot.data()["admin_bookings"];
+        if(snapshot.exists) return snapshot.data()["admin_bookings"];
+        else return [];
     }
 
     /* ----- DELETE/UPDATE ------ */
