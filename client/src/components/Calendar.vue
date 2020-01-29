@@ -58,6 +58,18 @@
         </v-card>
       </v-dialog>
 
+      <v-dialog v-model="bookingCreatedDialog" max-width="400">
+        <v-card>
+          <v-container>
+            <p>You have been sent an email with your booking reference number</p>
+            <v-btn type="submit" color="primary" 
+            @click="bookingCreatedDialog = !bookingCreatedDialog">
+              Thanks!
+            </v-btn>
+          </v-container>
+        </v-card>
+      </v-dialog>
+
 <v-sheet height="600" v-if="!isFetchingUnavailableDays && !isFetchingRegularAvailability">
 
   <!-- ***** CALENDAR ***** -->
@@ -127,7 +139,8 @@ export default {
     emailRules: [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid',
-            ]
+            ],
+    bookingCreatedDialog: false
   }),
   created () {
     //Month Viewed Upon Load
@@ -197,6 +210,7 @@ export default {
     async addBooking() {
       if(this.$refs.form.validate()) {
         this.dialog = false;
+        this.bookingCreatedDialog = true;
 
         let date = this.addBookingDateObject.date;
         let year = DateUtils.getYearFromDate(date);
