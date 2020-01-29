@@ -51,7 +51,7 @@
                 v-model="fromTime"
                 full-width
                 @click:minute="$refs.fromTimeDialog.save(fromTime)"
-                :max = "toTime"
+                :max = "maxFromTime"
                 >
                 <v-spacer></v-spacer>
                 <v-btn text color="primary" @click="fromTimeDialogToggle = false">Cancel</v-btn>
@@ -154,6 +154,11 @@
                     toTime: this.toTime
                 }; 
 
+                if(adminBooking.fromDate == adminBooking.toDate && adminBooking.fromTime > adminBooking.toTime) {
+                    alert("The to time can't be before the from!");
+                    return;
+                }
+
                 //TODO: Is this really needed? How to handle booking a whole day off?
                 //Better for user to just book to midnight/start of the following day?
                 if(adminBooking.fromDate == adminBooking.toDate && 
@@ -172,6 +177,13 @@
                 return this.fromTime;
             } else {
                 return "00:00";
+            }
+        },
+        maxFromTime() {
+            if(this.fromDate == this.toDate) {
+                return this.toTime;
+            } else {
+                return "23:59";
             }
         }
     }
