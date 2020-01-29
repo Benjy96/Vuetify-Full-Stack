@@ -5,6 +5,7 @@
           <!-- v-btn extends router-link -->
       <v-spacer class="navbar"></v-spacer>
         <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">Cancel a booking</v-btn>
+        <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">My Calendar</v-btn>
         <v-btn v-if="currentUser" to="/dashboard" class="ml-4">Dashboard</v-btn>
         <v-btn v-if="!currentUser" to="/register" class="ml-4">Register</v-btn>
         <v-btn v-if="!currentUser" to="/login" class="ml-4">Login</v-btn>
