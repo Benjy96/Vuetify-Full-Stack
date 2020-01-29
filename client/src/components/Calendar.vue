@@ -194,10 +194,6 @@ export default {
       );
       this.isFetchingUnavailableDays = false;
     },
-    //TODO: Move to back-end / add extra checks - like meta-data first, perhaps?
-    async refreshDayBookings(year, month, day) {
-      this.customer_bookings = await CustomerService.getBookings(this.id, year, month, day);
-    },
     async getDayBookings({ date }) {
       this.customer_bookings = await CustomerService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
@@ -222,7 +218,7 @@ export default {
 
         await CustomerService.createBooking(this.id, this.email, year, month, day, from, to);
 
-        this.refreshDayBookings(year, month, day);
+        this.getDayBookings(this.addBookingDateObject);
       }
     },
     dayAvailable(dateObject) {
@@ -240,27 +236,29 @@ export default {
       return false;
     },
     slotAvailable(dateObject) {
+      // Check if date is passed
       let currentDate = DateUtils.getCurrentDateString();
       if(dateObject.date < currentDate) {
         return false;
       }
 
-      let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
-
-      for(let i in this.currentMonthUnavailableDays) {
-        if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
-          return false; //TODO: Can we skip rest of slot checks? Maybe through ref methods? Check Calendar component
+      //TODO: handle async with fetching bool
+      // Check if already booked
+      if(this.customer_bookings != null) {
+        for(var x = 0; x < this.customer_bookings.length; x++) {
+          if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, this.customer_bookings[x])) {
+            return false;
+          }
         }
       }
 
+      // Check if in unavailable days
       if(this.dateInUnavailableDays(dateObject)) return false;
       
+      // Check if in regular availability
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
-
       if(dayOfWeek in this.regular_availability) {
-        // For each regular hour range of the day
         for(let i in this.regular_availability[dayOfWeek]) {
-          // If current time in range, return false
           if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
             this.regular_availability[dayOfWeek][i]))
           {
@@ -272,7 +270,6 @@ export default {
       }
       
       //4. TODO: Check if in admin booking
-
       return true;
     },
     dateInUnavailableDays(dateObject) {
