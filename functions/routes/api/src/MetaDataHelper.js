@@ -44,7 +44,7 @@ class MetaDataHelper {
         let weekday = daysOfWeek[new Date(date).getDay()];
         if(regularHoursDoc.exists) {
             regularHours = regularHoursDoc.data()[weekday];
-            alert(JSON.stringify(regularHours));
+
             for(var range in regularHours) {
                 //Remove the hours OUTSIDE the regular hours range
                 remainingTime += DateUtils.calcFromToDifference(regularHours[range].from, regularHours[range].to);
@@ -65,6 +65,9 @@ class MetaDataHelper {
         let weekday = daysOfWeek[new Date(date).getDay()];
         if(regularHoursDoc.exists) {
             let regularHours = regularHoursDoc.data()[weekday];
+
+            if(regularHours.length == 0) return [];
+
             for(var range in regularHours) {
                 let timeRange = regularHours[range].from + "-" + regularHours[range].to;
                 let rangeAndTime = {
