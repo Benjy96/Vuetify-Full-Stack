@@ -16,6 +16,12 @@
                 label="surname" prepend-icon="mdi-account-circle"
                 @keyup.enter="register"
                 />
+                <v-text-field v-model="occupation"
+                required
+                v-bind:rules="nameRules"
+                label="occupation (for example: hairdresser)" prepend-icon="mdi-hammer"
+                @keyup.enter="register"
+                />
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
@@ -68,6 +74,7 @@ export default {
             showPassword: false,
             firstname: '',
             surname: '',
+            occupation: '',
             email: '',
             password: '',
             emailRules: [
@@ -89,6 +96,7 @@ export default {
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             firstname: this.firstname,
                             surname: this.surname,
+                            occupation: this.occupation,
                             email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
