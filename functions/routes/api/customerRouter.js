@@ -90,8 +90,6 @@ router.post('/booking', async (req, res) => {
     if(!uid || !email || !year || !month || !day || !from || !to) {
         res.status(400).send();
         return;
-    } else {
-        res.status(202).send();
     }
 
     //1. Write to availability collection
@@ -103,7 +101,9 @@ router.post('/booking', async (req, res) => {
             })
         }, 
         {merge: true}
-    );
+    ).then(() => {
+        res.status(200).send();
+    })
 
     //TODO - 2: More detailed owner collection of bookings?
 

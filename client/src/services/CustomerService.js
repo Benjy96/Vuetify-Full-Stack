@@ -17,8 +17,10 @@ class CustomerService {
         TODO: Check each operation follows above guidelines.
     */
 
+    //TODO: use return value?
     static async createBooking(uid, email, year, month, day, from, to) {
-        axios.post(apiURL + '/booking', {uid, email, year, month, day, from, to});
+        let res = await axios.post(apiURL + '/booking', {uid, email, year, month, day, from, to});
+        return res.data;
     }
 
     /**
@@ -59,6 +61,7 @@ class CustomerService {
         let customer_bookings = [];
         if(bookingsRef.exists) {
             customer_bookings = bookingsRef.data().customer_bookings;
+            window.console.log('returning these bookings fam: ' + JSON.stringify(customer_bookings));
             return customer_bookings;
         } else {
             return null;

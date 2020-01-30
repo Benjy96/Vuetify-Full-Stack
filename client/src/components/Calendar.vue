@@ -80,9 +80,9 @@
   color="primary"
   :now="today"
   :type="type"
-  @click:more="getDayBookings"
-  @click:date="getDayBookings"
-  @click:day="getDayBookings"
+  @click:more="viewDay"
+  @click:date="viewDay"
+  @click:day="viewDay"
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
@@ -194,14 +194,13 @@ export default {
       );
       this.isFetchingUnavailableDays = false;
     },
-    async getDayBookings({ date }) {
+    //TODO: replace the next/prev method with this method
+    async getDayBookings(date) {
       this.customer_bookings = await CustomerService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
         DateUtils.getMonthFromDate(date),
         DateUtils.getDayFromDate(date)
       );
-
-      this.viewDay(date);
     },
     async addBooking() {
       if(this.$refs.form.validate()) {
@@ -216,9 +215,12 @@ export default {
         let from = DateUtils.getHourMinFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute);
         let to = DateUtils.getToTimeFormattedHHMM(this.addBookingDateObject.hour, this.addBookingDateObject.minute, this.defaultSlotInterval);
 
+        //RE "Huge Server Async Request Learning: in notes" - FUCK, it was awaiting axios/server, not the db
+        //That's why it was returning 5 bookings instead of 6 when I'd just added a booking
+        //the booking hadn't been added to the db, and my code was running simply when the server responded
         await CustomerService.createBooking(this.id, this.email, year, month, day, from, to);
 
-        this.getDayBookings(this.addBookingDateObject);
+        this.viewDay(date);
       }
     },
     dayAvailable(dateObject) {
@@ -290,6 +292,9 @@ export default {
       this.addBookingDateObject = dateObject;
     },
     viewDay (date) {
+      date = (date.date != undefined) ? date.date : date;
+
+      this.getDayBookings(date);
       this.focus = date
       this.type = 'day'
     },
@@ -297,10 +302,13 @@ export default {
       this.focus = this.today
     },
     prev () {
-      this.$refs.calendar.prev()
+      this.$refs.calendar.prev();
+      if(this.type == 'day') this.getDayBookings(this.focus);
     },
     next () {
-      this.$refs.calendar.next()
+      //TODO: get customer bookings for each day...  may be a lot of reads but could cache?
+      this.$refs.calendar.next();
+      if(this.type == 'day') this.getDayBookings(this.focus);
     },
     //start & end objects passed in with a .month proeprty, properly indexed.
     updateRange ({ start, end }) {
