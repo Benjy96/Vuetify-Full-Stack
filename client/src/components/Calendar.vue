@@ -252,7 +252,7 @@ export default {
         }
       }
 
-      // Check if in unavailable days
+      // Check if in unavailable days - handles admin bookings & fully-booked days
       if(this.dateInUnavailableDays(dateObject)) return false;
       
       // Check if in regular availability
@@ -270,8 +270,7 @@ export default {
           }
         }
       }
-      
-      //4. TODO: Check if in admin booking
+
       return false;
     },
     dateInUnavailableDays(dateObject) {
