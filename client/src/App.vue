@@ -7,7 +7,7 @@
         <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">Cancel a booking</v-btn>
         <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">My Calendar</v-btn>
         <v-btn v-if="currentUser" to="/dashboard" class="ml-4">Dashboard</v-btn>
-        <v-btn v-if="!currentUser" to="/register" class="ml-4">Register</v-btn>
+        <v-btn v-if="!currentUser" to="/register" class="ml-4">Register as a Business</v-btn>
         <v-btn v-if="!currentUser" to="/login" class="ml-4">Login</v-btn>
         <v-btn v-else v-on:click="logout" class="ml-4">Logout</v-btn>
     </v-app-bar>
