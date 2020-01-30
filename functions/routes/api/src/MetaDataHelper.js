@@ -41,7 +41,7 @@ class MetaDataHelper {
         let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
         let regularHours = [];
 
-        let weekday = daysOfWeek[new Date(date).getDay()];
+        let weekday = daysOfWeek[new Date(date).getDay() - 1];
         if(regularHoursDoc.exists) {
             regularHours = regularHoursDoc.data()[weekday];
 
@@ -62,22 +62,24 @@ class MetaDataHelper {
 
         let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
 
-        let weekday = daysOfWeek[new Date(date).getDay()];
+        let weekday = daysOfWeek[new Date(date).getDay() - 1];
         if(regularHoursDoc.exists) {
-            let regularHours = regularHoursDoc.data()[weekday];
+            if(regularHoursDoc.data()[weekday] != undefined) {
+                let regularHours = regularHoursDoc.data()[weekday];
 
-            if(regularHours.length == 0) return [];
-
-            for(var range in regularHours) {
-                let timeRange = regularHours[range].from + "-" + regularHours[range].to;
-                let rangeAndTime = {
-                    range: timeRange,
-                    remainingTime: DateUtils.calcFromToDifference(regularHours[range].from, regularHours[range].to)
+                if(regularHours.length == 0) return [];
+    
+                for(var range in regularHours) {
+                    let timeRange = regularHours[range].from + "-" + regularHours[range].to;
+                    let rangeAndTime = {
+                        range: timeRange,
+                        remainingTime: DateUtils.calcFromToDifference(regularHours[range].from, regularHours[range].to)
+                    }
+                    remainingTime.push(rangeAndTime);
                 }
-                remainingTime.push(rangeAndTime);
             }
+            return remainingTime;
         }
-        return remainingTime;
     }
     /*
         TODO: What if we instead have a day collection, where you add different "types" to it,
