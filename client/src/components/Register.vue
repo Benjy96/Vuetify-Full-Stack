@@ -39,6 +39,18 @@
             <v-btn color="success" @click="register">Register</v-btn>
         </v-card-actions>
 
+        <v-dialog v-model="errorModalDialog" max-width="400">
+            <v-card>
+            <v-container>
+                <p>{{ errorModalText }}</p>
+                <v-btn type="submit" color="error" 
+                @click="errorModalDialog = !errorModalDialog">
+                Ok
+                </v-btn>
+            </v-container>
+            </v-card>
+        </v-dialog>
+
     </v-card>
 </template>
 
@@ -51,6 +63,8 @@ export default {
     name: 'register',
     data() {
         return {
+            errorModalDialog: false,
+            errorModalText: '',
             showPassword: false,
             firstname: '',
             surname: '',
@@ -86,11 +100,15 @@ export default {
                             });
                         });
                     }, err => {
-                        window.console.log(err.message);
+                        this.displayErrorModal(err.message);
                     });
-            }catch(e) {
+            } catch(e) {
                 window.console.log(e);
             }
+        },
+        displayErrorModal(message) {
+            this.errorModalText = message;
+            this.errorModalDialog = true;
         }
     }
 }
