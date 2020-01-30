@@ -4,10 +4,16 @@
 
         <v-card-text>
             <v-form>
-                <v-text-field v-model="displayName"
+                <v-text-field v-model="firstname"
                 required
                 v-bind:rules="nameRules"
-                label="name" prepend-icon="mdi-account-circle"
+                label="first name" prepend-icon="mdi-account-circle"
+                @keyup.enter="register"
+                />
+                <v-text-field v-model="surname"
+                required
+                v-bind:rules="nameRules"
+                label="surname" prepend-icon="mdi-account-circle"
                 @keyup.enter="register"
                 />
                 <v-text-field v-model="email"
@@ -46,7 +52,8 @@ export default {
     data() {
         return {
             showPassword: false,
-            displayName: '',
+            firstname: '',
+            surname: '',
             email: '',
             password: '',
             emailRules: [
@@ -54,7 +61,7 @@ export default {
                 v => /.+@.+/.test(v) || 'E-mail must be valid',
             ],
             nameRules: [
-                v => !!v || 'Name is required'
+                v => !!v || 'Required'
             ]
         }
     },
@@ -66,7 +73,8 @@ export default {
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
                     .then((userCredential) => {
                         db.collection('businesses').doc(userCredential.user.uid).set({
-                            displayName: this.displayName,
+                            firstname: this.firstname,
+                            surname: this.surname,
                             email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({

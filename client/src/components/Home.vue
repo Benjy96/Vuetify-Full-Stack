@@ -9,7 +9,7 @@
           :cols="6"
         >
           <v-card :to="{ name: 'business', params: { id: business.id } }">
-            <v-card-text class="title">{{ business.displayName }}</v-card-text>
+            <v-card-text class="title">{{ business.firstname }} {{ business.surname }} </v-card-text>
           </v-card>
         </v-col>
       </v-row>
