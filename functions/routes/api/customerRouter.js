@@ -148,6 +148,7 @@ function sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
     });
 }
 
+//TODO: Add identifying business info so customer knows wtf it's on about
 function sendCancellationEmail(bookingId, recipientEmail, businessId, bookingDate, from, to) {
     db.collection('mail').doc(bookingId).delete();
 
@@ -164,7 +165,7 @@ function sendCancellationEmail(bookingId, recipientEmail, businessId, bookingDat
         message: {
             subject: 'Booking Cancelation',
             html: `Hi there!
-            <br>Your booking on ${bookingDate} from ${from}-${to} has been cancelled.`
+            <br><br>Your booking on ${bookingDate} from ${from}-${to} has been cancelled.`
         }
     });
 }

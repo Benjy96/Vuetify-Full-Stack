@@ -68,6 +68,7 @@ export default {
         });
     },
     methods: {
+        //TODO: Add cancel dialog to parent component and submit events from children components
         cancelBooking(booking, year, month, day) {
             this.bookingToCancel = booking;
             this.yearOfBookingToCancel = year;
