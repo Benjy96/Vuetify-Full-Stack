@@ -57,7 +57,7 @@ router.delete('/booking', async(req, res) => {
 
             customer_bookings = customer_bookings.filter(item => (item.from != bookingFrom) && (item.to != bookingTo));
 
-            res.status(200).send(customer_bookings);
+            res.status(202).send(customer_bookings);
 
             if(customer_bookings.length == 0) {
                 dayOfBookingsRef.delete().then(MetaDataHelper.updateMetaData(uid, date, date));
@@ -105,17 +105,7 @@ router.post('/booking', async (req, res) => {
         {merge: true}
     );
 
-    //2. Write to more detailed owner bookings collection - TODO: Store name, etc. Not relevant yet.
-    db.collection(`/businesses/${uid}/bookings/${year}/month/${month}/days`).doc(`${day}`)
-    .set({
-        "customer_bookings": admin.firestore.FieldValue.arrayUnion({
-                "email": email,
-                "from": from,
-                "to": to
-            })
-        }, 
-        {merge: true}
-    );
+    //TODO - 2: More detailed owner collection of bookings?
 
     let affectedDate = DateUtils.convertYearMonthDayToDate(year, month, day);
 
