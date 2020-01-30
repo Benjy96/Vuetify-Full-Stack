@@ -257,20 +257,22 @@ export default {
       
       // Check if in regular availability
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
-      if(dayOfWeek in this.regular_availability) {
-        for(let i in this.regular_availability[dayOfWeek]) {
-          if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
-            this.regular_availability[dayOfWeek][i]))
-          {
-            return true;
-          } else {
-            return false;
+      if(dayOfWeek in this.regular_availability){
+        if(this.regular_availability[dayOfWeek].length > 0) {
+          for(let i in this.regular_availability[dayOfWeek]) {
+            if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
+              this.regular_availability[dayOfWeek][i]))
+            {
+              return true;
+            } else {
+              return false;
+            }
           }
         }
       }
       
       //4. TODO: Check if in admin booking
-      return true;
+      return false;
     },
     dateInUnavailableDays(dateObject) {
       let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
