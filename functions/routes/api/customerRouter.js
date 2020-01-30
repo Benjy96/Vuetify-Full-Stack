@@ -28,12 +28,14 @@ require() returns: {}
 
 /** Cancel a booking by email reference */
 router.delete('/booking', async(req, res) => {
-    if(!req.body.bookingReference) {
+    let bookingReference = req.body.bookingReference;
+
+    if(!bookingReference) {
         res.status(400).send();
         return;
     }
 
-    let mailDoc = await db.collection('mail').doc(req.body.bookingReference).get();
+    let mailDoc = await db.collection('mail').doc(bookingReference).get();
     if(mailDoc.exists) {
         let mailData = mailDoc.data();
 
@@ -44,6 +46,7 @@ router.delete('/booking', async(req, res) => {
         let day = DateUtils.getDayFromDate(date);
         let bookingFrom = mailData.bookingInfo.from;
         let bookingTo = mailData.bookingInfo.to;
+        let recipientEmail = mailData.to;
 
         let dayOfBookingsRef = db.collection(`/businesses/${uid}/availability/${year}/month/${month}/days`).doc(`${day}`);
 
@@ -63,6 +66,8 @@ router.delete('/booking', async(req, res) => {
                     customer_bookings: customer_bookings
                 }).then(MetaDataHelper.updateMetaData(uid, date, date));
             }
+
+            sendCancellationEmail(bookingReference, recipientEmail, uid, date, bookingFrom, bookingTo);
         } else {
             res.status(500).send('Could not find booking data for the business ' + uid);
         }
@@ -139,6 +144,27 @@ function sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
             <br>Your booking confirmation code is: 
             <blockquote>${docRef.id}</blockquote>
             <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.`
+        }
+    });
+}
+
+function sendCancellationEmail(bookingId, recipientEmail, businessId, bookingDate, from, to) {
+    db.collection('mail').doc(bookingId).delete();
+
+    let newEmailRef = db.collection('mail').doc();
+    newEmailRef.set({
+        bookingInfo: {
+            cancelTime: admin.firestore.FieldValue.serverTimestamp(),
+            date: bookingDate,
+            from: from,
+            to: to,
+            uid: businessId
+        },
+        to: recipientEmail,
+        message: {
+            subject: 'Booking Cancelation',
+            html: `Hi there!
+            <br>Your booking on ${bookingDate} from ${from}-${to} has been cancelled.`
         }
     });
 }
