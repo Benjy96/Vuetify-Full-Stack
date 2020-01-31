@@ -80,9 +80,9 @@
   color="primary"
   :now="today"
   :type="type"
-  @click:more="viewDay"
-  @click:date="viewDay"
-  @click:day="viewDay"
+  @click:more="loadAndViewDay"
+  @click:date="loadAndViewDay"
+  @click:day="loadAndViewDay"
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
@@ -220,7 +220,7 @@ export default {
         //the booking hadn't been added to the db, and my code was running simply when the server responded
         await CustomerService.createBooking(this.id, this.email, year, month, day, from, to);
 
-        this.viewDay(date);
+        this.loadAndViewDay(date);
       }
     },
     dayAvailable(dateObject) {
@@ -232,7 +232,8 @@ export default {
       
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
       if(dayOfWeek in this.regular_availability) {
-        return true;
+        if(this.regular_availability[dayOfWeek].length == 0) return false;
+        else return true;
       }
 
       return false;
@@ -280,9 +281,7 @@ export default {
 
       if(this.currentMonthUnavailableDays != null) {
         for(var i in this.currentMonthUnavailableDays) {
-          if(this.currentMonthUnavailableDays[i] == dayOfMonth) {
-            return true;
-          }
+          if(this.currentMonthUnavailableDays[i] == dayOfMonth) return true;
         }
       }
       return false;
@@ -291,7 +290,7 @@ export default {
       this.dialog = true;
       this.addBookingDateObject = dateObject;
     },
-    viewDay (date) {
+    loadAndViewDay (date) {
       date = (date.date != undefined) ? date.date : date;
 
       this.getDayBookings(date);
