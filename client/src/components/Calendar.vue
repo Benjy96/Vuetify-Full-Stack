@@ -86,8 +86,8 @@
       </v-dialog>
 
       <v-dialog v-model="isFetchingDayData" hide-overlay persistent width="300">
-        <v-card color="primary">
-          <v-card-text color="white">
+        <v-card color="primary" light>
+          <v-card-text>
             Getting bookings...
             <v-progress-linear
               indeterminate
@@ -98,7 +98,7 @@
         </v-card>
       </v-dialog>
 
-<v-sheet height="600" v-if="!isFetchingUnavailableDays && !isFetchingRegularAvailability">
+<v-sheet height="600" v-if="!isFetchingMonthData">
 
   <!-- ***** CALENDAR ***** -->
 
@@ -144,8 +144,6 @@ export default {
   data: () => ({
     isFetchingMonthData: true,
     isFetchingDayData: false,
-    isFetchingUnavailableDays: true,
-    isFetchingRegularAvailability: true,
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
     type: 'month',
@@ -175,18 +173,14 @@ export default {
   }),
   created () {
     //Month Viewed Upon Load
-    //1. Check unavailable days meta-data
-
     Promise.all([
+      this.getRegularAvailability(),
       this.getUnavailableDays(DateUtils.getLastMonthDate(this.today)), 
       this.getUnavailableDays(this.today),
       this.getUnavailableDays(DateUtils.getNextMonthDate(this.today))
     ]).then(() => {
-      this.isFetchingUnavailableDays = false;
-      if(this.isFetchingRegularAvailability == false) this.isFetchingMonthData = false;
+      this.isFetchingMonthData = false;
     });
-
-    this.getRegularAvailability();
   },
   computed: {
     //computed properties are accessed as variables
@@ -224,19 +218,13 @@ export default {
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
-        this.isFetchingRegularAvailability = false;
-        //How to avoid a million bools? Access through a single fetcher? Array?
-        //The problem: know when MULTIPLE asyncs done . . . listener? My own Promise?
-        if(this.isFetchingUnavailableDays == false) this.isFetchingMonthData = false;
       });
     },
     //TODO: instead of separating unavail2able days into sep documents - do one document with an array?
-    //I doubt you would overflow the data limit.... 
     async getUnavailableDays(date) {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
-      //TODO: Call this when in scope and do once
       if(this.unavailableDays[year] == null) {
         this.unavailableDays[year] = {};
       }
@@ -333,16 +321,6 @@ export default {
 
       return false;
     },
-    // dateInUnavailableDays(dateObject) {
-    //   let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
-
-    //   if(this.currentMonthUnavailableDays != null) {
-    //     for(var i in this.currentMonthUnavailableDays) {
-    //       if(this.currentMonthUnavailableDays[i] == dayOfMonth) return true;
-    //     }
-    //   }
-    //   return false;
-    // },
     dateInUnavailableDays(dateObject) {
       let year = DateUtils.getYearFromDate(dateObject.date);
       let month = DateUtils.getMonthFromDate(dateObject.date);
@@ -378,11 +356,33 @@ export default {
     prev () {
       this.$refs.calendar.prev();
       if(this.type == 'day') this.getDayBookings(this.focus);
+
+      if(this.type == 'month') {
+        let nextMonthDate = DateUtils.getLastMonthDate(this.focus);
+        let year = DateUtils.getYearFromDate(nextMonthDate);
+        let month = DateUtils.getMonthFromDate(nextMonthDate);
+
+        if(!this.unavailableDays[year][month]) {
+          this.isFetchingMonthData = true;
+          this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+        }
+      }
     },
     next () {
       //TODO: get customer bookings for each day...  may be a lot of reads but could cache?
       this.$refs.calendar.next();
       if(this.type == 'day') this.getDayBookings(this.focus);
+
+      if(this.type == 'month') {
+        let nextMonthDate = DateUtils.getNextMonthDate(this.focus);
+        let year = DateUtils.getYearFromDate(nextMonthDate);
+        let month = DateUtils.getMonthFromDate(nextMonthDate);
+
+        if(!this.unavailableDays[year][month]) {
+          this.isFetchingMonthData = true;
+          this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+        }
+      }
     },
     //start & end objects passed in with a .month proeprty, properly indexed.
     updateRange ({ start, end }) {
