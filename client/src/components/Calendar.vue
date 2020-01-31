@@ -283,7 +283,9 @@ export default {
         return false;
       }
 
-      //TODO: handle async with fetching bool
+      if(this.isFetchingDayData) return false;
+
+      //TODO: handle async with fetching bool - we need to differentiate empty cust bookings with none
       // Check if already booked
       if(this.customer_bookings != null) {
         for(var x = 0; x < this.customer_bookings.length; x++) {
@@ -328,10 +330,10 @@ export default {
       this.dialog = true;
       this.addBookingDateObject = dateObject;
     },
-    loadAndViewDay (date) {
+    async loadAndViewDay (date) {
       date = (date.date != undefined) ? date.date : date;
 
-      this.getDayBookings(date);
+      await this.getDayBookings(date);
       this.focus = date
       this.type = 'day'
     },
