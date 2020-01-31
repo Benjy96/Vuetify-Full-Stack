@@ -42,8 +42,6 @@ router.post('/adminBooking', async(req, res) => {
 
   if(!uid || !adminBooking) {
     res.status(400).send();
-  } else {
-    res.status(202).send();
   }
 
   //1. Get from year, month, and day
@@ -83,6 +81,8 @@ router.post('/adminBooking', async(req, res) => {
           { merge: true }
       );
   }
+
+  res.status(200).send();
 
   MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
 });
