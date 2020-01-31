@@ -373,16 +373,18 @@ export default {
     next () {
       //TODO: get customer bookings for each day...  may be a lot of reads but could cache?
       this.$refs.calendar.next();
-      if(this.type == 'day') this.getDayBookings(this.focus);
+      if(this.focus >= DateUtils.getCurrentDateString()) {
+        if(this.type == 'day') this.getDayBookings(this.focus);
 
-      if(this.type == 'month') {
-        let nextMonthDate = DateUtils.getNextMonthDate(this.focus);
-        let year = DateUtils.getYearFromDate(nextMonthDate);
-        let month = DateUtils.getMonthFromDate(nextMonthDate);
+        if(this.type == 'month') {
+          let nextMonthDate = DateUtils.getNextMonthDate(this.focus);
+          let year = DateUtils.getYearFromDate(nextMonthDate);
+          let month = DateUtils.getMonthFromDate(nextMonthDate);
 
-        if(!this.unavailableDays[year][month]) {
-          this.isFetchingMonthData = true;
-          this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+          if(!this.unavailableDays[year][month]) {
+            this.isFetchingMonthData = true;
+            this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+          }
         }
       }
     },
