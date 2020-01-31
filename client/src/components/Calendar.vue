@@ -40,6 +40,8 @@
         </v-toolbar>
       </v-sheet>
 
+      <!-- ***** DIALOGS ***** -->
+
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
           <v-container>
@@ -67,6 +69,32 @@
               Thanks!
             </v-btn>
           </v-container>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="isFetchingMonthData" hide-overlay persistent width="300">
+        <v-card color="primary">
+          <v-card-text>
+            Loading...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0">
+            </v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="isFetchingDayData" hide-overlay persistent width="300">
+        <v-card color="primary">
+          <v-card-text>
+            Getting bookings...
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0">
+            </v-progress-linear>
+          </v-card-text>
         </v-card>
       </v-dialog>
 
@@ -107,13 +135,15 @@
 </template>
 
 <script>
-import CustomerService from '../services/CustomerService';
 import { DateUtils } from '../DateUtils';
 import { daysOfWeek } from '../DateUtils';
+import CustomerService from '../services/CustomerService';
 
 export default {
   props: ['id'],
   data: () => ({
+    isFetchingMonthData: true,
+    isFetchingDayData: false,
     isFetchingUnavailableDays: true,
     isFetchingRegularAvailability: true,
     today: new Date().toISOString().substr(0, 10),
@@ -149,7 +179,7 @@ export default {
     this.getRegularAvailability();
   },
   computed: {
-    //must be called by the calendar?
+    //computed properties are accessed as variables
     title () {
       const { start, end } = this
       if (!start || !end) {
@@ -185,6 +215,9 @@ export default {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
         this.isFetchingRegularAvailability = false;
+        //How to avoid a million bools? Access through a single fetcher? Array?
+        //The problem: know when MULTIPLE asyncs done . . . listener? My own Promise?
+        if(this.isFetchingUnavailableDays == false) this.isFetchingMonthData = false;
       });
     },
     async getMonthUnavailableDays() {
@@ -193,14 +226,19 @@ export default {
         DateUtils.getMonthFromDate(this.today)
       );
       this.isFetchingUnavailableDays = false;
+      if(this.isFetchingRegularAvailability == false) this.isFetchingMonthData = false;
     },
     //TODO: replace the next/prev method with this method
     async getDayBookings(date) {
+      this.isFetchingDayData = true;
+
       this.customer_bookings = await CustomerService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
         DateUtils.getMonthFromDate(date),
         DateUtils.getDayFromDate(date)
       );
+
+      this.isFetchingDayData = false;
     },
     async addBooking() {
       if(this.$refs.form.validate()) {
