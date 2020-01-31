@@ -355,16 +355,18 @@ export default {
     },
     prev () {
       this.$refs.calendar.prev();
-      if(this.type == 'day') this.getDayBookings(this.focus);
+      if(!DateUtils.getCurrentDateString() < this.focus) {
+        if(this.type == 'day') this.getDayBookings(this.focus);
 
-      if(this.type == 'month') {
-        let nextMonthDate = DateUtils.getLastMonthDate(this.focus);
-        let year = DateUtils.getYearFromDate(nextMonthDate);
-        let month = DateUtils.getMonthFromDate(nextMonthDate);
+        if(this.type == 'month') {
+          let nextMonthDate = DateUtils.getLastMonthDate(this.focus);
+          let year = DateUtils.getYearFromDate(nextMonthDate);
+          let month = DateUtils.getMonthFromDate(nextMonthDate);
 
-        if(!this.unavailableDays[year][month]) {
-          this.isFetchingMonthData = true;
-          this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+          if(!this.unavailableDays[year][month]) {
+            this.isFetchingMonthData = true;
+            this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+          }
         }
       }
     },
