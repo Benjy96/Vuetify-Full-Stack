@@ -55,13 +55,34 @@ export class DateUtils {
 
     // }
 
-    // static getDaysInRange(from, to) {
-    //     //TODO: Add onto the getMonthsInRange array 
-    // }
+    static getLastMonthDate(fromDate) {
+        let month = parseInt(this.getMonthFromDate(fromDate)) - 1;
+        let year = this.getYearFromDate(fromDate);
 
-    // static getMonthsInRange(from, to) {
-    //     //TODO: Add onto the years array from getYearsInRange
-    // }
+        if(month < 1) {
+            year = parseInt(year) - 1;
+            return `${year}-12-01`;
+        }
+
+        if(month < 12) {
+            return `${year}-0${month}-01`;
+        }
+    }
+
+    /**
+     * @param {String} date YYYY-MM-DD, with DD being 01 and YYYY / MM being incremented or decremented appropriately
+     */
+    static getNextMonthDate(fromDate) {
+        let month = parseInt(this.getMonthFromDate(fromDate)) + 1;
+        let year = this.getYearFromDate(fromDate);
+
+        if(month > 12) {
+            year = parseInt(year) + 1;
+            return `${year}-01-01`;
+        }
+
+        return `${year}-0${month}-01`;
+    }
 
     /**
      * @returns {String[]} years
@@ -263,6 +284,10 @@ export class DateUtils {
         }
     }
 
+    /**
+     * Format into YYYY-MM-DD
+     * @returns {String} date
+     */
     static convertYearMonthDayToDate(year, month, day) {
         return `${year}-${month}-${day}`;
     }
@@ -604,3 +629,7 @@ export class DateUtils {
         return dateList;
     }
 }
+
+// Testing with vue serve DateUtils.js
+// alert(DateUtils.getLastMonthDate(new Date()));
+// alert(DateUtils.getNextMonthDate(new Date()));

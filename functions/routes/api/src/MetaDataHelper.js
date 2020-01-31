@@ -14,7 +14,7 @@ class MetaDataHelper {
         // Meta-data Get affected dates for marking unavailable
         let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
-        for(var i in affectedDates) {
+        for(var i in affectedDates) {         
             let dateAvailable = await this.isDateAvailable(uid, affectedDates[i]);
             if(!dateAvailable) {
                 this.markDateUnavailable(uid, affectedDates[i]);
@@ -91,7 +91,6 @@ class MetaDataHelper {
     * Checks regular hours & admin/customer bookings
     * @returns {boolean}
     */
-   //TODO: Conduct manual admin booking testing - some days weren't getting added to unavailableDays (1st Jan Wed)
     static async isDateAvailable(uid, date) {
         //1 - Set remaining hours based on regular hours
         let remainingTime = await this.getRegularHoursWithTimeRemaining(uid, date);

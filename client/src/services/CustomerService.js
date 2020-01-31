@@ -41,7 +41,7 @@ class CustomerService {
 
     //TODO: IF we stored this on back-end could have a listener and only need to actually query meta data when metadata changes
     /** READ from a month's meta-data document */
-    static async getMonthUnavailableDays(uid, year, month) {
+    static async getUnavailableDays(uid, year, month) {
         let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
         let unavailableDays = {};
         if(metaDataDocRef.exists) {

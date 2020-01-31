@@ -74,7 +74,7 @@
 
       <v-dialog v-model="isFetchingMonthData" hide-overlay persistent width="300">
         <v-card color="primary">
-          <v-card-text>
+          <v-card-text color="white">
             Loading...
             <v-progress-linear
               indeterminate
@@ -87,7 +87,7 @@
 
       <v-dialog v-model="isFetchingDayData" hide-overlay persistent width="300">
         <v-card color="primary">
-          <v-card-text>
+          <v-card-text color="white">
             Getting bookings...
             <v-progress-linear
               indeterminate
@@ -160,6 +160,7 @@ export default {
     dialog: false,
     dialogDate: false,
     addBookingDateObject: null,
+    unavailableDays: {},
     currentMonthUnavailableDays: null,
     customer_bookings: null,
     admin_bookings: null,
@@ -175,7 +176,16 @@ export default {
   created () {
     //Month Viewed Upon Load
     //1. Check unavailable days meta-data
-    this.getMonthUnavailableDays();
+
+    Promise.all([
+      this.getUnavailableDays(DateUtils.getLastMonthDate(this.today)), 
+      this.getUnavailableDays(this.today),
+      this.getUnavailableDays(DateUtils.getNextMonthDate(this.today))
+    ]).then(() => {
+      this.isFetchingUnavailableDays = false;
+      if(this.isFetchingRegularAvailability == false) this.isFetchingMonthData = false;
+    });
+
     this.getRegularAvailability();
   },
   computed: {
@@ -220,16 +230,22 @@ export default {
         if(this.isFetchingUnavailableDays == false) this.isFetchingMonthData = false;
       });
     },
-    async getMonthUnavailableDays() {
-      this.currentMonthUnavailableDays = await CustomerService.getMonthUnavailableDays(this.id, 
-        DateUtils.getYearFromDate(this.today),
-        DateUtils.getMonthFromDate(this.today)
-      );
-      this.isFetchingUnavailableDays = false;
-      if(this.isFetchingRegularAvailability == false) this.isFetchingMonthData = false;
+    //TODO: instead of separating unavail2able days into sep documents - do one document with an array?
+    //I doubt you would overflow the data limit.... 
+    async getUnavailableDays(date) {
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
+
+      //TODO: Call this when in scope and do once
+      if(this.unavailableDays[year] == null) {
+        this.unavailableDays[year] = {};
+      }
+
+      this.unavailableDays[year][month] = await CustomerService.getUnavailableDays(this.id, year, month);
     },
     //TODO: replace the next/prev method with this method
     async getDayBookings(date) {
+      //Don't need a loader if we already have a dialog covering the bookings
       if(!this.bookingCreatedDialog) this.isFetchingDayData = true;
 
       this.customer_bookings = await CustomerService.getBookings(this.id, 
@@ -266,6 +282,7 @@ export default {
         return false;
       }
 
+      //Handles admin bookings (for current month) & customer bookings
       if(this.dateInUnavailableDays(dateObject)) return false;
       
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
@@ -316,14 +333,29 @@ export default {
 
       return false;
     },
+    // dateInUnavailableDays(dateObject) {
+    //   let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
+
+    //   if(this.currentMonthUnavailableDays != null) {
+    //     for(var i in this.currentMonthUnavailableDays) {
+    //       if(this.currentMonthUnavailableDays[i] == dayOfMonth) return true;
+    //     }
+    //   }
+    //   return false;
+    // },
     dateInUnavailableDays(dateObject) {
+      let year = DateUtils.getYearFromDate(dateObject.date);
+      let month = DateUtils.getMonthFromDate(dateObject.date);
       let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
 
-      if(this.currentMonthUnavailableDays != null) {
-        for(var i in this.currentMonthUnavailableDays) {
-          if(this.currentMonthUnavailableDays[i] == dayOfMonth) return true;
+      if(this.unavailableDays != null) {
+        if(this.unavailableDays[year][month] != null) {
+          for(var i in this.unavailableDays[year][month]) {
+            if(this.unavailableDays[year][month][i] == dayOfMonth) return true;
+          }
         }
       }
+
       return false;
     },
     openDialog(dateObject) {
