@@ -230,7 +230,7 @@ export default {
     },
     //TODO: replace the next/prev method with this method
     async getDayBookings(date) {
-      this.isFetchingDayData = true;
+      if(!this.bookingCreatedDialog) this.isFetchingDayData = true;
 
       this.customer_bookings = await CustomerService.getBookings(this.id, 
         DateUtils.getYearFromDate(date),
@@ -334,6 +334,9 @@ export default {
       date = (date.date != undefined) ? date.date : date;
 
       await this.getDayBookings(date);
+      this.viewDay(date);
+    },
+    viewDay(date) {
       this.focus = date
       this.type = 'day'
     },
