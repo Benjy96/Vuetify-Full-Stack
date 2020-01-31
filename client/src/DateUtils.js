@@ -55,6 +55,35 @@ export class DateUtils {
 
     // }
 
+    static incrementDateMonth(date, numMonthIncrements) {
+        let year = parseInt(this.getYearFromDate(date));
+        let month = parseInt(this.getMonthFromDate(date));
+        // How to, from a number, calculate a given year and month?
+
+        //It's not just based on the number, but our position
+        if(numMonthIncrements < 0) {
+            //Decreasing but not by over a year
+            let numYearsToDecrease, newMonth;
+            if(numMonthIncrements < 12 && month + numMonthIncrements < 0) {
+                numYearsToDecrease = 1;
+                // e.g., Jan (1) - 2 months = -1, which is 12 + -1, which is 11
+                newMonth = 12 + (month + numMonthIncrements);
+            } else if(numMonthIncrements < 12 && month + numMonthIncrements == 0) {
+                numYearsToDecrease = 1;
+                newMonth = 12;
+            } else {
+                numYearsToDecrease = Math.floor(-numMonthIncrements / 12);
+                newMonth = -numMonthIncrements % 12;
+            }
+
+            year -= numYearsToDecrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`;
+        } else {
+            //TODO: Implement forward in time
+        }
+    }
+
     static getLastMonthDate(fromDate) {
         let month = parseInt(this.getMonthFromDate(fromDate)) - 1;
         let year = this.getYearFromDate(fromDate);
@@ -82,6 +111,16 @@ export class DateUtils {
         }
 
         return `${year}-0${month}-01`;
+    }
+
+    static formatNumInMMFormat(month) {
+        if(month >= 10) {
+            return month;
+        } else if(typeof month == 'number') {
+            return "0" + month.toString();
+        } else if(typeof month == 'string') {
+            return "0" + month;
+        }
     }
 
     /**
@@ -633,3 +672,4 @@ export class DateUtils {
 // Testing with vue serve DateUtils.js
 // alert(DateUtils.getLastMonthDate(new Date()));
 // alert(DateUtils.getNextMonthDate(new Date()));
+alert(DateUtils.incrementDateMonth("2020-01-01", -1));
