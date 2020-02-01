@@ -220,7 +220,7 @@ export default {
         this.regular_availability = res;
       });
     },
-    //TODO: instead of separating unavail2able days into sep documents - do one document with an array?
+    //TODO: instead of separating unavailable days into sep documents - do one document with an array?
     async getUnavailableDays(date) {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
@@ -231,7 +231,6 @@ export default {
 
       this.unavailableDays[year][month] = await CustomerService.getUnavailableDays(this.id, year, month);
     },
-    //TODO: replace the next/prev method with this method
     async getDayBookings(date) {
       //Don't need a loader if we already have a dialog covering the bookings
       if(!this.bookingCreatedDialog) this.isFetchingDayData = true;
@@ -381,9 +380,16 @@ export default {
           let year = DateUtils.getYearFromDate(nextMonthDate);
           let month = DateUtils.getMonthFromDate(nextMonthDate);
 
-          if(!this.unavailableDays[year][month]) {
+          if(!this.unavailableDays[year] || !this.unavailableDays[year][month]) {
             this.isFetchingMonthData = true;
-            this.getUnavailableDays(this.focus).then(() => { this.isFetchingMonthData = false; })
+
+            Promise.all([
+              this.getUnavailableDays(nextMonthDate),
+              this.getUnavailableDays(DateUtils.getNextMonthDate(nextMonthDate)),
+              this.getUnavailableDays(DateUtils.incrementMonthOfDate(nextMonthDate, 2)),
+            ]).then(() => {
+              this.isFetchingMonthData = false;
+            });
           }
         }
       }
