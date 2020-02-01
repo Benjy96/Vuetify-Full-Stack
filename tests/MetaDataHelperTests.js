@@ -40,7 +40,7 @@ class MetaDataHelperTests {
      */
     static async setRegularHours() {
         db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability').doc('regular').set({
-            "Wednesday": [
+            "Miércoles": [
                 {
                     from: "09:00",
                     to: "17:00"
@@ -161,13 +161,13 @@ class MetaDataHelperTests {
             //Admin booking 2019-10-01 17:00 -> 2020-01-01 24:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:00", "2020-01-01", "24:00", false);
 
-            //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:30 (Wednesday Regular Hours 09:00->17:00) = FALSE
+            //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:30 (Miércoles Regular Hours 09:00->17:00) = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "17:30", false);
 
-            //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:00, Wednesday Regular Hours 09:00->17:00 = FALSE
+            //Admin booking 2019-10-01 17:30 -> 2020-01-01 17:00, Miércoles Regular Hours 09:00->17:00 = FALSE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "17:00", false);
 
-            //Admin booking 2019-10-01 17:30 -> 2020-01-01 16:30, Wednesday Regular Hours 09:00->17:00 = TRUE
+            //Admin booking 2019-10-01 17:30 -> 2020-01-01 16:30, Miércoles Regular Hours 09:00->17:00 = TRUE
             await this.testDateAvailabilityWithAdminBooking("2020-01-01", "2019-10-01", "17:30", "2020-01-01", "16:30", true);
         }
         catch(e)

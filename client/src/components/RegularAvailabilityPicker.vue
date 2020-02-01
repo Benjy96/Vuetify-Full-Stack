@@ -17,7 +17,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="fromTime"
-                            label="From time"
+                            label="Desde la hora"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -46,7 +46,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="toTime"
-                            label="To time"
+                            label="Hasta la hora"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -67,7 +67,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <v-btn @click="validate">Save</v-btn>
+                <v-btn @click="validate">Añadir</v-btn>
             </v-col>
         </v-row>
     </v-form>
@@ -87,7 +87,7 @@ export default {
             toTime: null,
             fromTimeDialogToggle: false,
             toTimeDialogToggle: false,
-            day: 'Monday',
+            day: 'Lunes',
             days: daysOfWeek
         }
     },
@@ -95,14 +95,14 @@ export default {
         /* Standard availability algorithm:
 
             - Store date range
-                1. Save Monday 09:00 - 17:00
-                2. Add to DB: business/unavailable/days/Monday/17:00-09:00
+                1. Save Lunes 09:00 - 17:00
+                2. Add to DB: business/unavailable/days/Lunes/17:00-09:00
             - Retrieve date range
-                1. Click on Monday on calendar
-                2. Read from DB: business/unavailable/days/Monday
-                3. If Monday collection length > 0:
-                    1. For each Calendar Hour (interval slot) in Calendar Monday:
-                        1. If Calendar Hour in DB Monday Range:
+                1. Click on Lunes on calendar
+                2. Read from DB: business/unavailable/days/Lunes
+                3. If Lunes collection length > 0:
+                    1. For each Calendar Hour (interval slot) in Calendar Lunes:
+                        1. If Calendar Hour in DB Lunes Range:
                             1. Do not render clickable booking slot
         */
         validate() {

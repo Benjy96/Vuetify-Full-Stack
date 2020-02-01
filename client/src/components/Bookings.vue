@@ -23,10 +23,10 @@
         <v-dialog v-model="confirmCancelBookingDialog" max-width="400">
             <v-card>
             <v-container>
-                <p>Are you sure you wish to cancel this booking?</p>
+                <p>¿Estás seguro/a de que quieres cancelar tu reserca?</p>
                 <v-btn type="submit" color="error" 
                 @click="confirmCancelBooking">
-                Cancel
+                Cancelar
                 </v-btn>
             </v-container>
             </v-card>

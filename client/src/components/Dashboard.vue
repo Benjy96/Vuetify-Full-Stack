@@ -6,7 +6,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Regular Availability</v-card-title>
+                    <v-card-title>Horas laborables</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
@@ -20,8 +20,8 @@
                                     <template v-slot:default>
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Day</th>
-                                            <th class="text-center">Regular Hours</th>
+                                            <th class="text-center">Dia</th>
+                                            <th class="text-center">Horas</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -55,7 +55,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Holiday Bookings</v-card-title>
+                    <v-card-title>Indisponibilidad</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
@@ -67,18 +67,14 @@
                             <v-container>
                                 <v-simple-table>
                                     <template v-slot:default>
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">Unavailable Ranges</th>
-                                        </tr>
-                                    </thead>
+
                                     <tbody>
                                         <tr v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
                                             <td>
                                                 <v-list-item>
                                                     <v-list-item-content>
-                                                    From {{ adminBooking.fromDate }} {{adminBooking.fromTime}}
-                                                    to {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+                                                    Desde {{ adminBooking.fromDate }} {{adminBooking.fromTime}}
+                                                    hasta {{ adminBooking.toDate }} {{ adminBooking.toTime }}
                                                     </v-list-item-content>
                                                     
                                                     <v-list-item-action>
@@ -103,7 +99,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                <v-card-title>Upcoming Bookings</v-card-title>
+                <v-card-title>Próximas Reservas</v-card-title>
                 <v-divider></v-divider>
                 <v-row>
                     <v-col>
@@ -139,13 +135,13 @@ export default {
         return {
             id: null,
             ranges: {
-                "Monday": [],
-                "Tuesday": [],
-                "Wednesday": [],
-                "Thursday": [],
-                "Friday": [],
-                "Saturday": [],
-                "Sunday": []
+                "Lunes": [],
+                "Martes": [],
+                "Miércoles": [],
+                "Jueves": [],
+                "Viernes": [],
+                "Sábado": [],
+                "Domingo": []
             },
             adminBookings: [],
             daysOfWeek: daysOfWeek

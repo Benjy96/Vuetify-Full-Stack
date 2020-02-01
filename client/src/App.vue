@@ -1,15 +1,15 @@
 <template>
   <v-app>
     <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
-        <v-btn to="/" class="router-button mr-4">Home</v-btn>
+        <v-btn to="/" class="router-button mr-4">Inicio</v-btn>
           <!-- v-btn extends router-link -->
       <v-spacer class="navbar"></v-spacer>
-        <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">Cancel a booking</v-btn>
-        <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">My Calendar</v-btn>
-        <v-btn v-if="currentUser" to="/dashboard" class="ml-4">Dashboard</v-btn>
-        <v-btn v-if="!currentUser" to="/register" class="ml-4">Register as a Business</v-btn>
-        <v-btn v-if="!currentUser" to="/login" class="ml-4">Login</v-btn>
-        <v-btn v-else v-on:click="logout" class="ml-4">Logout</v-btn>
+        <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">Cancelar reserva</v-btn>
+        <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">Mi Calendario</v-btn>
+        <v-btn v-if="currentUser" to="/dashboard" class="ml-4">Administración</v-btn>
+        <v-btn v-if="!currentUser" to="/register" class="ml-4">Registrar como empresa</v-btn>
+        <v-btn v-if="!currentUser" to="/login" class="ml-4">Iniciar Sesión</v-btn>
+        <v-btn v-else v-on:click="logout" class="ml-4">Salir</v-btn>
     </v-app-bar>
 
     <v-dialog v-model="cancelDialog" max-width="400">
@@ -20,7 +20,7 @@
               label="Booking reference"
               v-model="bookingReference"/>
               <v-btn type="submit" color="primary">
-                Cancel Booking
+                Cancelar reserva
               </v-btn>
             </v-form>
           </v-container>
@@ -30,10 +30,10 @@
       <v-dialog v-model="cancelConfirmationDialog" max-width="400">
         <v-card>
           <v-container>
-            <p>Your booking has been canceled</p>
+            <p>Tu reserva ha sido cancelada</p>
             <v-btn type="submit" color="primary" 
             @click="cancelConfirmationDialog = !cancelConfirmationDialog">
-              Ok
+              Vale
             </v-btn>
           </v-container>
         </v-card>
@@ -72,7 +72,7 @@ export default {
       cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
-        value => !!value || 'Booking reference is required'
+        value => !!value || 'Requerido'
       ],
       bookingReference: ''
     }

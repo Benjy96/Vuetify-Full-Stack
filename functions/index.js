@@ -48,10 +48,10 @@ exports.setRegularHours = functions.firestore.document('/businesses/{businessId}
   let newBusinessId = change.id();
 
   db.collection(`/businesses/${newBusinessId}/availability`).doc('regular').set({
-    Monday: [{from: "09:00", to: "17:00"}],
-    Tuesday: [{from: "09:00", to: "17:00"}],
-    Wednesday: [{from: "09:00", to: "17:00"}],
-    Thursday: [{from: "09:00", to: "17:00"}],
-    Friday: [{from: "09:00", to: "17:00"}]
+    Lunes: [{from: "09:00", to: "17:00"}],
+    Martes: [{from: "09:00", to: "17:00"}],
+    Miércoles: [{from: "09:00", to: "17:00"}],
+    Jueves: [{from: "09:00", to: "17:00"}],
+    Viernes: [{from: "09:00", to: "17:00"}]
   });
 }); */

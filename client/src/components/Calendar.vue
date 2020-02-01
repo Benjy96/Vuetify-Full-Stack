@@ -4,7 +4,7 @@
       <v-sheet height="64">
         <v-toolbar flat color="white">
           <v-btn outlined class="mr-4" @click="setToday">
-            Today
+            Hoy
           </v-btn>
           <v-btn fab text small @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
@@ -24,16 +24,16 @@
             </template>
             <v-list>
               <v-list-item @click="type = 'day'">
-                <v-list-item-title>Day</v-list-item-title>
+                <v-list-item-title>Dia</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'week'">
-                <v-list-item-title>Week</v-list-item-title>
+                <v-list-item-title>Semanas</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'month'">
-                <v-list-item-title>Month</v-list-item-title>
+                <v-list-item-title>Mes</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
+                <v-list-item-title>4 dias</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -46,14 +46,14 @@
         <v-card>
           <v-container>
             <v-form @submit.prevent="addBooking" ref="form">
-              <p>Book an appointment</p>
+              <p>Reservar una cita</p>
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
                 label="email" prepend-icon="mdi-account-circle"
                 />
               <v-btn type="submit" color="primary">
-                Book
+                Reservar
               </v-btn>
             </v-form>
           </v-container>
@@ -63,10 +63,10 @@
       <v-dialog v-model="bookingCreatedDialog" max-width="400">
         <v-card>
           <v-container>
-            <p>You have been sent an email with your booking reference number</p>
+            <p>Se te ha enviado un email con tu número de referencia</p>
             <v-btn type="submit" color="primary" 
             @click="bookingCreatedDialog = !bookingCreatedDialog">
-              Thanks!
+              Gracias!
             </v-btn>
           </v-container>
         </v-card>
@@ -75,7 +75,7 @@
       <v-dialog v-model="isFetchingMonthData" hide-overlay persistent width="300">
         <v-card color="primary">
           <v-card-text color="white">
-            Loading...
+            Cargando...
             <v-progress-linear
               indeterminate
               color="white"
@@ -88,7 +88,7 @@
       <v-dialog v-model="isFetchingDayData" hide-overlay persistent width="300">
         <v-card color="primary" light>
           <v-card-text>
-            Getting bookings...
+            Cargando reservas...
             <v-progress-linear
               indeterminate
               color="white"
@@ -103,6 +103,7 @@
   <!-- ***** CALENDAR ***** -->
 
   <v-calendar
+  locale="es"
   ref="calendar"
   v-model="focus"
   color="primary"
@@ -148,10 +149,10 @@ export default {
     focus: new Date().toISOString().substr(0, 10),
     type: 'month',
     typeToLabel: {
-      month: 'Month',
-      week: 'Week',
-      day: 'Day',
-      '4day': '4 Days',
+      month: 'Mes',
+      week: 'Semanas',
+      day: 'Dia',
+      '4day': '4 Dias',
     },
     start: null,  //TODO: What/who populates this? The child calendar component?
     end: null,
@@ -166,7 +167,7 @@ export default {
     defaultSlotInterval: 60,
     email: '',
     emailRules: [
-                v => !!v || 'E-mail is required',
+                v => !!v || 'Requerido',
                 v => /.+@.+/.test(v) || 'E-mail must be valid',
             ],
     bookingCreatedDialog: false

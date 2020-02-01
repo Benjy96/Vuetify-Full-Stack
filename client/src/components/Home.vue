@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Businesses</h1>
+    <h1>Empresas</h1>
     <v-divider></v-divider>
       <v-row>
         <v-col
