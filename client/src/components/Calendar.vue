@@ -175,9 +175,9 @@ export default {
     //Month Viewed Upon Load
     Promise.all([
       this.getRegularAvailability(),
-      this.getUnavailableDays(DateUtils.getLastMonthDate(this.today)), 
       this.getUnavailableDays(this.today),
-      this.getUnavailableDays(DateUtils.getNextMonthDate(this.today))
+      this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
+      this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
     ]).then(() => {
       this.isFetchingMonthData = false;
     });
