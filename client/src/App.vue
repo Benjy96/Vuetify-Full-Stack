@@ -17,7 +17,7 @@
           <v-container>
             <v-form @submit.prevent="cancelBooking" ref="cancelForm">
               <v-text-field required :rules="cancelRules" 
-              label="Booking reference"
+              label="Referencia de reserva"
               v-model="bookingReference"/>
               <v-btn type="submit" color="primary">
                 Cancelar reserva

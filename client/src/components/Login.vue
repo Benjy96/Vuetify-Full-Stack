@@ -1,6 +1,6 @@
 <template>
     <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title><h1>Login</h1></v-card-title>
+        <v-card-title><h1>Iniciar Sesión</h1></v-card-title>
 
         <v-card-text>
             <v-form>
@@ -14,7 +14,7 @@
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                label="password" prepend-icon="mdi-lock" 
+                label="contraseña" prepend-icon="mdi-lock" 
                 @keyup.enter="login"
                 />
             </v-form>
@@ -24,7 +24,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="login">Login</v-btn>
+            <v-btn color="success" @click="login">Iniciar Sesión</v-btn>
         </v-card-actions>
 
     </v-card>
@@ -42,7 +42,7 @@ export default {
             password: '',
             emailRules: [
                 v => !!v || 'Requerido',
-                v => /.+@.+/.test(v) || 'E-mail must be valid',
+                v => /.+@.+/.test(v) || 'E-mail tiene que ser válido',
             ]
         }
     },
