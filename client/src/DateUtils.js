@@ -20,6 +20,12 @@ export const daysOfWeek = [
 
 export class DateUtils {
 
+    /**
+     * Increments or decrements the month of a date. HOWEVER: Always returns 01 for the DD of YYYY-MM-DD
+     * @param {*} date The date you wish to increment or decrement
+     * @param {*} numMonthIncrements a positive or negative number
+     * @returns {String} YYYY-MM-DD, where DD is 01 and YYYY-MM are incremented or decremented
+     */
     static incrementMonthOfDate(date, numMonthIncrements) {
         let year = parseInt(this.getYearFromDate(date));
         let month = parseInt(this.getMonthFromDate(date));
@@ -653,4 +659,4 @@ export class DateUtils {
 // Testing with vue serve DateUtils.js
 // alert(DateUtils.getLastMonthDate(new Date()));
 // alert(DateUtils.getNextMonthDate(new Date()));
-alert(DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 24));
+//alert(DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 24));
