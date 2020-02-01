@@ -20,50 +20,16 @@ export const daysOfWeek = [
 
 export class DateUtils {
 
-    /**
-     * The first and last days will contain the from and to.
-     * @returns {*} { years: 
-     * [2020: { 
-     *          months: [
-     *                  01: [
-     *                          1: {
-     *                              from: "17:30"
-     *                          } , 2, 3 .... 31
-     *                  ],
-     *                  02: [
-     *                          1,2,3,
-     *                          4: {
-     *                              times: [
-     *                                      {
-     *                                          to: "09:00"
-     *                                      }
-     *                                  ]
-     *                          }
-     *                      ]
-     *              ]
-     *          }
-     */
-    // static getYearsMonthsDaysInRange(from, to){
-    //     let fromSplit = from.split("-");
-    //     let toSplit = to.split("-");
-
-    //     let fromYear = fromSplit[0];
-    //     let fromMonth = fromSplit[1];
-
-    //     let toYear = toSplit[0];
-    //     let toMonth = toSplit[1];
-
-    // }
-
-    static incrementDateMonth(date, numMonthIncrements) {
+    static incrementMonthOfDate(date, numMonthIncrements) {
         let year = parseInt(this.getYearFromDate(date));
         let month = parseInt(this.getMonthFromDate(date));
         // How to, from a number, calculate a given year and month?
 
         //It's not just based on the number, but our position
         if(numMonthIncrements < 0) {
-            //Decreasing but not by over a year
             let numYearsToDecrease, newMonth;
+
+            //Decreasing but not by over a year
             if(numMonthIncrements < 12 && month + numMonthIncrements < 0) {
                 numYearsToDecrease = 1;
                 // e.g., Jan (1) - 2 months = -1, which is 12 + -1, which is 11
@@ -79,8 +45,23 @@ export class DateUtils {
             year -= numYearsToDecrease;
 
             return `${year}-${this.formatNumInMMFormat(newMonth)}-01`;
+        } else if(numMonthIncrements > 0) {
+            let numYearsToIncrease, newMonth;
+
+            //Not going to new year
+            if(numMonthIncrements + month <= 12) {
+                numYearsToIncrease = 0;
+                newMonth = numMonthIncrements + month;
+            } else {
+                newMonth = (numMonthIncrements + month) % 12;
+                numYearsToIncrease = Math.floor((numMonthIncrements + month) / 12);
+            }
+
+            year += numYearsToIncrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`
         } else {
-            //TODO: Implement forward in time
+            return date;
         }
     }
 
@@ -672,4 +653,4 @@ export class DateUtils {
 // Testing with vue serve DateUtils.js
 // alert(DateUtils.getLastMonthDate(new Date()));
 // alert(DateUtils.getNextMonthDate(new Date()));
-alert(DateUtils.incrementDateMonth("2020-01-01", -1));
+alert(DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 24));
