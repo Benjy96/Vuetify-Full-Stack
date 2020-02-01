@@ -80,9 +80,11 @@ export class DateUtils {
             return `${year}-12-01`;
         }
 
-        if(month < 12) {
-            return `${year}-0${month}-01`;
+        if(month >= 10) {
+            return `${year}-${month}-01`;
         }
+
+        return `${year}-0${month}-01`;
     }
 
     /**
@@ -95,6 +97,10 @@ export class DateUtils {
         if(month > 12) {
             year = parseInt(year) + 1;
             return `${year}-01-01`;
+        }
+
+        if(month >= 10) {
+            return `${year}-${month}-01`;
         }
 
         return `${year}-0${month}-01`;
