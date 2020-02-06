@@ -1,21 +1,21 @@
 export const daysOfWeekNumbered = [
-    {text: "Lunes", value: 1},
-    {text: "Martes", value: 2},
+    {text: "Monday", value: 1},
+    {text: "Tuesday", value: 2},
     {text: "Wednesay", value: 3},
-    {text: "Jueves", value: 4},
-    {text: "Viernes", value: 5},
-    {text: "Sábado", value: 6},
-    {text: "Domingo", value: 7}
+    {text: "Thursday", value: 4},
+    {text: "Friday", value: 5},
+    {text: "Saturday", value: 6},
+    {text: "Sunday", value: 7}
 ];
 
 export const daysOfWeek = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-    "Domingo"
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
 ];
 
 export class DateUtils {
