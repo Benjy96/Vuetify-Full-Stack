@@ -36,6 +36,14 @@ const messages =
     'ok': {
         'en': "Ok",
         'es': "Vale"
+    },
+    'required': {
+        'en': "Required",
+        'es': "Requerido"
+    },
+    'bookingReference': {
+        'en': "Booking reference",
+        'es': "Referencia de reserva"
     }
 }
 

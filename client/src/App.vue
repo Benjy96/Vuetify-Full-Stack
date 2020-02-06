@@ -34,7 +34,7 @@
           <v-container>
             <v-form @submit.prevent="cancelBooking" ref="cancelForm">
               <v-text-field required :rules="cancelRules" 
-              label="Referencia de reserva"
+              :label="$getLanguageMsg('bookingReference')"
               v-model="bookingReference"/>
               <v-btn type="submit" color="primary">
                 {{$getLanguageMsg('cancelReservation')}}
@@ -89,7 +89,7 @@ export default {
       cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
-        value => !!value || 'Requerido'
+        value => !!value || this.$getLanguageMsg('required')
       ],
       bookingReference: '',
       languages: [
