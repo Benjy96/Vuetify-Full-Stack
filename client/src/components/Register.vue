@@ -1,38 +1,38 @@
 <template>
     <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title><h1>Registrar</h1></v-card-title>
+        <v-card-title><h1>{{$getLanguageMsg('register')}}</h1></v-card-title>
 
         <v-card-text>
             <v-form>
                 <v-text-field v-model="firstname"
                 required
                 v-bind:rules="nameRules"
-                label="nombre" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('firstname')" prepend-icon="mdi-account-circle"
                 @keyup.enter="register"
                 />
                 <v-text-field v-model="surname"
                 required
                 v-bind:rules="nameRules"
-                label="apellido" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('surname')" prepend-icon="mdi-account-circle"
                 @keyup.enter="register"
                 />
                 <v-text-field v-model="occupation"
                 required
                 v-bind:rules="nameRules"
-                label="ocupación (por ejemplo: peluquera)" prepend-icon="mdi-hammer"
+                :label="$getLanguageMsg('occupation')" prepend-icon="mdi-hammer"
                 @keyup.enter="register"
                 />
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                label="email" prepend-icon="mdi-at"
+                :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
                 @keyup.enter="register"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                label="contraseña" prepend-icon="mdi-lock" 
+                :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
                 @keyup.enter="register"
                 />
             </v-form>
@@ -42,7 +42,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="register">Registrar</v-btn>
+            <v-btn color="success" @click="register">{{$getLanguageMsg('register')}}</v-btn>
         </v-card-actions>
 
         <v-dialog v-model="errorModalDialog" max-width="400">
@@ -51,7 +51,7 @@
                 <p>{{ errorModalText }}</p>
                 <v-btn type="submit" color="error" 
                 @click="errorModalDialog = !errorModalDialog">
-                Vale
+                {{$getLanguageMsg('ok')}}
                 </v-btn>
             </v-container>
             </v-card>
@@ -78,11 +78,11 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                v => !!v || 'Requerido',
-                v => /.+@.+/.test(v) || 'E-mail must be valid',
+                v => !!v || this.$getLanguageMsg('required'),
+                v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ],
             nameRules: [
-                v => !!v || 'Requerido'
+                v => !!v || this.$getLanguageMsg('required')
             ]
         }
     },

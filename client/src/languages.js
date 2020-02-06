@@ -17,7 +17,7 @@ const messages =
         'en': "Administration",
         'es': "Administración"
     },
-    'register': {
+    'registerBusiness': {
         'en': "Register",
         'es': "Registrar como empresa"
     },
@@ -33,6 +33,10 @@ const messages =
         'en': "Your reservation has been canceled",
         'es': "Tu reserva ha sido cancelada"
     },
+    'bookingReference': {
+        'en': "Booking reference",
+        'es': "Referencia de reserva"
+    },
     'ok': {
         'en': "Ok",
         'es': "Vale"
@@ -41,10 +45,36 @@ const messages =
         'en': "Required",
         'es': "Requerido"
     },
-    'bookingReference': {
-        'en': "Booking reference",
-        'es': "Referencia de reserva"
+    //Register.vue
+    'emailNotValid' : {
+        'en': "E-mail must be valid",
+        'es': ''
+    },
+    'password': {
+        'en': "Password",
+        'es': "contraseña"
+    },
+    'email': {
+        'en': "email",
+        'es': "email"
+    },
+    'occupation': {
+        'en': "occupation (for example: hairdresser)",
+        'es': "ocupación (por ejemplo: peluquera)"
+    },
+    'surname': {
+        'en': "surname",
+        'es': "apellido"
+    },
+    'firstname': {
+        'en': "name",
+        'es': "nombre"
+    },
+    'register': {
+        'en': "Register",
+        'es': "Registrar"
     }
+    
 }
 
 export default messages;
