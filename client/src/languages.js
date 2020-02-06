@@ -107,6 +107,11 @@ const messages =
     'timeTravel': {
         'en': "As we haven't yet implemented time travel, your \"to\" time can't be before the \"from\" time!",
         'es': "Inválido"
+    },
+    //Bookings.vue
+    'confirmCancelBooking': {
+        'en': "Are you sure you wish to cancel this booking?",
+        'es': "¿Estás seguro/a de que quieres cancelar tu reserca?" //TODO: Should it be THIS booking?
     }
     
     

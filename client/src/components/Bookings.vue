@@ -23,10 +23,10 @@
         <v-dialog v-model="confirmCancelBookingDialog" max-width="400">
             <v-card>
             <v-container>
-                <p>¿Estás seguro/a de que quieres cancelar tu reserca?</p>
+                <p>{{$getLanguageMsg('confirmCancelBooking')}}</p>
                 <v-btn type="submit" color="error" 
                 @click="confirmCancelBooking">
-                Cancelar
+                {{$getLanguageMsg('cancel')}}
                 </v-btn>
             </v-container>
             </v-card>
@@ -68,7 +68,6 @@ export default {
         });
     },
     methods: {
-        //TODO: Add cancel dialog to parent component and submit events from children components
         cancelBooking(booking, year, month, day) {
             this.bookingToCancel = booking;
             this.yearOfBookingToCancel = year;
