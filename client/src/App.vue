@@ -1,5 +1,5 @@
 <template>
-  <v-app>
+  <v-app :key="locale">
     <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
         <v-btn to="/" class="router-button mr-4">{{$getLanguageMsg('home')}}</v-btn>
         <v-menu>
@@ -24,7 +24,7 @@
         <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">{{$getLanguageMsg('cancelReservation')}}</v-btn>
         <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">{{$getLanguageMsg('myCalendar')}}</v-btn>
         <v-btn v-if="currentUser" to="/dashboard" class="ml-4">{{$getLanguageMsg('administration')}}</v-btn>
-        <v-btn v-if="!currentUser" to="/register" class="ml-4">{{$getLanguageMsg('register')}}</v-btn>
+        <v-btn v-if="!currentUser" to="/register" class="ml-4">{{$getLanguageMsg('registerBusiness')}}</v-btn>
         <v-btn v-if="!currentUser" to="/login" class="ml-4">{{$getLanguageMsg('login')}}</v-btn>
         <v-btn v-else v-on:click="logout" class="ml-4">{{$getLanguageMsg('logout')}}</v-btn>
     </v-app-bar>
@@ -85,6 +85,7 @@ export default {
   },
   data() {
     return {
+      locale: this.$getLocale(),
       currentUser: null,
       cancelDialog: false,
       cancelConfirmationDialog: false,
@@ -111,8 +112,10 @@ export default {
       }
     },
     setLocale(locale) {
+      //Sets the global locale object to the new language
       this.$setLocale(locale);
-      this.$forceUpdate();
+      //Makes Vue re-render as this.locale is a key on the app
+      this.locale = locale;
     }
   },
 }
