@@ -53,12 +53,7 @@ import firebase from 'firebase'
 import CustomerService from './services/CustomerService';
 
 export default {
-  created() {
-    //https://vuejs.org/v2/guide/components-edge-cases.html#Accessing-the-Root-Instance
-    
-    //works with Vue.prototype.test
-    //this.$test();
-    
+  created() { 
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.currentUser = user;

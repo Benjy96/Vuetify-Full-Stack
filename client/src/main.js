@@ -15,6 +15,6 @@ new Vue({
   router,
   render: h => h(App),
   created() {
-    this.$setLocale('en');
+    this.$setLocale('es');
   }
 }).$mount('#app')
