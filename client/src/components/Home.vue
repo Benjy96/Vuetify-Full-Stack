@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1>Empresas</h1>
+    <h1>{{$getLanguageMsg('businesses')}}</h1>
     <v-divider></v-divider>
       <v-row>
         <v-col

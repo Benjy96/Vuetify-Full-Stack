@@ -1,5 +1,10 @@
 const messages = 
 {
+    //Home.vue
+    'businesses': {
+        'en': "Businesses",
+        'es': "Empresas"
+    },
     //App.vue - root page
     'home': {
         'en': "Home",
