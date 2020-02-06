@@ -157,6 +157,61 @@ const messages =
     'bookAppointment': {
         'en': "Book an appointment",
         'es': "Reservar una cita"
+    },
+    //Dashboard
+    'upcomingBookings': {
+        'en': "Upcoming bookings",
+        'es': "Próximas Reservas"
+    },
+    'From': {
+        'en': "From",
+        'es': "Desde"
+    },
+    'to': {
+        'en': "to",
+        'es': "hasta"
+    },
+    //TODO: clarify naming v
+    'unavailable': {
+        'en': "Unavailable",
+        'es': "Indisponibilidad"
+    },
+    'workingHours': {
+        'en': "Working Hours",
+        'es': "Horas laborables"
+    },
+    'hours': {
+        'en': "Hours",
+        'es': "Horas"
+    },
+    //days of the week
+    "Monday": {
+        'en': "Monday",
+        'es': "Lunes"
+    },
+    "Tuesday": {
+        'en': "Tuesday",
+        'es': "Martes"
+    },
+    "Wednesday": {
+        'en': "Wednesday",
+        'es': "Miércoles"
+    },
+    "Thursday": {
+        'en': "Thursday",
+        'es': "Jueves"
+    },
+    "Friday": {
+        'en': "Friday",
+        'es': "Viernes"
+    },
+    "Saturday": {
+        'en': "Saturday",
+        'es': "Sábado"
+    },
+    "Sunday": {
+        'en': "Sunday",
+        'es': "Domingo"
     }
 }
 

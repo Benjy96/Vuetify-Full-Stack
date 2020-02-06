@@ -6,7 +6,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Horas laborables</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('workingHours')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
@@ -20,13 +20,13 @@
                                     <template v-slot:default>
                                     <thead>
                                         <tr>
-                                            <th class="text-center">Dia</th>
-                                            <th class="text-center">Horas</th>
+                                            <th class="text-center">{{$getLanguageMsg('day')}}</th>
+                                            <th class="text-center">{{$getLanguageMsg('hours')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in daysOfWeek" :key="'day' + day">
-                                            <td>{{day}}</td>
+                                            <td>{{$getLanguageMsg(day)}}</td>
                                             <td>
                                                 <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
                                                     <v-list-item-content>
@@ -55,7 +55,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>Indisponibilidad</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('unavailable')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
@@ -73,8 +73,8 @@
                                             <td>
                                                 <v-list-item>
                                                     <v-list-item-content>
-                                                    Desde {{ adminBooking.fromDate }} {{adminBooking.fromTime}}
-                                                    hasta {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+                                                    {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
+                                                    {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
                                                     </v-list-item-content>
                                                     
                                                     <v-list-item-action>
@@ -99,7 +99,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                <v-card-title>Próximas Reservas</v-card-title>
+                <v-card-title>{{$getLanguageMsg('upcomingBookings')}}</v-card-title>
                 <v-divider></v-divider>
                 <v-row>
                     <v-col>
@@ -135,13 +135,13 @@ export default {
         return {
             id: null,
             ranges: {
-                "Lunes": [],
-                "Martes": [],
-                "Miércoles": [],
-                "Jueves": [],
-                "Viernes": [],
-                "Sábado": [],
-                "Domingo": []
+                "Monday": [],
+                "Tuesday": [],
+                "Wednesday": [],
+                "Thursday": [],
+                "Friday": [],
+                "Saturday": [],
+                "Sunday": []
             },
             adminBookings: [],
             daysOfWeek: daysOfWeek
