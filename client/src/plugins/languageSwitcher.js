@@ -13,7 +13,7 @@ export default {
     
         Vue.prototype.$setLocale = function(localeKey) {
             Vue.$locale = localeKey;
-            this.$vuetify.lang.current = 'es';
+            this.$vuetify.lang.current = localeKey;
         }
 
         Vue.prototype.$getLocale = function() {

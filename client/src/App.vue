@@ -2,6 +2,23 @@
   <v-app>
     <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
         <v-btn to="/" class="router-button mr-4">{{$getLanguageMsg('home')}}</v-btn>
+        <v-menu>
+          <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on">
+              <v-icon>mdi-earth</v-icon>
+            </v-btn>
+          </template>
+
+          <v-list>
+            <v-list-item
+              v-for="language in languages"
+              :key="language.text"
+              @click="setLocale(language.value)"
+            >
+              <v-list-item-title>{{ language.text }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
           <!-- v-btn extends router-link -->
       <v-spacer class="navbar"></v-spacer>
         <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">{{$getLanguageMsg('cancelReservation')}}</v-btn>
@@ -53,7 +70,7 @@ import firebase from 'firebase'
 import CustomerService from './services/CustomerService';
 
 export default {
-  created() { 
+  created() {
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         this.currentUser = user;
@@ -74,7 +91,11 @@ export default {
       cancelRules: [
         value => !!value || 'Requerido'
       ],
-      bookingReference: ''
+      bookingReference: '',
+      languages: [
+        { text: 'English', value: 'en' },
+        { text: 'Español', value: 'es' }
+      ]
     }
   },
   methods: {
@@ -88,6 +109,10 @@ export default {
 
         CustomerService.cancelBooking(this.bookingReference);
       }
+    },
+    setLocale(locale) {
+      this.$setLocale(locale);
+      this.$forceUpdate();
     }
   },
 }
