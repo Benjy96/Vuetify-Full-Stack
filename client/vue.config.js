@@ -1,6 +1,6 @@
 module.exports = {
   "devServer": {
-    "port": 8080,
+    "port": 8081,
     "proxy": {
       "/api": {
         "target": "http://localhost:5000/firebase-payment-test/us-central1/app"
