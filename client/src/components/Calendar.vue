@@ -4,7 +4,7 @@
       <v-sheet height="64">
         <v-toolbar flat color="white">
           <v-btn outlined class="mr-4" @click="setToday">
-            Hoy
+            {{$getLanguageMsg('today')}}
           </v-btn>
           <v-btn fab text small @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
@@ -18,22 +18,22 @@
           <v-menu bottom right>
             <template v-slot:activator="{ on }">
               <v-btn outlined v-on="on">
-                <span>{{ typeToLabel[type] }}</span>
+                <span>{{ $getLanguageMsg(type) }}</span>
                 <v-icon right>mdi-menu-down</v-icon>
               </v-btn>
             </template>
             <v-list>
               <v-list-item @click="type = 'day'">
-                <v-list-item-title>Dia</v-list-item-title>
+                <v-list-item-title>{{$getLanguageMsg('day')}}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'week'">
-                <v-list-item-title>Semanas</v-list-item-title>
+                <v-list-item-title>{{$getLanguageMsg('week')}}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = 'month'">
-                <v-list-item-title>Mes</v-list-item-title>
+                <v-list-item-title>{{$getLanguageMsg('month')}}</v-list-item-title>
               </v-list-item>
               <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 dias</v-list-item-title>
+                <v-list-item-title>{{$getLanguageMsg('4day')}}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
@@ -46,14 +46,14 @@
         <v-card>
           <v-container>
             <v-form @submit.prevent="addBooking" ref="form">
-              <p>Reservar una cita</p>
+              <p>{{$getLanguageMsg('bookAppointment')}}</p>
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
                 label="email" prepend-icon="mdi-account-circle"
                 />
               <v-btn type="submit" color="primary">
-                Reservar
+                {{$getLanguageMsg('book')}}
               </v-btn>
             </v-form>
           </v-container>
@@ -63,10 +63,10 @@
       <v-dialog v-model="bookingCreatedDialog" max-width="400">
         <v-card>
           <v-container>
-            <p>Se te ha enviado un email con tu número de referencia</p>
+            <p>{{$getLanguageMsg('bookingReferenceEmailed')}}</p>
             <v-btn type="submit" color="primary" 
             @click="bookingCreatedDialog = !bookingCreatedDialog">
-              Gracias!
+              {{$getLanguageMsg('thanks')}}
             </v-btn>
           </v-container>
         </v-card>
@@ -75,7 +75,7 @@
       <v-dialog v-model="isFetchingMonthData" hide-overlay persistent width="300">
         <v-card color="primary">
           <v-card-text color="white">
-            Cargando...
+            {{$getLanguageMsg('loading')}}
             <v-progress-linear
               indeterminate
               color="white"
@@ -88,7 +88,7 @@
       <v-dialog v-model="isFetchingDayData" hide-overlay persistent width="300">
         <v-card color="primary" light>
           <v-card-text>
-            Cargando reservas...
+            {{$getLanguageMsg('loadingBookings')}}
             <v-progress-linear
               indeterminate
               color="white"
@@ -103,7 +103,7 @@
   <!-- ***** CALENDAR ***** -->
 
   <v-calendar
-  locale="es"
+  :locale="locale"
   ref="calendar"
   v-model="focus"
   color="primary"
@@ -148,12 +148,6 @@ export default {
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
     type: 'month',
-    typeToLabel: {
-      month: 'Mes',
-      week: 'Semanas',
-      day: 'Dia',
-      '4day': '4 Dias',
-    },
     start: null,  //TODO: What/who populates this? The child calendar component?
     end: null,
     dialog: false,
@@ -167,8 +161,8 @@ export default {
     defaultSlotInterval: 60,
     email: '',
     emailRules: [
-                v => !!v || 'Requerido',
-                v => /.+@.+/.test(v) || 'E-mail must be valid',
+                v => !!v || this.$getLanguageMsg('required'),
+                v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ],
     bookingCreatedDialog: false
   }),
@@ -184,6 +178,9 @@ export default {
     });
   },
   computed: {
+    locale() {
+      return this.$getLocale();
+    },
     //computed properties are accessed as variables
     title () {
       const { start, end } = this

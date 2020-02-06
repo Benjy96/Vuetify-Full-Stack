@@ -120,12 +120,44 @@ const messages =
     },
     'week': {
         'en': "Week",
-        'es': "Dia"
+        'es': "Semanas"
     },
     'month': {
         'en': "Month",
-        'es': "Dia"
+        'es': "Mes"
     },
+    '4day': {
+        'en': "4 days",
+        'es': '4 dias'
+    },
+    'today': {
+        'en': "Today",
+        'es': "Hoy"
+    },
+    'thanks': {
+        'en': "Thanks!",
+        'es': "Gracias!"
+    },
+    'loading': {
+        'en': "Loading...",
+        'es': "Cargando..."
+    },
+    'loadingBookings': {
+        'en': "Loading bookings...",
+        'es': "Cargando reservas..."
+    },
+    'bookingReferenceEmailed': {
+        'en': "You have been emailed your booking reference",
+        'es': "Se te ha enviado un email con tu número de referencia"
+    },
+    'book': {
+        'en': "Book",
+        'es': "Reservar"
+    },
+    'bookAppointment': {
+        'en': "Book an appointment",
+        'es': "Reservar una cita"
+    }
 }
 
 export default messages;
