@@ -3,7 +3,7 @@
     <v-form>
         <v-row>
             <v-col>
-                <v-select v-bind:items="days" label="Day" v-model="day"/>
+                <v-select :items="translatedDays" v-model="day"/>
             </v-col>
         </v-row>
         <v-row>
@@ -17,7 +17,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="fromTime"
-                            label="Desde la hora"
+                            :label="$getLanguageMsg('fromTime')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -31,8 +31,8 @@
                     :max = "toTime"
                     >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">Cancel</v-btn>
-                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">OK</v-btn>
+                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
@@ -46,7 +46,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="toTime"
-                            label="Hasta la hora"
+                            :label="$getLanguageMsg('toTime')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -59,15 +59,15 @@
                     full-width
                     :min="minFromTime">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="toTimeDialogToggle = false">Cancel</v-btn>
-                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">OK</v-btn>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-btn @click="validate">Añadir</v-btn>
+                <v-btn @click="validate">{{$getLanguageMsg('add')}}</v-btn>
             </v-col>
         </v-row>
     </v-form>
@@ -87,8 +87,16 @@ export default {
             toTime: null,
             fromTimeDialogToggle: false,
             toTimeDialogToggle: false,
-            day: 'Lunes',
-            days: daysOfWeek
+            day: daysOfWeek[0],
+            translatedDays: [
+                { text: this.$getLanguageMsg('Monday'), value: daysOfWeek[0] },
+                { text: this.$getLanguageMsg('Tuesday'), value: daysOfWeek[1] },
+                { text: this.$getLanguageMsg('Wednesday'), value: daysOfWeek[2] },
+                { text: this.$getLanguageMsg('Thursday'), value: daysOfWeek[3] },
+                { text: this.$getLanguageMsg('Friday'), value: daysOfWeek[4] },
+                { text: this.$getLanguageMsg('Saturday'), value: daysOfWeek[5] },
+                { text: this.$getLanguageMsg('Sunday'), value: daysOfWeek[6] }
+            ]
         }
     },
     methods: {
