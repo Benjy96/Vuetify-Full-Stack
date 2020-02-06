@@ -100,11 +100,11 @@ export default {
                             email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
-                                Lunes: [{from: "09:00", to: "17:00"}],
-                                Martes: [{from: "09:00", to: "17:00"}],
-                                Miércoles: [{from: "09:00", to: "17:00"}],
-                                Jueves: [{from: "09:00", to: "17:00"}],
-                                Viernes: [{from: "09:00", to: "17:00"}]
+                                Monday: [{from: "09:00", to: "17:00"}],
+                                Tuesday: [{from: "09:00", to: "17:00"}],
+                                Wednesday: [{from: "09:00", to: "17:00"}],
+                                Thursday: [{from: "09:00", to: "17:00"}],
+                                Friday: [{from: "09:00", to: "17:00"}]
                             });
                         });
                     }, err => {
