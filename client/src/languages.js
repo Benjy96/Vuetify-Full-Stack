@@ -111,10 +111,21 @@ const messages =
     //Bookings.vue
     'confirmCancelBooking': {
         'en': "Are you sure you wish to cancel this booking?",
-        'es': "¿Estás seguro/a de que quieres cancelar tu reserca?" //TODO: Should it be THIS booking?
-    }
-    
-    
+        'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
+    },
+    //Calendar.vue
+    'day': {
+        'en': "Day",
+        'es': "Dia"
+    },
+    'week': {
+        'en': "Week",
+        'es': "Dia"
+    },
+    'month': {
+        'en': "Month",
+        'es': "Dia"
+    },
 }
 
 export default messages;
