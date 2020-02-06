@@ -78,6 +78,31 @@ const messages =
     'register': {
         'en': "Register",
         'es': "Registrar"
+    },
+    //adminBookingPicker
+    'add': {
+        'en': "Add",
+        'es': "Añadir"
+    },
+    'toTime': {
+        'en': "To time",
+        'es': "Hasta la hora"
+    },
+    'toDate': {
+        'en': "To date",
+        'es': "Hasta la fecha"
+    },
+    'fromTime': {
+        'en': "From time",
+        'es': "Desde la hora"
+    },
+    'fromDate': {
+        'en': "From date",
+        'es': "Desde la fecha"
+    },
+    'cancel': {
+        'en': "Cancel",
+        'es': "Cancelar"
     }
     
     

@@ -8,6 +8,7 @@ export default {
     
         //Method added to all Vue instances - children objects will inherit the prototype methods
         Vue.prototype.$getLanguageMsg = function(messageKey) {
+            if(messages[messageKey] == undefined) window.console.log('messageKey ' + messageKey)
             return messages[messageKey][Vue.$locale];
         }
     
