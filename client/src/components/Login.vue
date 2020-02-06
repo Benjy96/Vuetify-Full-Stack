@@ -1,20 +1,20 @@
 <template>
     <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title><h1>Iniciar Sesión</h1></v-card-title>
+        <v-card-title><h1>{{$getLanguageMsg('login')}}</h1></v-card-title>
 
         <v-card-text>
             <v-form>
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                label="email" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('email')" prepend-icon="mdi-account-circle"
                 @keyup.enter="login"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                label="contraseña" prepend-icon="mdi-lock" 
+                :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
                 @keyup.enter="login"
                 />
             </v-form>
@@ -24,7 +24,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="login">Iniciar Sesión</v-btn>
+            <v-btn color="success" @click="login">{{$getLanguageMsg('login')}}</v-btn>
         </v-card-actions>
 
     </v-card>
@@ -41,8 +41,8 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                v => !!v || 'Requerido',
-                v => /.+@.+/.test(v) || 'E-mail tiene que ser válido',
+                v => !!v || this.$getLanguageMsg('required'),
+                v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ]
         }
     },

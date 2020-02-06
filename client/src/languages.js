@@ -48,7 +48,7 @@ const messages =
     //Register.vue
     'emailNotValid' : {
         'en': "E-mail must be valid",
-        'es': ''
+        'es': "E-mail tiene que ser válido"
     },
     'password': {
         'en': "Password",
@@ -74,6 +74,7 @@ const messages =
         'en': "Register",
         'es': "Registrar"
     }
+    
     
 }
 
