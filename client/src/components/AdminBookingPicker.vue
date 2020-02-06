@@ -128,7 +128,7 @@
     <v-dialog v-model="errorDialogToggle" max-width="400">
         <v-card>
         <v-container>
-            <p>As we haven't yet implemented time travel, your "to" time can't be before the "from" time!</p>
+            <p>{{$getLanguageMsg('timeTravel')}}</p>
             <v-btn type="submit" color="error" @click="errorDialogToggle = !errorDialogToggle">
             {{$getLanguageMsg('ok')}}
             </v-btn>

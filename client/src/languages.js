@@ -103,6 +103,10 @@ const messages =
     'cancel': {
         'en': "Cancel",
         'es': "Cancelar"
+    },
+    'timeTravel': {
+        'en': "As we haven't yet implemented time travel, your \"to\" time can't be before the \"from\" time!",
+        'es': "Inválido"
     }
     
     
