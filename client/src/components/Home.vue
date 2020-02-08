@@ -5,12 +5,27 @@
       <v-row>
         <v-col
           v-for="(business, index) in businesses" 
-          v-bind:item="business" v-bind:index="index" v-bind:key="business.id"
-          :cols="6"
-        >
-          <v-card :to="{ name: 'business', params: { id: business.id } }">
-            <v-card-text class="title">{{ business.firstname }} {{ business.surname }}</v-card-text>
-            <v-card-text>{{ business.occupation }}</v-card-text>
+          v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
+          
+          <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
+            <v-list-item>
+              <v-list-item-avatar color="grey">
+                <v-img v-if="business.image" :src="business.image"></v-img>
+                <v-icon color="white" v-else>mdi-account-circle</v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content>
+                <v-list-item-title style="text-align: left" class="headline">{{ business.firstname }} {{ business.surname }}</v-list-item-title>
+                <v-list-item-subtitle  style="text-align: left">{{ business.occupation }}</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-img
+              src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
+              height="194"></v-img>
+
+            <v-card-text>
+              {{ business.description }}
+            </v-card-text>
           </v-card>
         </v-col>
       </v-row>
@@ -76,5 +91,9 @@ div.created-at {
   left: 0;
   padding: 5px 15px 5px 15px;
   background-color: darkgreen;
+}
+
+.v-list-item-title {
+   text-align: left;
 }
 </style>
