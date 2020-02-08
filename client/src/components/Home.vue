@@ -3,15 +3,15 @@
     <h1>{{$getLanguageMsg('businesses')}}</h1>
     <v-divider></v-divider>
       <v-row>
-        <v-col
+        <v-col 
           v-for="(business, index) in businesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
           
           <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
-                <v-img v-if="business.image" :src="business.image"></v-img>
-                <v-icon color="white" v-else>mdi-account-circle</v-icon>
+                <v-img :src="businessImages[index+1]"></v-img>
+                <!-- <v-icon color="white">mdi-account-circle</v-icon> -->
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title style="text-align: left" class="headline">{{ business.firstname }} {{ business.surname }}</v-list-item-title>
@@ -34,17 +34,20 @@
 
 <script>
 import { db } from '../firebaseInit';
+import firebase from 'firebase';
 
 export default {
   name: 'home',
   data() {  //component state
     return {
+      fetchingBusinesses: true,
       businesses: [], //will be filled by a request to the back end
+      businessImages: Array(10).fill(""),
       err: '',
       text: ''
     }
   },
-  created() {
+  mounted() {
     db.collection('businesses').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         this.businesses.push(
@@ -54,6 +57,19 @@ export default {
           }
         );
       });
+
+      window.console.log(this.businessImages);
+
+      var storage = firebase.storage();
+
+      for(var i in this.businesses) {
+        if(this.businesses[i].image != undefined) {
+          var gsRef = storage.refFromURL(this.businesses[i].image);
+          gsRef.getDownloadURL().then(url => {
+            this.businessImages.splice(i, 1, url);
+          });
+        }
+      }
     }).catch((err) => {
       alert(err.message);
     });
@@ -91,9 +107,5 @@ div.created-at {
   left: 0;
   padding: 5px 15px 5px 15px;
   background-color: darkgreen;
-}
-
-.v-list-item-title {
-   text-align: left;
 }
 </style>
