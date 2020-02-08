@@ -2,7 +2,7 @@
   <div>
     <h1>{{$getLanguageMsg('businesses')}}</h1>
     <v-divider></v-divider>
-      <v-row>
+      <v-row id="businessesDisplay">
         <v-col 
           v-for="(business, index) in businesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
@@ -10,7 +10,8 @@
           <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
-                <v-img :src="businessImages[index+1]"></v-img>
+                <!-- <v-img :src="businessImages[index+1]"></v-img> -->
+                <v-img :src="businessImages[business.id]"></v-img>
                 <!-- <v-icon color="white">mdi-account-circle</v-icon> -->
               </v-list-item-avatar>
               <v-list-item-content>
@@ -41,7 +42,7 @@ export default {
   data() {  //component state
     return {
       businesses: [], //will be filled by a request to the back end
-      businessImages: Array(10).fill(""),
+      businessImages: {},
       //TODO: Remove hardcoding/put in pagination
       // businessImages: {}, //If you want to use an object, Vue will only be reactive if the key exists
       // - you would have to do something like v-if="loaded" and only display the businesses once
@@ -50,7 +51,7 @@ export default {
       text: ''
     }
   },
-  mounted() {
+  created() {
     db.collection('businesses').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
         this.businesses.push(
@@ -61,23 +62,26 @@ export default {
         );
       });
 
-      window.console.log(this.businessImages);
-
-      var storage = firebase.storage();
-
-      for(var i in this.businesses) {
-        if(this.businesses[i].image != undefined) {
-          var gsRef = storage.refFromURL(this.businesses[i].image);
-          gsRef.getDownloadURL().then(url => {
-            // https://vuejs.org/v2/guide/list.html#Array-Change-Detection - Vue can't detect array[0] = x;
-            this.businessImages.splice(i, 1, url);
-          });
-        }
-      }
+      this.getBusinessImages();
     }).catch((err) => {
       alert(err.message);
     });
-  }
+  },
+  methods: {
+    async getBusinessImages() {
+      var storage = firebase.storage();
+
+      for(var i in this.businesses) {
+        if(this.businesses[i].image != null) {
+          var gsRef = storage.refFromURL(this.businesses[i].image);
+          let downloadURL = await gsRef.getDownloadURL();
+
+          // https://vuejs.org/v2/guide/list.html#Array-Change-Detection - Vue can't detect array[0] = x;
+          this.$set(this.businessImages, this.businesses[i].id, downloadURL);
+        }
+      }
+    }
+  },
 }
 </script>
 

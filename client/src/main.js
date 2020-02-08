@@ -18,3 +18,4 @@ new Vue({
     this.$setLocale('en');
   },
 }).$mount('#app')
+
