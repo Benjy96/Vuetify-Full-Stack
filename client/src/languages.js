@@ -1,5 +1,10 @@
 const messages = 
 {
+    //App.vue
+    'title': {
+        'en': "Booking Calendar",
+        'es': "Calendario de Reservas"
+    },
     //Home.vue
     'businesses': {
         'en': "Businesses",

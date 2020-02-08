@@ -83,6 +83,10 @@ export default {
       }
     });
   },
+  // https://vuejs.org/v2/api/#updated
+  updated() {
+      document.title = this.$getLanguageMsg('title');
+  },
   data() {
     return {
       locale: this.$getLocale(),
