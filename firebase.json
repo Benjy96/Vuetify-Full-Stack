@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "booking-calendar",
     "public": "./functions/public",
     "ignore": [
       "firebase.json",
