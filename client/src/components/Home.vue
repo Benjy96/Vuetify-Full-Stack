@@ -66,6 +66,7 @@ export default {
         if(this.businesses[i].image != undefined) {
           var gsRef = storage.refFromURL(this.businesses[i].image);
           gsRef.getDownloadURL().then(url => {
+            // https://vuejs.org/v2/guide/list.html#Array-Change-Detection - Vue can't detect array[0] = x;
             this.businessImages.splice(i, 1, url);
           });
         }
