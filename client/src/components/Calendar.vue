@@ -148,7 +148,7 @@ export default {
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
     type: 'month',
-    start: null,  //TODO: What/who populates this? The child calendar component?
+    start: null,  // The vuetify calendar component populates this
     end: null,
     dialog: false,
     dialogDate: false,
