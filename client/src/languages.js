@@ -168,6 +168,14 @@ const messages =
         'es': "Reservar una cita"
     },
     //Dashboard
+    'yes': {
+        'en': "Yes",
+        'es': "Si"
+    },
+    'confirmRemove': {
+        'en': "Are you sure you wish to remove this?",
+        'es': "" //TODO
+    },
     'remove': {
         'en': "Remove",
         'es': "Eliminar"

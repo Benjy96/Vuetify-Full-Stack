@@ -1,5 +1,39 @@
 <template>
+
     <v-container>
+
+    <v-dialog v-model="confirmDeleteAdminBookingDialog" max-width="400">
+        <v-card>
+        <v-container>
+            <p>{{$getLanguageMsg('confirmRemove')}}</p>
+            <v-btn color="error" 
+            @click="confirmDeleteAdminBooking">
+            {{$getLanguageMsg('yes')}}
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" 
+            @click="cancelDelete">
+            {{$getLanguageMsg('cancel')}}
+            </v-btn>
+        </v-container>
+        </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="confirmDeleteTimeRangeDialog" max-width="400">
+        <v-card>
+        <v-container>
+            <p>{{$getLanguageMsg('confirmRemove')}}</p>
+            <v-btn color="error" class="mr-4"
+            @click="confirmDeleteTimeRange">
+            {{$getLanguageMsg('yes')}}
+            </v-btn>
+            <v-btn color="primary" 
+            @click="cancelDelete">
+            {{$getLanguageMsg('cancel')}}
+            </v-btn>
+        </v-container>
+        </v-card>
+    </v-dialog>
 
         <!-- Availability Box -->
         <!-- How to fucking format the rows and cols? -->
@@ -34,7 +68,7 @@
                                                     </v-list-item-content>
 
                                                     <v-list-item-action>
-                                                        <v-btn @click="deleteTimeRange(day, range)">
+                                                        <v-btn @click="deleteTimeRangeDialog(day, range)">
                                                             {{$getLanguageMsg('remove')}}
                                                             <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
@@ -79,7 +113,7 @@
                                                     </v-list-item-content>
                                                     
                                                     <v-list-item-action>
-                                                        <v-btn @click="deleteAdminBooking(adminBooking)">
+                                                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
                                                             {{$getLanguageMsg('remove')}}
                                                             <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
@@ -146,7 +180,12 @@ export default {
                 "Sunday": []
             },
             adminBookings: [],
-            daysOfWeek: daysOfWeek
+            daysOfWeek: daysOfWeek,
+            confirmDeleteTimeRangeDialog: false,
+            confirmDeleteAdminBookingDialog: false,
+            adminBookingToDelete: null,
+            timeRangeDayToDelete: null,
+            timeRangeRangeToDelete: null
         }
     },
     created() {
@@ -155,17 +194,6 @@ export default {
         this.getAdminBookings();
     },
     methods: {
-        deleteTimeRange(day, range) {
-            let dayRef = db.collection(`businesses/${this.id}/availability`).doc('regular');
-            //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
-            //- matched by EXCLUSION
-            let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
-            this.ranges[day] = dayArray;
-
-            dayRef.update({
-                [day]: dayArray
-            });
-        },
         getRanges() {
             db.collection(`businesses/${this.id}/availability/`).doc('regular').get().then((snapshot) => {
                 if(snapshot.exists) {
@@ -182,6 +210,27 @@ export default {
                 }
             });
         },
+        deleteTimeRangeDialog(day, range) {
+            this.timeRangeDayToDelete = day;
+            this.timeRangeRangeToDelete = range;
+            this.confirmDeleteTimeRangeDialog = true;
+        },
+        confirmDeleteTimeRange() {
+            this.confirmDeleteTimeRangeDialog = false;
+
+            let day = this.timeRangeDayToDelete;
+            let range = this.timeRangeRangeToDelete;
+
+            let dayRef = db.collection(`businesses/${this.id}/availability`).doc('regular');
+            //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
+            //- matched by EXCLUSION
+            let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
+            this.ranges[day] = dayArray;
+
+            dayRef.update({
+                [day]: dayArray
+            });
+        },
         getAdminBookings() {
             BusinessService.getAdminBookings(this.id).then(res => {
                 this.adminBookings = res;
@@ -191,10 +240,22 @@ export default {
             this.adminBookings.push(adminBooking);
             BusinessService.createAdminBooking(this.id, adminBooking);
         },
-        deleteAdminBooking(adminBooking) {
-            BusinessService.deleteAdminBooking(this.id, adminBooking).then(res => {
+        deleteAdminBookingDialog(adminBooking) {
+            this.adminBookingToDelete = adminBooking;
+            this.confirmDeleteAdminBookingDialog = true;
+        },
+        confirmDeleteAdminBooking() {
+            this.confirmDeleteAdminBookingDialog = false;
+
+            BusinessService.deleteAdminBooking(this.id, this.adminBookingToDelete).then(res => {
                 this.adminBookings = res;
             });
+        },
+        cancelDelete() {
+            this.confirmDeleteTimeRangeDialog = false;
+            this.confirmDeleteAdminBookingDialog = false;
+            this.adminBookingToDelete = null;
+            this.timeRangeToDelete = null;
         }
     }
 }
