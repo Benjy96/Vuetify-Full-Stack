@@ -2,7 +2,7 @@
   <v-row class="fill-height">
     <v-col>
       <v-sheet height="64">
-        <v-toolbar flat color="white">
+        <v-toolbar flat color="grey lighten-3">
           <v-btn outlined class="mr-4" @click="setToday">
             {{$getLanguageMsg('today')}}
           </v-btn>

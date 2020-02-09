@@ -57,12 +57,12 @@
     </v-navigation-drawer>
 
     <!-- App bar -->
-    <v-app-bar app color="blue lighten-5">
+    <v-app-bar app color="primary">
         <v-btn to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
         <v-menu>
           <template v-slot:activator="{ on }">
-            <v-btn color="green" class="ml-4" icon v-on="on">
-              <v-icon>mdi-earth</v-icon>
+            <v-btn class="ml-4" icon v-on="on">
+              <v-icon color="white">mdi-earth</v-icon>
             </v-btn>
           </template>
 
@@ -78,8 +78,8 @@
         </v-menu>
     
       <v-spacer class="navbar"></v-spacer>
-      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="mr-4" color="red">
-        <v-icon>mdi-cancel</v-icon>
+      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="mr-4">
+        <v-icon color="white">mdi-cancel</v-icon>
       </v-btn>
       <!-- Open hidden drawer -->
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight" class="mr-1"/>
