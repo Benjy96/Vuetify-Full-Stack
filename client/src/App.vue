@@ -82,7 +82,7 @@
         <v-icon color="white">mdi-cancel</v-icon>
       </v-btn>
       <!-- Open hidden drawer -->
-      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight" class="mr-1"/>
+      <v-app-bar-nav-icon color="white" @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
 
     <v-dialog v-model="cancelDialog" max-width="400">
