@@ -34,8 +34,9 @@
                                                     </v-list-item-content>
 
                                                     <v-list-item-action>
-                                                        <v-btn icon @click="deleteTimeRange(day, range)">
-                                                            <v-icon>mdi-close</v-icon>
+                                                        <v-btn @click="deleteTimeRange(day, range)">
+                                                            {{$getLanguageMsg('remove')}}
+                                                            <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
                                                     </v-list-item-action>
                                                 </v-list-item> 
@@ -78,8 +79,9 @@
                                                     </v-list-item-content>
                                                     
                                                     <v-list-item-action>
-                                                        <v-btn icon @click="deleteAdminBooking(adminBooking)">
-                                                            <v-icon>mdi-close</v-icon>
+                                                        <v-btn @click="deleteAdminBooking(adminBooking)">
+                                                            {{$getLanguageMsg('remove')}}
+                                                            <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
                                                     </v-list-item-action>
                                                 </v-list-item>

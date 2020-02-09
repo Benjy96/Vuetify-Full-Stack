@@ -168,6 +168,10 @@ const messages =
         'es': "Reservar una cita"
     },
     //Dashboard
+    'remove': {
+        'en': "Remove",
+        'es': "Eliminar"
+    },
     'upcomingBookings': {
         'en': "Upcoming bookings",
         'es': "Próximas Reservas"
