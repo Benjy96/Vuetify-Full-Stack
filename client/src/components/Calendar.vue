@@ -271,11 +271,13 @@ export default {
       if(this.dateInUnavailableDays(dateObject)) return false;
       
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
-      if(dayOfWeek in this.regular_availability) {
-        if(this.regular_availability[dayOfWeek].length == 0) return false;
-        else return true;
+      if(this.regular_availability != null){
+        if(dayOfWeek in this.regular_availability) {
+          if(this.regular_availability[dayOfWeek].length == 0) return false;
+          else return true;
+        }
       }
-
+      
       return false;
     },
     slotAvailable(dateObject) {
@@ -302,15 +304,17 @@ export default {
       
       // Check if in regular availability
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
-      if(dayOfWeek in this.regular_availability){
-        if(this.regular_availability[dayOfWeek].length > 0) {
-          for(let i in this.regular_availability[dayOfWeek]) {
-            if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
-              this.regular_availability[dayOfWeek][i]))
-            {
-              return true;
-            } else {
-              return false;
+      if(this.regular_availability != null){
+        if(dayOfWeek in this.regular_availability){
+          if(this.regular_availability[dayOfWeek].length > 0) {
+            for(let i in this.regular_availability[dayOfWeek]) {
+              if(DateUtils.hourMinBetween(dateObject.hour, dateObject.minute, 
+                this.regular_availability[dayOfWeek][i]))
+              {
+                return true;
+              } else {
+                return false;
+              }
             }
           }
         }

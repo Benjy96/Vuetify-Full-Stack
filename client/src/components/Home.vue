@@ -43,7 +43,7 @@ export default {
     return {
       businesses: [], //will be filled by a request to the back end
       businessImages: {},
-      //TODO: Remove hardcoding/put in pagination
+      //TODO: put in pagination
       // businessImages: {}, //If you want to use an object, Vue will only be reactive if the key exists
       // - you would have to do something like v-if="loaded" and only display the businesses once
       //you've populated the keys
