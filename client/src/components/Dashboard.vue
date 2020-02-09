@@ -1,5 +1,4 @@
 <template>
-
     <v-container>
 
     <v-dialog v-model="confirmDeleteAdminBookingDialog" max-width="400">

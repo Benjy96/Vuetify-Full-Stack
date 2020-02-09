@@ -10,8 +10,8 @@
                             {{ booking.from }} - {{ booking.to }}
                         </v-col>
                         <v-col>
-                            <v-btn icon @click="cancelBooking(booking, currentYear, currentMonth, dayKey)">
-                                <v-icon>mdi-close</v-icon>
+                            <v-btn @click="cancelBooking(booking, currentYear, currentMonth, dayKey)">
+                                <v-icon right>mdi-delete</v-icon>
                             </v-btn>
                         </v-col>
                     </v-row>
