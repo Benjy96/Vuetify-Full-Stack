@@ -18,7 +18,7 @@
           <v-menu bottom right>
             <template v-slot:activator="{ on }">
               <v-btn outlined v-on="on">
-                <span>{{ $getLanguageMsg(type) }}</span>
+                <span>{{$getLanguageMsg(type)}}</span>
                 <v-icon right>mdi-menu-down</v-icon>
               </v-btn>
             </template>

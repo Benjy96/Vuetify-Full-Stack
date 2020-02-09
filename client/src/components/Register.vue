@@ -22,6 +22,14 @@
                 :label="$getLanguageMsg('occupation')" prepend-icon="mdi-hammer"
                 @keyup.enter="register"
                 />
+                <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept -->
+                <v-file-input v-model="profilePicture"
+                show-size
+                accept=".jpg"
+                :label="$getLanguageMsg('profilePicture')"
+                v-bind:rules="imageRules"
+                prepend-icon="mdi-camera"
+                ></v-file-input>
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
@@ -64,7 +72,6 @@
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
 
-//TODO: Could I combine the login/register component? Make em re-usable? The sign in form, even
 export default {
     name: 'register',
     data() {
@@ -75,6 +82,7 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
+            profilePicture: null,
             email: '',
             password: '',
             emailRules: [
@@ -83,6 +91,9 @@ export default {
             ],
             nameRules: [
                 v => !!v || this.$getLanguageMsg('required')
+            ],
+            imageRules: [
+                value => !value || value.size < 1000000 || 'Picture size should be less than 1 MB!'
             ]
         }
     },
@@ -111,7 +122,7 @@ export default {
                         this.displayErrorModal(err.message);
                     });
             } catch(e) {
-                window.console.log(e);
+                this.displayErrorModal(e);
             }
         },
         displayErrorModal(message) {

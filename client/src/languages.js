@@ -84,6 +84,10 @@ const messages =
         'en': "Register",
         'es': "Registrar"
     },
+    'profilePicture': {
+        'en': "profile picture",
+        'es': "foto de perfil"
+    },
     //adminBookingPicker
     'add': {
         'en': "Add",
