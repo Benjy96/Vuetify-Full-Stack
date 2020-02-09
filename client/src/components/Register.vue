@@ -26,8 +26,8 @@
                 <v-file-input v-model="profilePicture"
                 show-size
                 accept=".jpg"
-                :label="$getLanguageMsg('profilePicture')"
                 v-bind:rules="imageRules"
+                :label="$getLanguageMsg('profilePicture')"
                 prepend-icon="mdi-camera"
                 ></v-file-input>
                 <v-text-field v-model="email"
@@ -104,11 +104,17 @@ export default {
                 //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
                     .then((userCredential) => {
+                        var profilePicRef = '';
+                        if(this.profilePicture != null) {
+                            profilePicRef = this.uploadAndGetProfileImageRef(userCredential.user.uid);
+                        }
+
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             firstname: this.firstname,
                             surname: this.surname,
                             occupation: this.occupation,
-                            email: this.email
+                            email: this.email,
+                            profileImage: profilePicRef
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
                                 Monday: [{from: "09:00", to: "17:00"}],
@@ -116,7 +122,7 @@ export default {
                                 Wednesday: [{from: "09:00", to: "17:00"}],
                                 Thursday: [{from: "09:00", to: "17:00"}],
                                 Friday: [{from: "09:00", to: "17:00"}]
-                            });
+                            }); 
                         });
                     }, err => {
                         this.displayErrorModal(err.message);
@@ -128,6 +134,16 @@ export default {
         displayErrorModal(message) {
             this.errorModalText = message;
             this.errorModalDialog = true;
+        },
+        uploadAndGetProfileImageRef(uid) {
+            // Create a reference
+            var storageRef = firebase.storage().ref();
+            var profilePicRef = storageRef.child(`profileImages/${uid}_profile.jpg`);
+
+            // Upload the file
+            profilePicRef.put(this.profilePicture);
+
+            return profilePicRef.root + profilePicRef.fullPath;
         }
     }
 }
