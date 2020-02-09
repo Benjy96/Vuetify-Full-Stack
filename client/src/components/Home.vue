@@ -10,9 +10,8 @@
           <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
-                <!-- <v-img :src="businessImages[index+1]"></v-img> -->
-                <v-img :src="businessImages[business.id]"></v-img>
-                <!-- <v-icon color="white">mdi-account-circle</v-icon> -->
+                <v-img v-if="businessImages[business.id]" :src="businessImages[business.id]"></v-img>
+                <v-icon v-else color="white">mdi-account-circle</v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title style="text-align: left" class="headline">{{ business.firstname }} {{ business.surname }}</v-list-item-title>
@@ -62,6 +61,7 @@ export default {
         );
       });
 
+      //Note: this.$set makes the v-if reactive - I tested this with timeout and the acc icon still disappears
       this.getBusinessImages();
     }).catch((err) => {
       alert(err.message);
