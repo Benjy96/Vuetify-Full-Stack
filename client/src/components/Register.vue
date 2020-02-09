@@ -3,24 +3,21 @@
         <v-card-title><h1>{{$getLanguageMsg('register')}}</h1></v-card-title>
 
         <v-card-text>
-            <v-form>
+            <v-form @submit.prevent="register" ref="form">
                 <v-text-field v-model="firstname"
                 required
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('firstname')" prepend-icon="mdi-account-circle"
-                @keyup.enter="register"
                 />
                 <v-text-field v-model="surname"
                 required
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('surname')" prepend-icon="mdi-account-circle"
-                @keyup.enter="register"
                 />
                 <v-text-field v-model="occupation"
                 required
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('occupation')" prepend-icon="mdi-hammer"
-                @keyup.enter="register"
                 />
                 <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept -->
                 <v-file-input v-model="profilePicture"
@@ -34,15 +31,15 @@
                 required
                 v-bind:rules="emailRules"
                 :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
-                @keyup.enter="register"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
                 :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
-                @keyup.enter="register"
                 />
+
+                <input type="submit" hidden/>
             </v-form>
         </v-card-text>
 
@@ -99,7 +96,9 @@ export default {
     },
     methods: {
         register() {
-            try{ 
+            if(!this.$refs.form.validate()) return;
+
+            try { 
                 firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
