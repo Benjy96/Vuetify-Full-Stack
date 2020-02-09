@@ -1,6 +1,7 @@
 <template>
   <v-app :key="locale">
 
+    <!-- Hidden Nav Drawer -->
     <v-navigation-drawer v-model="drawerRight" app right>
       <v-list>
         <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
@@ -55,11 +56,12 @@
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar app>
-        <v-btn to="/" class="router-button mr-4">{{$getLanguageMsg('home')}}</v-btn>
+    <!-- App bar -->
+    <v-app-bar app color="blue lighten-5">
+        <v-btn to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
         <v-menu>
           <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on">
+            <v-btn color="green" class="ml-4" icon v-on="on">
               <v-icon>mdi-earth</v-icon>
             </v-btn>
           </template>
@@ -76,11 +78,11 @@
         </v-menu>
     
       <v-spacer class="navbar"></v-spacer>
-
-      <v-btn v-if="!currentUser" class="mr-4"
-      @click="cancelDialog = !cancelDialog">{{$getLanguageMsg('cancelReservation')}}</v-btn>
-
-      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"/>
+      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="mr-4" color="red">
+        <v-icon>mdi-cancel</v-icon>
+      </v-btn>
+      <!-- Open hidden drawer -->
+      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
 
     <v-dialog v-model="cancelDialog" max-width="400">
