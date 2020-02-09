@@ -10,7 +10,8 @@
           <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
-                <v-img v-if="businessImages[business.id]" :src="businessImages[business.id]"></v-img>
+                <v-img v-if="businessImages[business.id] != ''" 
+                  :src="businessImages[business.id]"></v-img>
                 <v-icon v-else color="white">mdi-account-circle</v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
@@ -72,12 +73,14 @@ export default {
       var storage = firebase.storage();
 
       for(var i in this.businesses) {
-        if(this.businesses[i].image != null) {
-          var gsRef = storage.refFromURL(this.businesses[i].image);
+        if(this.businesses[i].profileImage != null) {
+          var gsRef = storage.refFromURL(this.businesses[i].profileImage);
           let downloadURL = await gsRef.getDownloadURL();
 
           // https://vuejs.org/v2/guide/list.html#Array-Change-Detection - Vue can't detect array[0] = x;
           this.$set(this.businessImages, this.businesses[i].id, downloadURL);
+        } else {
+          this.$set(this.businessImages, this.businesses[i].id, '');
         }
       }
     }
