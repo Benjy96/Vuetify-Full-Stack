@@ -3,12 +3,12 @@
     <h1>{{$getLanguageMsg('businesses')}}</h1>
     <v-divider></v-divider>
       <v-row id="businessesDisplay">
-        <v-col 
+        <v-col cols="12" sm="6" md="4"
           v-for="(business, index) in businesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
           
           <!-- TODO: Center the cards with v-col properties - so fits under the line -->
-          <v-card max-width="570" :to="{ name: 'business', params: { id: business.id } }">
+          <v-card :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
                 <v-img v-if="businessImages[business.id] != ''" 
@@ -20,10 +20,6 @@
                 <v-list-item-subtitle  style="text-align: left">{{ business.occupation }}</v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
-
-            <v-img
-              src="https://cdn.vuetifyjs.com/images/cards/mountain.jpg"
-              height="194"></v-img>
 
             <v-card-text>
               {{ business.description }}
