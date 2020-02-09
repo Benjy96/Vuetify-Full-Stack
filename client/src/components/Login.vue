@@ -3,20 +3,20 @@
         <v-card-title><h1>{{$getLanguageMsg('login')}}</h1></v-card-title>
 
         <v-card-text>
-            <v-form>
+            <v-form ref="form" @submit.prevent="login">
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
                 :label="$getLanguageMsg('email')" prepend-icon="mdi-account-circle"
-                @keyup.enter="login"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
                 :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
-                @keyup.enter="login"
                 />
+
+                <input type="submit" hidden/>
             </v-form>
         </v-card-text>
 
@@ -47,7 +47,9 @@ export default {
         }
     },
     methods: {
-        login(event) {  //event is a MouseEvent - passed in by Javascript
+        login() {  //event is a MouseEvent - passed in by Javascript
+            if(!this.$refs.form.validate()) return;
+
             firebase.auth().signInWithEmailAndPassword(this.email, this.password)
                 .then(() => {
                     this.$router.go({path: this.$router.path});
@@ -55,7 +57,6 @@ export default {
                     alert(err.message);
                 }
             );
-            event.preventDefault();
         }
     }
 }
