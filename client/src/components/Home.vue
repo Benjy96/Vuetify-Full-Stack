@@ -7,7 +7,8 @@
           v-for="(business, index) in businesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
           
-          <v-card max-width="550" :to="{ name: 'business', params: { id: business.id } }">
+          <!-- TODO: Center the cards with v-col properties - so fits under the line -->
+          <v-card max-width="570" :to="{ name: 'business', params: { id: business.id } }">
             <v-list-item>
               <v-list-item-avatar color="grey">
                 <v-img v-if="businessImages[business.id] != ''" 

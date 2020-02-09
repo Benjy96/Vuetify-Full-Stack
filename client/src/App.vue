@@ -1,6 +1,61 @@
 <template>
   <v-app :key="locale">
-    <v-app-bar app> <!-- was <div id="nav" ></v-app> -->
+
+    <v-navigation-drawer v-model="drawerRight" app right>
+      <v-list>
+        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
+          <v-list-item-action>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" to="/dashboard">
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('administration')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="!currentUser" to="/register">
+          <v-list-item-action>
+            <v-icon>mdi-account-edit</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('registerBusiness')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="!currentUser" to="/login">
+          <v-list-item-action>
+            <v-icon>mdi-login</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('login')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-else v-on:click="logout">
+          <v-list-item-action>
+            <v-icon>mdi-login</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('logout')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </v-navigation-drawer>
+
+    <v-app-bar app>
         <v-btn to="/" class="router-button mr-4">{{$getLanguageMsg('home')}}</v-btn>
         <v-menu>
           <template v-slot:activator="{ on }">
@@ -19,14 +74,13 @@
             </v-list-item>
           </v-list>
         </v-menu>
-          <!-- v-btn extends router-link -->
+    
       <v-spacer class="navbar"></v-spacer>
-        <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog">{{$getLanguageMsg('cancelReservation')}}</v-btn>
-        <v-btn v-if="currentUser" :to="'/businesses/' + currentUser.uid" class="ml-4">{{$getLanguageMsg('myCalendar')}}</v-btn>
-        <v-btn v-if="currentUser" to="/dashboard" class="ml-4">{{$getLanguageMsg('administration')}}</v-btn>
-        <v-btn v-if="!currentUser" to="/register" class="ml-4">{{$getLanguageMsg('registerBusiness')}}</v-btn>
-        <v-btn v-if="!currentUser" to="/login" class="ml-4">{{$getLanguageMsg('login')}}</v-btn>
-        <v-btn v-else v-on:click="logout" class="ml-4">{{$getLanguageMsg('logout')}}</v-btn>
+
+      <v-btn v-if="!currentUser" class="mr-4"
+      @click="cancelDialog = !cancelDialog">{{$getLanguageMsg('cancelReservation')}}</v-btn>
+
+      <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"/>
     </v-app-bar>
 
     <v-dialog v-model="cancelDialog" max-width="400">
@@ -90,6 +144,7 @@ export default {
   data() {
     return {
       locale: this.$getLocale(),
+      drawerRight: false,
       currentUser: null,
       cancelDialog: false,
       cancelConfirmationDialog: false,
