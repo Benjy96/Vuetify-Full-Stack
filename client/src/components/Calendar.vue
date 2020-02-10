@@ -118,12 +118,12 @@
   @change="updateRange"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
-  <!-- Might be better for a v-bound array of 31 day booleans to prevent retarded async shit? -->
   <template v-slot:day="dateObject">
     <v-sheet v-if="dayAvailable(dateObject)" height="100%" color="green">
     </v-sheet>
   </template>
 
+  <!-- TODO: Change to events array so we can go across hours? -->
   <template v-slot:interval="object">
     <v-btn v-if="slotAvailable(object)"
     @click="openDialog(object)" style="height: 100%; width: 100%;display: block;background-color:green;"
