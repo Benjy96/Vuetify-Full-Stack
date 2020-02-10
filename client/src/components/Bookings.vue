@@ -6,12 +6,14 @@
                     {{ dayKey }}/{{ currentMonth }}/{{ currentYear }}   
                     <v-container>
                     <v-row v-for="(booking, index2) in bookingArray" v-bind:key="'Booking' + index2">
+                        <v-col>{{ booking.bookerName }}</v-col>
                         <v-col>
                             {{ booking.from }} - {{ booking.to }}
                         </v-col>
                         <v-col>
                             <v-btn @click="cancelBooking(booking, currentYear, currentMonth, dayKey)">
-                                <v-icon right>mdi-delete</v-icon>
+                                {{$getLanguageMsg('cancel')}}
+                                <v-icon right>mdi-cancel</v-icon>
                             </v-btn>
                         </v-col>
                     </v-row>
