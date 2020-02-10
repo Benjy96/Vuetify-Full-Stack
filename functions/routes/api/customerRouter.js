@@ -26,7 +26,7 @@ require() returns: {}
 
 */
 
-/** Cancel a booking by email reference */
+/** Cancel a booking by email reference - identifies correct booking by from/to date and time */
 router.delete('/booking', async(req, res) => {
     let bookingReference = req.body.bookingReference;
 
@@ -80,6 +80,7 @@ router.delete('/booking', async(req, res) => {
 //TODO: Make into a transaction for error handling: https://firebase.google.com/docs/firestore/manage-data/transactions
 router.post('/booking', async (req, res) => {
     let uid = req.body.uid;
+    let name = req.body.name;
     let email = req.body.email;
     let year = req.body.year;
     let month = req.body.month;
@@ -87,7 +88,7 @@ router.post('/booking', async (req, res) => {
     let from = req.body.from;
     let to = req.body.to;
 
-    if(!uid || !email || !year || !month || !day || !from || !to) {
+    if(!uid || !name || !email || !year || !month || !day || !from || !to) {
         res.status(400).send();
         return;
     }
@@ -97,7 +98,8 @@ router.post('/booking', async (req, res) => {
     bookedDayDocRef.set({
         "customer_bookings": admin.firestore.FieldValue.arrayUnion({
                 "from": from,
-                "to": to
+                "to": to,
+                "bookerName": name
             })
         }, 
         {merge: true}

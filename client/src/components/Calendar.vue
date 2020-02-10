@@ -45,12 +45,15 @@
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
           <v-container>
-            <v-form @submit.prevent="addBooking" ref="form">
+            <v-form @submit.prevent="addBooking" ref="addBookingForm">
               <p>{{$getLanguageMsg('bookAppointment')}}</p>
+                <v-text-field v-model="bookerName"
+                required v-bind:rules="nameRules"
+                :label="$getLanguageMsg('name')" prepend-icon="mdi-account-circle"
+                />
                 <v-text-field v-model="email"
-                required
-                v-bind:rules="emailRules"
-                label="email" prepend-icon="mdi-account-circle"
+                required v-bind:rules="emailRules"
+                label="email" prepend-icon="mdi-at"
                 />
               <v-btn type="submit" color="primary">
                 {{$getLanguageMsg('book')}}
@@ -160,10 +163,7 @@ export default {
     regular_availability: null,
     defaultSlotInterval: 60,
     email: '',
-    emailRules: [
-                v => !!v || this.$getLanguageMsg('required'),
-                v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
-            ],
+    bookerName: '',
     bookingCreatedDialog: false
   }),
   created () {
@@ -178,6 +178,32 @@ export default {
     });
   },
   computed: {
+    emailRules() {
+      const rules = [];
+
+      const requiredRule = v => !!v || this.$getLanguageMsg('required');
+      const invalidRule = v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid');
+
+      rules.push(requiredRule, invalidRule);
+
+      return rules;
+    },
+    nameRules() {
+      const rules = [];
+
+      const requiredRule = v => !!v || this.$getLanguageMsg('required');
+      //const fullNameRule = v => (v || '').indexOf(' ') > -1 || this.$getLanguageMsg('fullNameRequired');
+
+      rules.push(requiredRule);
+
+      return rules;
+    },
+    emailNotValid() {
+      return this.$getLanguageMsg('emailNotValid');
+    },
+    required() {
+      return this.$getLanguageMsg('required');
+    },
     locale() {
       return this.$getLocale();
     },
@@ -242,7 +268,7 @@ export default {
       this.isFetchingDayData = false;
     },
     async addBooking() {
-      if(this.$refs.form.validate()) {
+      if(this.$refs.addBookingForm.validate()) {
         this.dialog = false;
         this.bookingCreatedDialog = true;
 
@@ -257,7 +283,7 @@ export default {
         //RE "Huge Server Async Request Learning: in notes" - FUCK, it was awaiting axios/server, not the db
         //That's why it was returning 5 bookings instead of 6 when I'd just added a booking
         //the booking hadn't been added to the db, and my code was running simply when the server responded
-        await CustomerService.createBooking(this.id, this.email, year, month, day, from, to);
+        await CustomerService.createBooking(this.id, this.bookerName, this.email, year, month, day, from, to);
 
         this.loadAndViewDay(date);
       }

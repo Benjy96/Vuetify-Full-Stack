@@ -5,7 +5,7 @@ import { db } from '../firebaseInit';
 import axios from "axios";
 
 //using proxy in vue.config.js for dev mode instead of having http://localhost:5000/firebase-payment-test/us-central1/app/ here
-const apiURL = 'api/customer';
+const customerApiURL = 'api/customer';
 
 class CustomerService {
     /*
@@ -18,8 +18,8 @@ class CustomerService {
     */
 
     //TODO: use return value?
-    static async createBooking(uid, email, year, month, day, from, to) {
-        let res = await axios.post(apiURL + '/booking', {uid, email, year, month, day, from, to});
+    static async createBooking(uid, name, email, year, month, day, from, to) {
+        let res = await axios.post(customerApiURL + '/booking', {uid, name, email, year, month, day, from, to});
         return res.data;
     }
 
@@ -28,7 +28,7 @@ class CustomerService {
      * @param {String} bookingReference The id of the document in firebase
      */
     static async cancelBooking(bookingReference) {
-        let res = await axios.delete(apiURL + '/booking', {
+        let res = await axios.delete(customerApiURL + '/booking', {
             data: { bookingReference: bookingReference }
         });
 

@@ -72,12 +72,16 @@ const messages =
         'en': "occupation (for example: hairdresser)",
         'es': "ocupación (por ejemplo: peluquera)"
     },
+    'name': {
+        'en': "name",
+        'es': "nombre"
+    },
     'surname': {
         'en': "surname",
         'es': "apellido"
     },
     'firstname': {
-        'en': "name",
+        'en': "first name",
         'es': "nombre"
     },
     'register': {
@@ -166,6 +170,10 @@ const messages =
     'bookAppointment': {
         'en': "Book an appointment",
         'es': "Reservar una cita"
+    },
+    'fullNameRequired': {
+        'en': "Please enter your first name and surname",
+        'es': "" //TODO
     },
     //Dashboard
     'yes': {
