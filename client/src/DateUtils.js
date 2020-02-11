@@ -275,7 +275,20 @@ export class DateUtils {
     }
 
     /**
-     * 
+     * @param {Date} date 
+     */
+    static getWeekdayFromDateObj(date) {
+        if(typeof date == 'object'){
+            let day = date.getDay();
+            if(day == 0) {
+                return daysOfWeek[7];
+            } else {
+                return daysOfWeek[day - 1];
+            }
+        }
+    }
+
+    /**
      * @param {String} date "DD from YYYY-MM-DD"
      */
     static getDayFromDate(date) {
@@ -659,6 +672,72 @@ export class DateUtils {
             currentDate.setDate(currentDate.getDate() + 1);
         }
         return dateList;
+    }
+
+    /**
+     * @param {*} range an object containing a from and to in "00:00" format
+     * @param {*} intervalDuration in minutes
+     */
+    static intervalsInRange(range, intervalDuration) {
+        let intervals = [];
+        let fromHourInMins = parseInt(range.from.split(":")[0]);
+        let fromMinuteInMins = parseInt(range.from.split(":")[1]);
+        let toHourInMins = parseInt(range.to.split(":")[0]);
+        let toMinuteInMins = parseInt(range.to.split(":")[1]);
+
+        let startTimeInMins = (fromHourInMins * 60) + fromMinuteInMins;
+        let endTimeInMins = (toHourInMins * 60) + toMinuteInMins;
+
+        //09:00 -> 10:00
+
+        /*
+            How to get the time difference?
+        */
+
+        for(let i = startTimeInMins; i <= endTimeInMins; i += intervalDuration) {
+
+            //convert i & i + intervalDuration min to 24h time
+
+            // how to convert to 24 hour?
+                // e.g., 09:00 is 540 minutes
+
+            //if mins % 60 == 0 can do straight up conversion, but what if not?
+                //then do modulus and take the remainder for the minutes with the base as the hours
+
+            //Start time
+            let hour = Math.floor(i / 60);
+            let minute = 0;
+            if(i % 60 != 0){    //what if lower than 60?
+                window.console.log("i is " + i);
+                window.console.log('% op: ' + i % 60);
+                minute = i % 60;
+            }
+
+            minute = this.formatMinuteToMM(minute);
+            hour = this.formatHourToHH(hour);
+
+            let twentyFourHourStartTime = `${hour}:${minute}`;
+
+            //Incremented time
+            let incrementedTime = i + intervalDuration;
+            hour = Math.floor(incrementedTime / 60);
+            minute = 0;
+            if(incrementedTime % 60 != 0){
+                minute = incrementedTime % 60;
+            }
+
+            minute = this.formatMinuteToMM(minute);
+            hour = this.formatHourToHH(hour);
+
+            let twentyFourHourEndTime = `${hour}:${minute}`;
+
+            intervals.push({
+                start: twentyFourHourStartTime,
+                end: twentyFourHourEndTime
+            });
+        }
+
+        return intervals;
     }
 }
 
