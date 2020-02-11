@@ -116,7 +116,6 @@
   @click:date="loadAndViewDay"
   @click:day="loadAndViewDay"
   @change="updateRange"
-  :events="events"
   >
   <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
   <template v-slot:day="dateObject">
@@ -165,15 +164,7 @@ export default {
     defaultSlotInterval: 60,
     email: '',
     bookerName: '',
-    bookingCreatedDialog: false,
-    events: [
-      {
-        name: "",
-        start: "2020-02-15 14:00",
-        end: "2020-02-15 15:30",
-        color: ""
-      }
-    ]
+    bookingCreatedDialog: false
   }),
   created () {
     //Month Viewed Upon Load
@@ -184,7 +175,6 @@ export default {
       this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
     ]).then(() => {
       this.isFetchingMonthData = false;
-      this.calcEvents();
     });
   },
   computed: {
@@ -249,49 +239,6 @@ export default {
     }
   },
   methods: {
-    //TODO: Take bookings / admin bookings into account
-    //TODO: Decide - call once month loaded or call on slots? i.e., when rendering month vs days?
-      //Write out how it is currently then contrast
-    calcEvents() {
-      //Once regular hours & bookings loaded
-
-      /*
-
-        What is an event?
-
-        A period of time which is available
-
-        regular hours - bookings / durations
-
-      */
-      var from = new Date();
-      var to = new Date(DateUtils.incrementMonthOfDate(this.today, 1));
-          
-      // loop for every day
-      for (var day = from; day <= to; day.setDate(day.getDate() + 1)) {
-        let thisDate = DateUtils.convertDateToYYYYMMDD(day);
-        let dayOfWeek = DateUtils.getWeekdayFromDateObj(day);
-
-        if(this.regular_availability[dayOfWeek] != null) {
-          for(let range in dayOfWeek) {
-            if(this.regular_availability[dayOfWeek][range] != null) {
-              let intervals = DateUtils.intervalsInRange(this.regular_availability[dayOfWeek][range], this.defaultSlotInterval);
-
-              window.console.log(JSON.stringify(intervals));
-              
-              for(let i in intervals){
-                this.events.push({
-                  name: "",
-                  start: `${thisDate} ${intervals[i].start}`,
-                  end: `${thisDate} ${intervals[i].end}`,
-                  color: ""
-                });
-              }
-            }
-          }
-        }  
-      }
-    },
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
