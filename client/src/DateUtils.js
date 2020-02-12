@@ -755,14 +755,15 @@ export class DateUtils {
     }
 
     /**
-     * @returns true if date >= from and < to - i.e., from 2020-01-01 and date 2020-01-01 is TRUE
+     * Inclusive from, inclusive to.
+     * @returns true if date >= from and <= to - i.e., from 2020-01-01 and date 2020-01-01 is TRUE
      */
     static dateWithin(date, from, to) {
         let midDate = new Date(date);
         let fromDate = new Date(from);
         let toDate = new Date(to);
 
-        if(fromDate <= midDate && midDate < toDate) {
+        if(fromDate <= midDate && midDate <= toDate) {
             return true;
         } else {
             return false;

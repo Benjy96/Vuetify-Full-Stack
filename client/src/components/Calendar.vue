@@ -222,13 +222,15 @@ export default {
     clearEvents() {
       this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
     },
-    //TODO: Take admin bookings into account
+    //TODO: Take admin bookings into account - same as customer booking algorithm once retrieved
     setAvailableTimes(date) {
+      // 1 & 2: Check if date passed or unavailable
       if(date < DateUtils.getCurrentDateString() || this.dateInUnavailableDays(date)) {
         this.clearEvents();
         return;
       }
 
+      // 3 & 4: Check if times intersect with customer bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
       if (this.regular_availability[dayOfWeek] != null) {
@@ -240,8 +242,48 @@ export default {
             );
 
             for (let i in potentiallyAvailableIntervals) {
+              // 3: Check intervals v admin bookings
+              if(this.admin_bookings != null) {
+
+                //TODO: How to narrow down admin_bookings? They are spread across days
+                  //e.g. 2020-01-01 to 2020-01-20 17:00
+                  //function - dateInTime(this.today) ?
+
+                //get the time range from the admin booking
+                for(let x = 0; x < this.admin_bookings; x++) {
+                  let adminBooking = this.admin_bookings[x];
+                  if(DateUtils.dateWithin(this.today, adminBooking.fromDate, adminBooking.toDate)){
+                    let adminBookingDate, startTime, endTime;
+
+                    if(adminBooking.fromDate == adminBooking.toDate) {
+                      adminBookingDate = adminBooking.fromDate;
+                      startTime = adminBooking.fromTime;
+                      endTime = adminBooking.toTime;
+
+                      //TODO: Then calc intervals
+                        //When is an interval in an admin booking?
+                        //When from is >= booking from && to <= booking to
+                    } 
+                    else if(this.today == adminBooking.fromDate) {
+                      adminBookingDate = adminBooking.fromDate;
+                      startTime = adminBooking.fromTime;
+                      endTime = "24:00";
+
+                    } 
+                    else if(this.today == adminBooking.toDate) {
+                      adminBookingDate = adminBooking.toDate;
+                      startTime = "00:00";
+                      endTime = adminBooking.toTime;
+
+
+                    }
+                  }
+                }
+              }
+
+              // 4: Check intervals v customer bookings
               if (this.customer_bookings != null) {
-                for (var x = 0; x < this.customer_bookings.length; x++) {
+                for (let x = 0; x < this.customer_bookings.length; x++) {
                   //if the potentially available interval is not within an existing booking, make available
                   /*
                     How to make a time available?
@@ -253,7 +295,7 @@ export default {
 
                     Should the above interval be in the booking?
 
-                    When is an interval in a booking?
+                    When is an interval in a booking? <--- The killer question
 
                     When from is >= booking from && to <= booking to
 
@@ -269,7 +311,7 @@ export default {
 
                   */
                   if(!(DateUtils.timeGreaterThanOrEqualTo(potentiallyAvailableIntervals[i].from, this.customer_bookings[x].from)
-                  && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, this.customer_bookings[x].to))){
+                  && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, this.customer_bookings[x].to))) {
                     let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
                     let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
 
