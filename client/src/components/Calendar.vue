@@ -221,7 +221,7 @@ export default {
   methods: {
     //TODO: Take admin bookings into account
     //TODO: Don't render on main screen - when to getEvents?
-    calcDayEvents(date) {
+    setAvailableTimes(date) {
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
       window.console.log(dayOfWeek);
@@ -458,7 +458,7 @@ export default {
       date = date.date != undefined ? date.date : date;
 
       await this.getDayBookings(date);
-      this.calcDayEvents(date);
+      this.setAvailableTimes(date);
       this.viewDay(date);
     },
     viewDay(date) {
@@ -538,11 +538,11 @@ export default {
       //   let to = new Date(this.end);
 
       //   for(let day = from; day <= to; day.setDate(day.getDate() + 1)) {
-      //     this.calcDayEvents(DateUtils.convertDateToYYYYMMDD(day));
+      //     this.setAvailableTimes(DateUtils.convertDateToYYYYMMDD(day));
       //   }
       // }
       // else if(this.type == 'day') {
-      //   this.calcDayEvents(start.date);
+      //   this.setAvailableTimes(start.date);
       // }
 
       this.start = start;
