@@ -13,7 +13,7 @@
 
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <div class="flex-grow-1"></div>
-          <v-btn outlined @click="switchType">{{$getLanguageMsg(typeToSwitchTo)}}</v-btn>
+          <v-btn outlined @click="type = typeToSwitchTo">{{$getLanguageMsg(typeToSwitchTo)}}</v-btn>
         </v-toolbar>
       </v-sheet>
 
@@ -470,8 +470,11 @@ export default {
     },
     prev() {
       this.$refs.calendar.prev();
-      if (!DateUtils.getCurrentDateString() < this.focus) {
-        if (this.type == "day") this.getDayBookings(this.focus);
+
+      if (this.focus >= DateUtils.getCurrentDateString()) {
+        if (this.type == "day") {
+          this.loadAndViewDay(this.focus); //TODO: gonna be repeating this.focus = ?
+        }
 
         if (this.type == "month") {
           let nextMonthDate = DateUtils.getLastMonthDate(this.focus);
@@ -488,10 +491,12 @@ export default {
       }
     },
     next() {
-      //TODO: get customer bookings for each day...  may be a lot of reads but could cache?
       this.$refs.calendar.next();
+
       if (this.focus >= DateUtils.getCurrentDateString()) {
-        if (this.type == "day") this.getDayBookings(this.focus);
+        if (this.type == "day") {
+          this.loadAndViewDay(this.focus);
+        }
 
         if (this.type == "month") {
           let nextMonthDate = DateUtils.getNextMonthDate(this.focus);
@@ -522,15 +527,12 @@ export default {
     //@change is called any time the days displayed are changed
     //start & end encapsulate the scope of days
     updateRange({ start, end }) {
-      // alert('start ' + JSON.stringify(start) + ' end ' + JSON.stringify(end));
-      //TODO: Handle this better - if you switch to week view the bookings aren't there. 
-      //Q: At which point(s) should we clear & get bookings?
-        //A: Get bookings any time we are viewing a day
-          //Control through the @change - do getBookings/calcEvents for ANYTHING in scope - i.e.,
-          //the current day +- 2 if this.type = 4daybundleRenderer.renderToStream
-          //so below, in this method, is where we should call that, rather than on @view:day, etc,
-          //as it would be centralised
-      if(this.type == 'month') this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+      if(this.type == 'month') {
+        this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+        this.typeToSwitchTo = 'day';
+      } else if(this.type == 'day') {
+        this.typeToSwitchTo = 'month';
+      }
       // else if(this.type == 'week' || this.type == '4day') {
       //   let from = new Date(this.start);
       //   let to = new Date(this.end);
