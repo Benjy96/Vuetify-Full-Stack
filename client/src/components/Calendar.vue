@@ -13,14 +13,8 @@
 
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <div class="flex-grow-1"></div>
-          <v-menu bottom right>
-            <template v-slot:activator="{ on }">
-              <v-btn outlined v-on="on">
-                <span>{{$getLanguageMsg(type)}}</span>
-                <v-icon right>mdi-menu-down</v-icon>
-              </v-btn>
-            </template>
-            <v-list>
+            <v-btn outlined @click="switchType">{{$getLanguageMsg(typeToSwitchTo)}}</v-btn>
+            <!-- <v-list>
               <v-list-item @click="type = 'day'">
                 <v-list-item-title>{{$getLanguageMsg('day')}}</v-list-item-title>
               </v-list-item>
@@ -33,8 +27,8 @@
               <v-list-item @click="type = '4day'">
                 <v-list-item-title>{{$getLanguageMsg('4day')}}</v-list-item-title>
               </v-list-item>
-            </v-list>
-          </v-menu>
+            </v-list> -->
+
         </v-toolbar>
       </v-sheet>
 
@@ -147,6 +141,7 @@ export default {
     today: new Date().toISOString().substr(0, 10),
     focus: new Date().toISOString().substr(0, 10),
     type: "month",
+    typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
     dialog: false,
@@ -461,6 +456,15 @@ export default {
 
       return false;
     },
+    switchType() {
+      if(this.type == 'month') {
+        this.typeToSwitchTo = this.type;
+        this.type = 'day';
+      } else if (this.type == 'day') {
+        this.typeToSwitchTo = this.type;
+        this.type = 'month';
+      }
+    },
     openDialog(dateObject) {
       this.dialog = true;
       this.addBookingDateObject = dateObject;
@@ -530,8 +534,10 @@ export default {
         }
       }
     },
-    //start & end objects passed in with a .month proeprty, properly indexed.
+    //@change is called any time the days displayed are changed
+    //start & end encapsulate the scope of days
     updateRange({ start, end }) {
+      // alert('start ' + JSON.stringify(start) + ' end ' + JSON.stringify(end));
       //TODO: Handle this better - if you switch to week view the bookings aren't there. 
       //Q: At which point(s) should we clear & get bookings?
         //A: Get bookings any time we are viewing a day
@@ -540,6 +546,18 @@ export default {
           //so below, in this method, is where we should call that, rather than on @view:day, etc,
           //as it would be centralised
       if(this.type == 'month') this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+      // else if(this.type == 'week' || this.type == '4day') {
+      //   let from = new Date(this.start);
+      //   let to = new Date(this.end);
+
+      //   for(let day = from; day <= to; day.setDate(day.getDate() + 1)) {
+      //     this.calcDayEvents(DateUtils.convertDateToYYYYMMDD(day));
+      //   }
+      // }
+      // else if(this.type == 'day') {
+      //   this.calcDayEvents(start.date);
+      // }
+
       this.start = start;
       this.end = end;
     },
