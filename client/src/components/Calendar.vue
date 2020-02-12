@@ -115,7 +115,7 @@
         >
           <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
           <template v-slot:day="dateObject">
-            <v-sheet v-if="dayAvailable(dateObject)" height="100%" color="green"></v-sheet>
+            <v-sheet v-if="dayAvailable(dateObject)" height="62.5%" color="green"></v-sheet>
           </template>
 
           <!-- TODO: Change to events array so we can go across hours? -->
@@ -240,6 +240,7 @@ export default {
   },
   methods: {
     //TODO: Take admin bookings into account
+    //TODO: Don't render on main screen - when to getEvents?
     calcDayEvents(date) {
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
@@ -304,7 +305,6 @@ export default {
           }
         }
       }
-      window.console.log(JSON.stringify(this.events));
     },
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
@@ -532,6 +532,14 @@ export default {
     },
     //start & end objects passed in with a .month proeprty, properly indexed.
     updateRange({ start, end }) {
+      //TODO: Handle this better - if you switch to week view the bookings aren't there. 
+      //Q: At which point(s) should we clear & get bookings?
+        //A: Get bookings any time we are viewing a day
+          //Control through the @change - do getBookings/calcEvents for ANYTHING in scope - i.e.,
+          //the current day +- 2 if this.type = 4daybundleRenderer.renderToStream
+          //so below, in this method, is where we should call that, rather than on @view:day, etc,
+          //as it would be centralised
+      if(this.type == 'month') this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
       this.start = start;
       this.end = end;
     },
