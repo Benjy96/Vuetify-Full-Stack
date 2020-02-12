@@ -111,6 +111,7 @@
           @click:day="loadAndViewDay"
           @change="updateRange"
           :events="events"
+          event-color="green"
         >
           <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
           <template v-slot:day="dateObject">
@@ -160,7 +161,7 @@ export default {
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
-    events: [{color: "", start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
+    events: [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
     // events: []
   }),
   created() {
@@ -294,8 +295,7 @@ export default {
                     this.events.push({
                       name: "",
                       start: start,
-                      end: end,
-                      color: ""
+                      end: end
                     });
                   }
                 }
