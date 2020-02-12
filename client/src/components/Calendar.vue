@@ -238,9 +238,7 @@ export default {
     }
   },
   methods: {
-    //TODO: Take bookings / admin bookings into account
-    //TODO: Decide - call once month loaded or call on slots? i.e., when rendering month vs days?
-    //Write out how it is currently then contrast
+    //TODO: Take admin bookings into account
     calcDayEvents(date) {
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
