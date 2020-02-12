@@ -219,12 +219,17 @@ export default {
     }
   },
   methods: {
+    clearEvents() {
+      this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+    },
     //TODO: Take admin bookings into account
-    //TODO: Don't render on main screen - when to getEvents?
     setAvailableTimes(date) {
-      let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
+      if(date < DateUtils.getCurrentDateString() || this.dateInUnavailableDays(date)) {
+        this.clearEvents();
+        return;
+      }
 
-      window.console.log(dayOfWeek);
+      let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
       if (this.regular_availability[dayOfWeek] != null) {
         for (let range in dayOfWeek) {
@@ -400,6 +405,7 @@ export default {
       }
 
       // Check if in unavailable days - handles admin bookings & fully-booked days
+        //TODO: doesn't handle an admin booking that only takes up an hour
       if (this.dateInUnavailableDays(dateObject)) return false;
 
       // Check if in regular availability
@@ -426,10 +432,12 @@ export default {
 
       return false;
     },
-    dateInUnavailableDays(dateObject) {
-      let year = DateUtils.getYearFromDate(dateObject.date);
-      let month = DateUtils.getMonthFromDate(dateObject.date);
-      let dayOfMonth = DateUtils.getDayFromDate(dateObject.date);
+    dateInUnavailableDays(date) {
+      date = date.date != undefined ? date.date : date;
+
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
+      let dayOfMonth = DateUtils.getDayFromDate(date);
 
       if (this.unavailableDays != null) {
         if (this.unavailableDays[year][month] != null) {
