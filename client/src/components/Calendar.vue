@@ -147,6 +147,7 @@ export default {
   created() {
     //Month Viewed Upon Load
     Promise.all([
+      this.getAdminBookings(),  //TODO: call for next/prev
       this.getRegularAvailability(),
       this.getUnavailableDays(this.today),
       this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
@@ -242,40 +243,58 @@ export default {
             );
 
             for (let i in potentiallyAvailableIntervals) {
-              // 3: Check intervals v admin bookings
-              if(this.admin_bookings != null) {
+              let intervalUnavailable = false;
 
-                //TODO: How to narrow down admin_bookings? They are spread across days
-                  //e.g. 2020-01-01 to 2020-01-20 17:00
-                  //function - dateInTime(this.today) ?
+              // 3: Check intervals v admin bookings
+              if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
 
                 //get the time range from the admin booking
-                for(let x = 0; x < this.admin_bookings; x++) {
+                for(let x = 0; x < this.admin_bookings.length; x++) {
+
                   let adminBooking = this.admin_bookings[x];
-                  if(DateUtils.dateWithin(this.today, adminBooking.fromDate, adminBooking.toDate)){
-                    let adminBookingDate, startTime, endTime;
+                  if(DateUtils.dateWithin(this.focus, adminBooking.fromDate, adminBooking.toDate)) {
+                    window.console.log(this.focus + ' datewithin ' + this.admin_bookings[x]);
+                    let adminBookingDate, fromTime, toTime;
 
                     if(adminBooking.fromDate == adminBooking.toDate) {
                       adminBookingDate = adminBooking.fromDate;
-                      startTime = adminBooking.fromTime;
-                      endTime = adminBooking.toTime;
-
-                      //TODO: Then calc intervals
-                        //When is an interval in an admin booking?
-                        //When from is >= booking from && to <= booking to
+                      fromTime = adminBooking.fromTime;
+                      toTime = adminBooking.toTime;
                     } 
-                    else if(this.today == adminBooking.fromDate) {
+                    else if(this.focus == adminBooking.fromDate) {
                       adminBookingDate = adminBooking.fromDate;
-                      startTime = adminBooking.fromTime;
-                      endTime = "24:00";
-
+                      fromTime = adminBooking.fromTime;
+                      toTime = "24:00";
                     } 
-                    else if(this.today == adminBooking.toDate) {
+                    else if(this.focus == adminBooking.toDate) {
                       adminBookingDate = adminBooking.toDate;
-                      startTime = "00:00";
-                      endTime = adminBooking.toTime;
+                      fromTime = "00:00";
+                      toTime = adminBooking.toTime;
+                    }
 
+                    let start = `${adminBookingDate} ${potentiallyAvailableIntervals[i].from}`;
+                    let end = `${adminBookingDate} ${potentiallyAvailableIntervals[i].to}`;
 
+                    if(!(DateUtils.timeGreaterThanOrEqualTo(potentiallyAvailableIntervals[i].from, fromTime)
+                      && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, toTime))) {
+                      //what if something is available for one but not for the other?
+                      //need to do customer bookings first? check if an hour already done?
+
+                      //return everything that doesn't have the start && end above
+                      this.events = this.events.filter(event => (event.start != start) && (event.end != end));
+
+                      this.events.push({
+                        name: "",
+                        start: start,
+                        end: end
+                      });
+                    } else {
+                      //may have already been added as available for another admin booking
+                      this.events = this.events.filter(event => (event.start != start) && (event.end != end));
+
+                      //hour should not be available - don't let it get added in customer booking check
+                      intervalUnavailable = true;
+                      break;
                     }
                   }
                 }
@@ -283,6 +302,7 @@ export default {
 
               // 4: Check intervals v customer bookings
               if (this.customer_bookings != null) {
+                if(intervalUnavailable) continue; //already marked unavailable by admin booking check
                 for (let x = 0; x < this.customer_bookings.length; x++) {
                   //if the potentially available interval is not within an existing booking, make available
                   /*
@@ -310,21 +330,25 @@ export default {
                     Is interval 10:30->11 within 11->11:30? No
 
                   */
+                  let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
+                  let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
+
                   if(!(DateUtils.timeGreaterThanOrEqualTo(potentiallyAvailableIntervals[i].from, this.customer_bookings[x].from)
                   && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, this.customer_bookings[x].to))) {
-                    let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
-                    let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
 
                     //return everything that doesn't have the start && end above
                     //TODO: Find a way to avoid iteration twice & therefore remove this filtering
                       //(bookings & potentiallyAvailableIntervals)
-                    this.events = this.events.filter(x => (x.start != start) && (x.end != end));
+                    this.events = this.events.filter(event => (event.start != start) && (event.end != end));
 
                     this.events.push({
                       name: "",
                       start: start,
                       end: end
                     });
+                  } else {
+                    this.events = this.events.filter(event => (event.start != start) && (event.end != end));
+                    break;  //don't keep checking customer bookings for this interval - can do this for admin?
                   }
                 }
               }
@@ -332,6 +356,15 @@ export default {
           }
         }
       }
+    },
+    //TODO can call this a bit more lazily than reg availability? as already have meta-data and only need
+    //this for individual days
+    async getAdminBookings(date) {
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
+      CustomerService.getAdminBookings(this.id, year, month).then(res => {
+        this.admin_bookings = res;
+      });
     },
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
@@ -427,10 +460,6 @@ export default {
       }
 
       if (this.isFetchingDayData) return false;
-
-      //TODO: handle async with fetching bool - we need to differentiate empty cust bookings with none
-      // Check if already booked
-      window.console.log(JSON.stringify(this.customer_bookings));
 
       if (this.customer_bookings != null) {
         for (var x = 0; x < this.customer_bookings.length; x++) {
