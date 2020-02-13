@@ -14,11 +14,19 @@ class MetaDataHelper {
         // Meta-data Get affected dates for marking unavailable
         let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
-        for(var i in affectedDates) {         
-            let dateAvailable = await this.isDateAvailable(uid, affectedDates[i]);
-            if(!dateAvailable) {
-                this.markDateUnavailable(uid, affectedDates[i]);
-            }
+        //WARNING: if you use var i only affectedDates[31] will be called
+
+        //The loop was completing iterations and THEN the callbacks were being called with the 
+        //last value of the loop. 
+        //See: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
+        for(let i in affectedDates) {     
+            this.isDateAvailable(uid, affectedDates[i]).then(dateAvailable => {
+                if(!dateAvailable) {
+                    this.markDateUnavailable(uid, affectedDates[i]);
+                } else {
+                    this.markDateAvailable(uid, affectedDates[i])
+                }
+            })
         }
     }
 
