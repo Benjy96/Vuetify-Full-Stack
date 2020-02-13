@@ -72,8 +72,14 @@ class BusinessService {
 
     static async getAdminBookings(uid) {
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
-        if(snapshot.exists) return snapshot.data()["admin_bookings"];
-        else return [];
+        if(snapshot.exists) {
+            if(snapshot.data()["admin_bookings"] != undefined) {
+                return snapshot.data()["admin_bookings"];
+            }
+        } else {
+            return [];
+        }
+        
     }
 
     /* ----- DELETE/UPDATE ------ */

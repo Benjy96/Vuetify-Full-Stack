@@ -232,7 +232,9 @@ export default {
         },
         getAdminBookings() {
             BusinessService.getAdminBookings(this.id).then(res => {
-                this.adminBookings = res;
+                if(res) {
+                    this.adminBookings = res;
+                }
             });
         },
         createAdminBooking(adminBooking) {
