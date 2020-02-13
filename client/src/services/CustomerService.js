@@ -68,6 +68,7 @@ class CustomerService {
         }
     }
 
+    //TODO: Remove duplicates from businessService?
     static async getAdminBookings(uid) {
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
         if(snapshot.exists) return snapshot.data()["admin_bookings"];
