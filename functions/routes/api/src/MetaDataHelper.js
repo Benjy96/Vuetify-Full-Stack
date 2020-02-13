@@ -88,13 +88,11 @@ class MetaDataHelper {
     static async isDateAvailable(uid, date) {
         let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
 
-                }
         if(regularHoursDoc.exists) {
             let userBookingDuration = 60;
             if(regularHoursDoc.data().bookingDuration) {
                 userBookingDuration = regularHoursDoc.data().bookingDuration;
             }
-    
             //1 - Set remaining hours based on regular hours
             let remainingTime = this.getTimeRemainingForRegularHours(regularHoursDoc.data(), date);
     
