@@ -291,6 +291,7 @@ class DateUtils {
     /**
      * @param {*} from a String of format "09:00"
      * @param {*} to a String of format "17:00"
+     * @returns the difference in minutes
      */
     static calcFromToDifference(from, to) {
         let fromHour = from.split(":")[0];
@@ -310,7 +311,7 @@ class DateUtils {
             minDiff = -minDiff;
         }
 
-        return hourDiff + (minDiff / 60);
+        return (hourDiff * 60) + (minDiff);
     }
 
     /**
