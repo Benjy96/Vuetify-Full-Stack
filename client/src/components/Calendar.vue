@@ -97,15 +97,6 @@
           <template v-slot:day="dateObject">
             <v-sheet v-if="dayAvailable(dateObject)" height="62.5%" color="green"></v-sheet>
           </template>
-
-          <!-- TODO: Change to events array so we can go across hours? -->
-          <!-- <template v-slot:interval="object">
-            <v-btn
-              v-if="slotAvailable(object)"
-              @click="openDialog(object)"
-              style="height: 100%; width: 100%;display: block;background-color:green;"
-            ></v-btn>
-          </template>-->
         </v-calendar>
 
         <!-- ***** END CALENDAR ***** -->
@@ -440,57 +431,6 @@ export default {
         if (dayOfWeek in this.regular_availability) {
           if (this.regular_availability[dayOfWeek].length == 0) return false;
           else return true;
-        }
-      }
-
-      return false;
-    },
-    slotAvailable(dateObject) {
-      // Check if date is passed
-      let currentDate = DateUtils.getCurrentDateString();
-      if (dateObject.date < currentDate) {
-        return false;
-      }
-
-      if (this.isFetchingDayData) return false;
-
-      if (this.customer_bookings != null) {
-        for (var x = 0; x < this.customer_bookings.length; x++) {
-          if (
-            DateUtils.hourMinBetween(
-              dateObject.hour,
-              dateObject.minute,
-              this.customer_bookings[x]
-            )
-          ) {
-            return false;
-          }
-        }
-      }
-
-      // Check if in unavailable days - handles admin bookings & fully-booked days
-        //TODO: doesn't handle an admin booking that only takes up an hour
-      if (this.dateInUnavailableDays(dateObject)) return false;
-
-      // Check if in regular availability
-      let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
-      if (this.regular_availability != null) {
-        if (dayOfWeek in this.regular_availability) {
-          if (this.regular_availability[dayOfWeek].length > 0) {
-            for (let i in this.regular_availability[dayOfWeek]) {
-              if (
-                DateUtils.hourMinBetween(
-                  dateObject.hour,
-                  dateObject.minute,
-                  this.regular_availability[dayOfWeek][i]
-                )
-              ) {
-                return true;
-              } else {
-                return false;
-              }
-            }
-          }
         }
       }
 
