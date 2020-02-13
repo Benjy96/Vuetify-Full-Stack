@@ -4,16 +4,6 @@
     <!-- Hidden Nav Drawer -->
     <v-navigation-drawer v-model="drawerRight" app right>
       <v-list>
-        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
-          <v-list-item-action>
-            <v-icon>mdi-calendar</v-icon>
-          </v-list-item-action>
-
-          <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -21,6 +11,16 @@
 
           <v-list-item-content>
             <v-list-item-title>{{$getLanguageMsg('administration')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
+          <v-list-item-action>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
