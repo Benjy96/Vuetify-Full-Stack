@@ -558,6 +558,8 @@ class DateUtils {
             dateList.push(this.convertDateToYYYYMMDD(currentDate));
             currentDate.setDate(currentDate.getDate() + 1);
         }
+        dateList.push(this.convertDateToYYYYMMDD(currentDate));
+
         return dateList;
     }
 }
