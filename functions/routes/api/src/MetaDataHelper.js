@@ -43,24 +43,6 @@ class MetaDataHelper {
         return true;
     }
 
-    static async getAvailableTime(uid, date) {
-        let remainingTime = 0;
-
-        let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
-        let regularHours = [];
-
-        let weekday = daysOfWeek[new Date(date).getDay() - 1];
-        if(regularHoursDoc.exists) {
-            regularHours = regularHoursDoc.data()[weekday];
-
-            for(var range in regularHours) {
-                //Remove the hours OUTSIDE the regular hours range
-                remainingTime += DateUtils.calcFromToDifference(regularHours[range].from, regularHours[range].to);
-            }
-        }
-        return remainingTime;
-    }
-
     /**
      * @returns the amount of available time a user has on a date
      * TODO: Fix - If regular hours not set returns not avialable
