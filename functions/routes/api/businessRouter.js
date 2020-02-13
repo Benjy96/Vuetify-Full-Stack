@@ -104,10 +104,12 @@ router.delete('/adminBooking', async(req, res) => {
     let admin_bookings = data.admin_bookings;
 
     let newAdminBookingsArray = admin_bookings.filter(item => 
-      (item.fromDate != adminBooking) &&
-      (item.toDate != adminBooking.toDate) &&
-      (item.fromTime != adminBooking.fromTime) &&
-      (item.toTime != adminBooking.toTime)
+      !(
+        (item.fromDate == adminBooking.fromDate) &&
+        (item.toDate == adminBooking.toDate) &&
+        (item.fromTime == adminBooking.fromTime) &&
+        (item.toTime == adminBooking.toTime)
+      )
     );
   
     res.status(202).send(newAdminBookingsArray);
