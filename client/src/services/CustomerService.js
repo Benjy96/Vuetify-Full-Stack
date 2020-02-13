@@ -68,15 +68,10 @@ class CustomerService {
         }
     }
 
-    static async getAdminBookings(uid, year, month) {
-        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
-        let admin_bookings = [];
-        if(metaDataDocRef.exists) {
-            admin_bookings = metaDataDocRef.data().admin_bookings;
-            return admin_bookings;
-        } else {
-            return null;
-        }
+    static async getAdminBookings(uid) {
+        let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
+        if(snapshot.exists) return snapshot.data()["admin_bookings"];
+        else return [];
     }
 
     static async getRegularAvailability(uid) {
