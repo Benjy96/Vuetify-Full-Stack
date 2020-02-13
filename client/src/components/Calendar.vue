@@ -85,6 +85,7 @@
           color="primary"
           :now="today"
           :type="type"
+          @click:event="openDialog"
           @click:more="loadAndViewDay"
           @click:date="loadAndViewDay"
           @click:day="loadAndViewDay"
@@ -253,7 +254,6 @@ export default {
 
                   let adminBooking = this.admin_bookings[x];
                   if(DateUtils.dateWithin(this.focus, adminBooking.fromDate, adminBooking.toDate)) {
-                    window.console.log(this.focus + ' datewithin ' + this.admin_bookings[x]);
                     let adminBookingDate, fromTime, toTime;
 
                     if(adminBooking.fromDate == adminBooking.toDate) {
@@ -402,20 +402,13 @@ export default {
         this.dialog = false;
         this.bookingCreatedDialog = true;
 
-        let date = this.addBookingDateObject.date;
+        let date = this.addBookingDateObject.day.date;
         let year = DateUtils.getYearFromDate(date);
         let month = DateUtils.getMonthFromDate(date);
         let day = DateUtils.getDayFromDate(date);
 
-        let from = DateUtils.getHourMinFormattedHHMM(
-          this.addBookingDateObject.hour,
-          this.addBookingDateObject.minute
-        );
-        let to = DateUtils.getToTimeFormattedHHMM(
-          this.addBookingDateObject.hour,
-          this.addBookingDateObject.minute,
-          this.defaultSlotInterval
-        );
+        let from = this.addBookingDateObject.event.start.split(" ")[1];
+        let to = this.addBookingDateObject.event.end.split(" ")[1];
 
         //RE "Huge Server Async Request Learning: in notes" - FUCK, it was awaiting axios/server, not the db
         //That's why it was returning 5 bookings instead of 6 when I'd just added a booking
@@ -529,9 +522,9 @@ export default {
         this.type = 'month';
       }
     },
-    openDialog(dateObject) {
+    openDialog(eventObject) {
       this.dialog = true;
-      this.addBookingDateObject = dateObject;
+      this.addBookingDateObject = eventObject;
     },
     async loadAndViewDay(date) {
       date = date.date != undefined ? date.date : date;
