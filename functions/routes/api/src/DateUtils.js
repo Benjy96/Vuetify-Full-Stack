@@ -188,7 +188,9 @@ class DateUtils {
         } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[2].split("T")[0];
+            console.log("to ISO " + date.toISOString());
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+            return d.toISOString().split("-")[2].split("T")[0];
         }
     }
 
@@ -559,7 +561,6 @@ class DateUtils {
             dateList.push(this.convertDateToYYYYMMDD(currentDate));
             currentDate.setDate(currentDate.getDate() + 1);
         }
-        dateList.push(this.convertDateToYYYYMMDD(currentDate));
 
         return dateList;
     }
