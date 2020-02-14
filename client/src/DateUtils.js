@@ -305,7 +305,8 @@ export class DateUtils {
         } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[2].split("T")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[2].split("T")[0];
         }
     }
 
@@ -319,7 +320,8 @@ export class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(5, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[1];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[1];
         }
     }
 
@@ -333,7 +335,8 @@ export class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(0, 4);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[0];
         }
     }
 

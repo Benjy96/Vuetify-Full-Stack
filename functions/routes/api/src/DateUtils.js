@@ -188,8 +188,7 @@ class DateUtils {
         } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         } else if (typeof date == 'object') {
-            console.log("to ISO " + date.toISOString());
-            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000))
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
             return d.toISOString().split("-")[2].split("T")[0];
         }
     }
@@ -204,7 +203,8 @@ class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(5, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[1];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[1];
         }
     }
 
@@ -218,7 +218,8 @@ class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(0, 4);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[0];
         }
     }
 
