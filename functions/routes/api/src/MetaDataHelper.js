@@ -16,8 +16,6 @@ class MetaDataHelper {
 
         let promises = [];
 
-        console.log("affected dates " + JSON.stringify(affectedDates));
-
         //WARNING: if you use var i only affectedDates[31] will be called
 
         //The loop was completing iterations and THEN the callbacks were being called with the 
@@ -54,8 +52,6 @@ class MetaDataHelper {
                 metaDataArrays[affectedDateYearMonth].push(DateUtils.getDayFromDate(affectedDates[i]));
             }
         }
-
-        console.log(JSON.stringify(metaDataArrays));
 
         // Set each meta-data document
         let yearMonths = Object.keys(metaDataArrays);
@@ -234,8 +230,6 @@ class MetaDataHelper {
                         }
                     }   
                 }
-
-                console.log(JSON.stringify(remainingTime) + ' for ' + date);
                 
                 //4 - Time left?
                 if(this.isTimeLeft(remainingTime, userBookingDuration) == false) {
@@ -263,8 +257,6 @@ class MetaDataHelper {
     }
 
     static async setUnavailableDays(uid, yearMonth, days) {
-        console.log(days);
-
         let year = yearMonth.split("-")[0];
         let month = yearMonth.split("-")[1];
 
