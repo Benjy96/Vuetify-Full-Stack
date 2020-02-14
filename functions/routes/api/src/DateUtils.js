@@ -559,9 +559,12 @@ class DateUtils {
         endDate = new Date(endDate);
 
         while(currentDate <= endDate) {
+            console.log("pushing " + this.convertDateToYYYYMMDD(currentDate) + " for " + currentDate);
             dateList.push(this.convertDateToYYYYMMDD(currentDate));
             currentDate.setDate(currentDate.getDate() + 1);
         }
+
+        console.log("date list "  + dateList);
 
         return dateList;
     }

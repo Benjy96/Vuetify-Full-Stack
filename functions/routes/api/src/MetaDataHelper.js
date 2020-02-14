@@ -14,20 +14,55 @@ class MetaDataHelper {
         // Meta-data Get affected dates for marking unavailable
         let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
+        let promises = [];
+
+        console.log("affected dates " + JSON.stringify(affectedDates));
+
         //WARNING: if you use var i only affectedDates[31] will be called
 
         //The loop was completing iterations and THEN the callbacks were being called with the 
         //last value of the loop. 
         //See: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
-        for(let i in affectedDates) {     
-            this.isDateAvailable(uid, affectedDates[i]).then(dateAvailable => {
-                if(!dateAvailable) {
-                    this.markDateUnavailable(uid, affectedDates[i]);
-                } else {
-                    this.markDateAvailable(uid, affectedDates[i])
-                }
-            })
+        for(let i in affectedDates) {   
+            promises.push(this.isDateAvailable(uid, affectedDates[i]));
         }
+        /*
+
+        1. Wait to calculate all available/unavailable days
+        2. Create multiple month meta-data arrays
+            - Store each day for each month
+        3. Set each document - how to iterate object?
+
+        */
+       let metaDataArrays = {};
+
+       // 1. 
+       Promise.all(promises).then(availableBools => {
+        // Get each year-month that needs stored
+        for(let i in affectedDates) {
+            let affectedYM = DateUtils.getYearFromDate(affectedDates[i]) + "-" + DateUtils.getMonthFromDate(affectedDates[i]);
+            // Initialise each meta data array that we need
+            if(!metaDataArrays[affectedYM]) {
+                metaDataArrays[affectedYM] = [];
+            }
+        }
+
+        // Store each day in each meta-data array
+        for(let i in affectedDates) {
+            let affectedDateYearMonth = DateUtils.getYearFromDate(affectedDates[i]) + "-" + DateUtils.getMonthFromDate(affectedDates[i]);
+            if(availableBools[i] == false) {
+                metaDataArrays[affectedDateYearMonth].push(DateUtils.getDayFromDate(affectedDates[i]));
+            }
+        }
+
+        console.log(JSON.stringify(metaDataArrays));
+
+        // Set each meta-data document
+        let yearMonths = Object.keys(metaDataArrays);
+        for(let i in yearMonths) {
+            this.setUnavailableDays(uid, yearMonths[i], metaDataArrays[yearMonths[i]]);
+        }
+       });
     }
 
     static isTimeLeft(remainingTime, userBookingDuration) {
@@ -224,6 +259,19 @@ class MetaDataHelper {
                 unavailableDays: admin.firestore.FieldValue.arrayUnion(day)
             },
             { merge: true }
+        );
+    }
+
+    static async setUnavailableDays(uid, yearMonth, days) {
+        console.log(days);
+
+        let year = yearMonth.split("-")[0];
+        let month = yearMonth.split("-")[1];
+
+        db.collection(`/businesses/${uid}/availability/${year}/month`).doc(`${month}`).set(
+            {
+                unavailableDays: days
+            }
         );
     }
 }
