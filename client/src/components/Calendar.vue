@@ -215,8 +215,8 @@ export default {
     clearEvents() {
       this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
     },
-    //TODO: Take admin bookings into account - same as customer booking algorithm once retrieved
     setAvailableTimes(date) {
+      this.clearEvents();
       /*
         When is an interval in a booking? <--- The killer question
 
@@ -226,7 +226,6 @@ export default {
 
       // 1 & 2: Check if date passed or unavailable
       if(date < DateUtils.getCurrentDateString() || this.dateInUnavailableDays(date)) {
-        this.clearEvents();
         return;
       }
 
