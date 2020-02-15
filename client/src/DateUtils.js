@@ -628,6 +628,33 @@ export class DateUtils {
         }
     }
 
+    static timeLessThan(time, comparisonTime) {
+        let hour, minute, otherHour, otherMinute;
+
+        hour = parseInt(time.split(":")[0]);   //00
+        minute = parseInt(time.split(":")[1]);
+
+        otherHour = parseInt(comparisonTime.split(":")[0]);  //23
+        otherMinute = parseInt(comparisonTime.split(":")[1]);
+
+        // 09:00 and 10:00
+        if(hour < otherHour) {
+            return true;
+        }
+        // 10:00 and 09:00
+        else if(hour > otherHour) {
+            return false;
+        }
+        // 10:00 and 10:00
+        else if(hour == otherHour && minute == otherMinute) {
+            return false;
+        } 
+        // 10:15 and 10:30 or 10:15 and 10:15
+        else if(hour == otherHour && minute < otherMinute) {
+            return true;
+        }
+    }
+
     /**
      * 
      * @param {String} range a String in the format "17:00-09:00", where 00:00 is midnight, 
