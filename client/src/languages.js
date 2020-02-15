@@ -176,6 +176,22 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'save': {
+        'en': "Save",
+        'es': "Salvar" //TODO
+    },
+    'bookingDurationFormText': {
+        'en': "How long are your bookings in minutes? (Default: 60)",
+        'es': "" //TODO
+    },
+    'bookingManagement': {
+        'en': "Booking Management",
+        'es': "" //TODO
+    },
+    'preferenceSaved': {
+        'en': "Your preference has been saved",
+        'es': "" //TODO
+    },
     'yes': {
         'en': "Yes",
         'es': "Si"

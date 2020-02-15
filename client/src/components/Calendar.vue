@@ -129,7 +129,7 @@ export default {
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
-    defaultSlotInterval: 30,
+    bookingDuration: 60,
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
@@ -237,7 +237,7 @@ export default {
           if (this.regular_availability[dayOfWeek][range] != null) {
             let potentiallyAvailableIntervals = DateUtils.getIntervalsInRange(
               this.regular_availability[dayOfWeek][range],
-              this.defaultSlotInterval
+              this.bookingDuration
             );
 
             for (let i in potentiallyAvailableIntervals) {
@@ -327,6 +327,7 @@ export default {
     async getRegularAvailability() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
+        if(res.bookingDuration) this.bookingDuration = res.bookingDuration;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?

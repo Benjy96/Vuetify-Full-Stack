@@ -1,6 +1,19 @@
 <template>
     <v-container>
 
+    <v-dialog v-model="confirmSavedDialog" max-width="400">
+    <v-card>
+        <v-container>
+        <p>{{$getLanguageMsg('preferenceSaved')}}</p>
+        <v-btn
+            type="submit"
+            color="primary"
+            @click="confirmSavedDialog = !confirmSavedDialog"
+        >{{$getLanguageMsg('thanks')}}</v-btn>
+        </v-container>
+    </v-card>
+    </v-dialog>
+
     <v-dialog v-model="confirmDeleteAdminBookingDialog" max-width="400">
         <v-card>
         <v-container>
@@ -41,7 +54,7 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('workingHours')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="grey lighten-3">
                         <v-col>
                             <v-container>
                                 <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
@@ -79,6 +92,37 @@
                                     </template>
                                 </v-simple-table>
                             </v-container> 
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <v-row>
+            <v-col>
+                <v-card>
+                    <v-card-title>{{$getLanguageMsg('bookingManagement')}}</v-card-title>
+                    <v-divider></v-divider>
+                    <v-row no-gutters>
+                        <v-col>
+                            <v-container>
+                                <v-col cols="6">
+                                    <v-form @submit.prevent="saveBookingDuration" 
+                                    ref="bookingDurationForm">
+                                        <v-text-field 
+                                        :rules="bookingDurationRules"
+                                        v-model="bookingDuration"
+                                        :label="$getLanguageMsg('bookingDurationFormText')"
+                                        ></v-text-field>
+
+                                        <v-btn type="submit">
+                                        {{$getLanguageMsg('save')}}
+                                        <v-icon right>mdi-content-save</v-icon>
+                                        </v-btn>
+
+                                    </v-form>
+                                </v-col>   
+                            </v-container>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -184,7 +228,12 @@ export default {
             confirmDeleteAdminBookingDialog: false,
             adminBookingToDelete: null,
             timeRangeDayToDelete: null,
-            timeRangeRangeToDelete: null
+            timeRangeRangeToDelete: null,
+            bookingDuration: null,
+            bookingDurationRules: [
+                val => parseInt(val) > 0 || "Booking duration must a number greater than 0"
+            ],
+            confirmSavedDialog: false
         }
     },
     created() {
@@ -257,6 +306,18 @@ export default {
             this.confirmDeleteAdminBookingDialog = false;
             this.adminBookingToDelete = null;
             this.timeRangeToDelete = null;
+        },
+        saveBookingDuration() {
+            if(this.$refs.bookingDurationForm.validate()) {
+                this.confirmSavedDialog = true;
+
+                db.collection(`businesses/${this.id}/availability/`).doc('regular').set({
+                    bookingDuration: parseInt(this.bookingDuration)
+                }, {merge: true}).then(() => {
+                    // this.bookingDuration = "";
+                    //TODO: Set to new value
+                });
+            }
         }
     }
 }
