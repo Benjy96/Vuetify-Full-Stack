@@ -769,6 +769,61 @@ export class DateUtils {
     }
 
     /**
+     * Returns true if either the from or to is within the other from->to
+     * - 9->10 with 9->10 == true
+     * - 9->10 with 8->10 == true
+     * - 9->10 with 9->11 == true
+     */
+    static rangeIntersectsRange(from, to, otherFrom, otherTo) {
+        if(
+        //range from->to lies entirely within other range from->to       
+        (DateUtils.timeGreaterThanOrEqualTo(from, otherFrom)
+        && DateUtils.timeLessThanOrEqualTo(to, otherTo))
+        
+        ||
+
+        //range to lies within other range from->to
+        (DateUtils.timeLessThan(to, otherTo)
+        && DateUtils.timeGreaterThan(to, otherFrom))
+
+        ||
+
+        //range from lies within other range from->to
+        (DateUtils.timeGreaterThan(from, otherFrom)
+        && DateUtils.timeLessThan(from, otherTo))
+        )
+        {
+            return true;
+        } 
+        else return false;
+    }
+
+    /**
+     * returns true if a is within b or if b is within a
+     * 
+     * needed for variable booking durations
+     * bc a booking might not intersect an interval but the interval may intersect a booking if durations change
+     * e.g., book 9->10 then change to 2 hour durations, starting from 8am
+     * for the interval 8->10, with just the first check, it'd be true
+     * 
+     */
+    static rangesIntersect(from, to, otherFrom, otherTo) {
+        if(
+                      
+            DateUtils.rangeIntersectsRange(from, to, otherFrom, otherTo)
+            
+            ||
+
+            DateUtils.rangeIntersectsRange(otherFrom, otherTo, from, to)
+
+        )
+        {
+            return true;
+        }
+        else return false;
+    }
+
+    /**
      * 
      * @returns true if the date > from and < to - i.e., from 2020-01-01 and date 2020-01-01 is FALSE
      */
@@ -835,7 +890,7 @@ export class DateUtils {
             How to get the time difference?
         */
 
-        for(let i = startTimeInMins; i <= endTimeInMins; i += intervalDuration) {
+        for(let i = startTimeInMins; i < endTimeInMins; i += intervalDuration) {
 
             //convert i & i + intervalDuration min to 24h time
 

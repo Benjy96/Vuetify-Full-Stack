@@ -129,7 +129,7 @@ export default {
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
-    defaultSlotInterval: 60,
+    defaultSlotInterval: 30,
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
@@ -270,8 +270,8 @@ export default {
                     }
 
                     // If interval is not in an admin booking
-                    if((DateUtils.timeGreaterThanOrEqualTo(potentiallyAvailableIntervals[i].from, fromTime)
-                    && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, toTime))) {
+                    if(DateUtils.rangesIntersect(potentiallyAvailableIntervals[i].from, potentiallyAvailableIntervals[i].to,
+                    fromTime, toTime)) {
                       intervalAvailable = false;
                       break;
                     }
@@ -283,9 +283,16 @@ export default {
               if (this.customer_bookings != null) {
                 if(intervalAvailable != false) { 
                   for (let x = 0; x < this.customer_bookings.length; x++) {
-                    // If interval is in a booking
-                    if((DateUtils.timeGreaterThanOrEqualTo(potentiallyAvailableIntervals[i].from, this.customer_bookings[x].from)
-                    && DateUtils.timeLessThanOrEqualTo(potentiallyAvailableIntervals[i].to, this.customer_bookings[x].to))) {
+                    // If interval is in a booking:
+                      //if interval from >= booking from && interval to <= booking to - within
+                      //But what if the start is before the other booking start and the to is in the middle?
+                      //OR
+                      //If to < booking to & > booking from
+                      //OR
+                      //If from > booking from & < booking to
+                    if(DateUtils.rangesIntersect(potentiallyAvailableIntervals[i].from, potentiallyAvailableIntervals[i].to,
+                    this.customer_bookings[x].from, this.customer_bookings[x].to)) 
+                    {
                       intervalAvailable = false;
                       break;
                     } 
