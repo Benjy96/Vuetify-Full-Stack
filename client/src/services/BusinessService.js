@@ -25,8 +25,15 @@ class BusinessService {
      * available, and then adds to the "unavailableDays" meta data for a month if it is not
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
      */
+
+    /* ----- POST ----- */
+
     static async createAdminBooking(uid, adminBooking) {
         axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
+    }
+
+    static async updateBookingDuration(uid, bookingDuration) {
+        axios.post(`${apiURL}/bookingDuration`, {uid, bookingDuration});
     }
 
     /* ----- READ ----- */
@@ -82,7 +89,8 @@ class BusinessService {
         
     }
 
-    /* ----- DELETE/UPDATE ------ */
+    /* ----- DELETE ------ */
+
     static async cancelBooking(uid, date, booking) {
         let res = await axios.delete(`${apiURL}/booking`, {
             data: {

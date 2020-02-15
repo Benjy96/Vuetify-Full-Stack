@@ -159,5 +159,30 @@ router.delete('/booking', async (req, res) => {
   }
 });
 
+//TODO: RATE LIMIT!!!
+router.post('/bookingDuration', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingDuration = req.body.bookingDuration;
+
+  if(!uid || !bookingDuration) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  }
+
+  db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+    bookingDuration: bookingDuration
+  }, {merge: true}).then(() => {
+
+    let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+    
+    MetaDataHelper.updateMetaData(uid, 
+      DateUtils.getCurrentDateString(), 
+      bookingDurationSetUntil
+    );
+
+    res.status(202).send({setTo: bookingDurationSetUntil});
+  });
+});
+
 //make router available to other packages when you require('posts.js') - it is getting this router object
 module.exports = router;

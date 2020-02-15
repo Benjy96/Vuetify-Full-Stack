@@ -310,13 +310,7 @@ export default {
         saveBookingDuration() {
             if(this.$refs.bookingDurationForm.validate()) {
                 this.confirmSavedDialog = true;
-
-                db.collection(`businesses/${this.id}/availability/`).doc('regular').set({
-                    bookingDuration: parseInt(this.bookingDuration)
-                }, {merge: true}).then(() => {
-                    // this.bookingDuration = "";
-                    //TODO: Set to new value
-                });
+                BusinessService.updateBookingDuration(this.id, parseInt(this.bookingDuration));
             }
         }
     }

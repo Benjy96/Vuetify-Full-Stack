@@ -20,6 +20,67 @@ const daysOfWeek = [
 
 class DateUtils {
 
+        /**
+     * Increments or decrements the month of a date. HOWEVER: Always returns 01 for the DD of YYYY-MM-DD
+     * @param {*} date The date you wish to increment or decrement
+     * @param {*} numMonthIncrements a positive or negative number
+     * @returns {String} YYYY-MM-DD, where DD is 01 and YYYY-MM are incremented or decremented
+     */
+    static incrementMonthOfDate(date, numMonthIncrements) {
+        let year = parseInt(this.getYearFromDate(date));
+        let month = parseInt(this.getMonthFromDate(date));
+        // How to, from a number, calculate a given year and month?
+
+        //It's not just based on the number, but our position
+        if(numMonthIncrements < 0) {
+            let numYearsToDecrease, newMonth;
+
+            //Decreasing but not by over a year
+            if(numMonthIncrements < 12 && month + numMonthIncrements < 0) {
+                numYearsToDecrease = 1;
+                // e.g., Jan (1) - 2 months = -1, which is 12 + -1, which is 11
+                newMonth = 12 + (month + numMonthIncrements);
+            } else if(numMonthIncrements < 12 && month + numMonthIncrements == 0) {
+                numYearsToDecrease = 1;
+                newMonth = 12;
+            } else {
+                numYearsToDecrease = Math.floor(-numMonthIncrements / 12);
+                newMonth = -numMonthIncrements % 12;
+            }
+
+            year -= numYearsToDecrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`;
+        } else if(numMonthIncrements > 0) {
+            let numYearsToIncrease, newMonth;
+
+            //Not going to new year
+            if(numMonthIncrements + month <= 12) {
+                numYearsToIncrease = 0;
+                newMonth = numMonthIncrements + month;
+            } else {
+                newMonth = (numMonthIncrements + month) % 12;
+                numYearsToIncrease = Math.floor((numMonthIncrements + month) / 12);
+            }
+
+            year += numYearsToIncrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`
+        } else {
+            return date;
+        }
+    }
+
+    static formatNumInMMFormat(month) {
+        if(month >= 10) {
+            return month;
+        } else if(typeof month == 'number') {
+            return "0" + month.toString();
+        } else if(typeof month == 'string') {
+            return "0" + month;
+        }
+    }
+
     /**
      * @returns {String[]} years
      */
