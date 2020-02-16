@@ -24,6 +24,7 @@
           <v-container>
             <v-form @submit.prevent="addBooking" ref="addBookingForm">
               <p class="display-1">{{$getLanguageMsg('bookAppointment')}}</p>
+              <p v-if="bookingInfo != ''">{{bookingInfo}}</p>
               <v-text-field
                 v-model="bookerName"
                 required
@@ -130,6 +131,7 @@ export default {
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
+    bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
     email: "",
@@ -329,6 +331,7 @@ export default {
     async getRegularAvailabilityDetails() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
+        if(res.bookingInfo) this.bookingInfo = res.bookingInfo;
         if(res.bookingDuration) this.bookingDuration = res.bookingDuration;
         if(res.bookingPrice) this.bookingPrice = res.bookingPrice;
       });

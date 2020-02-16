@@ -176,6 +176,14 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'bookingInfoFormText': {
+        'en': "Booking information (What is displayed to customers when trying to book you)",
+        'es': "" //TODO
+    },
+    'invalidBookingInfoFormText': {
+        'en': "Your booking information is too long",
+        'es': ""
+    },
     'price': {
         'en': "Price",
         'es': "" //TODO

@@ -159,6 +159,22 @@ router.delete('/booking', async (req, res) => {
   }
 });
 
+router.post('/bookingInfo', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingInfo = req.body.bookingInfo;
+
+  if(!uid || !bookingInfo) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingInfo: bookingInfo
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
 //TODO: RATE LIMIT!!!
 router.post('/bookingDuration', async (req, res) => {
   let uid = req.body.uid;

@@ -110,9 +110,17 @@
                                     <v-form @submit.prevent="saveBookingDuration" 
                                     ref="bookingManagementForm">
 
-                                        <v-text-field v-model="bookingPrice" required
+                                        <v-textarea v-model="bookingInfo"
+                                        v-bind:rules="bookingInfoRules"
+                                        :label="$getLanguageMsg('bookingInfoFormText')" 
+                                        prepend-icon="mdi-card-text-outline"
+                                        :counter="bookingInfoLimit"
+                                        />
+
+                                        <v-text-field v-model="bookingPrice"
                                         v-bind:rules="bookingPriceRules"
-                                        :label="$getLanguageMsg('bookingPriceFormText')" prepend-icon="mdi-cash"
+                                        :label="$getLanguageMsg('bookingPriceFormText')" 
+                                        prepend-icon="mdi-cash"
                                         />
 
                                         <v-text-field 
@@ -252,6 +260,11 @@ export default {
             bookingPriceRules: [
                 val => ((val == "" || val == undefined) || parseFloat(val) > 0) || this.$getLanguageMsg('invalidBookingPriceFormText')
             ],
+            bookingInfo: "",
+            bookingInfoRules: [
+                val => val.length < this.bookingInfoLimit || this.$getLanguageMsg('invalidBookingInfoFormText')
+            ],
+            bookingInfoLimit: 300,
             confirmSavedDialog: false
         }
     },
@@ -328,6 +341,12 @@ export default {
         },
         saveBookingDuration() {
             if(this.$refs.bookingManagementForm.validate()) {
+                //TODO: Preserve newlines?
+                if(this.bookingInfo != "" && this.bookingInfo != null) {
+                    this.confirmSavedDialog = true;
+                    BusinessService.updateBookingInfo(this.id, this.bookingInfo);
+                }
+
                 if(this.bookingDuration != "" && this.bookingDuration != null) {
                     this.confirmSavedDialog = true;
                     BusinessService.updateBookingDuration(this.id, this.bookingDuration);
