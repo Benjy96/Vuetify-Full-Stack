@@ -205,7 +205,7 @@ const messages =
         'es': "" //TODO
     },
     'bookingPriceFormText': {
-        'en': "How much it costs to book you (Default: Price Upon Asking)",
+        'en': "Booking price - how much it costs to book you (Default: Price Upon Asking)",
         'es': "" //TODO
     },
     'invalidBookingPriceFormText': {
@@ -217,7 +217,7 @@ const messages =
         'es': "Salvar" //TODO
     },
     'bookingDurationFormText': {
-        'en': "How long your bookings are, in minutes (Default: 60)",
+        'en': "Booking duration - how long your bookings are, in minutes (Default: 60)",
         'es': "" //TODO
     },
     'invalidBookingDurationMinutes': {
