@@ -176,12 +176,20 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'price': {
+        'en': "How much it costs to book you (Default: Price Upon Asking)",
+        'es': "" //TODO
+    },
+    'bookingPriceFormText': {
+        'en': "If you're setting a booking price, it must be a number greater than 0",
+        'es': "" //TODO
+    },
     'save': {
         'en': "Save",
         'es': "Salvar" //TODO
     },
     'bookingDurationFormText': {
-        'en': "How long are your bookings in minutes? (Default: 60)",
+        'en': "How long your bookings are, in minutes (Default: 60)",
         'es': "" //TODO
     },
     'bookingManagement': {

@@ -36,6 +36,10 @@ class BusinessService {
         axios.post(`${apiURL}/bookingDuration`, {uid, bookingDuration});
     }
 
+    static async updateBookingPrice(uid, bookingPrice) {
+        axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
+    }
+
     /* ----- READ ----- */
 
     static async getUpcomingBookings(uid, dayLimit) {

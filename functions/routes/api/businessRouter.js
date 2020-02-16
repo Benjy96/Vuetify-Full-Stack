@@ -162,26 +162,46 @@ router.delete('/booking', async (req, res) => {
 //TODO: RATE LIMIT!!!
 router.post('/bookingDuration', async (req, res) => {
   let uid = req.body.uid;
-  let bookingDuration = req.body.bookingDuration;
+  let bookingDuration = parseInt(req.body.bookingDuration);
 
   if(!uid || !bookingDuration) {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
+  } else {
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingDuration: bookingDuration
+    }, {merge: true}).then(() => {
+  
+      let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+      
+      MetaDataHelper.updateMetaData(uid, 
+        DateUtils.getCurrentDateString(), 
+        bookingDurationSetUntil
+      );
+  
+      res.status(202).send({setTo: bookingDurationSetUntil});
+    });
   }
+});
 
-  db.collection(`businesses/${uid}/availability/`).doc('regular').set({
-    bookingDuration: bookingDuration
-  }, {merge: true}).then(() => {
+router.post('/bookingPrice', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingPrice = req.body.bookingPrice;
 
-    let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-    
-    MetaDataHelper.updateMetaData(uid, 
-      DateUtils.getCurrentDateString(), 
-      bookingDurationSetUntil
-    );
+  if(!uid || !bookingPrice || !parseFloat(bookingPrice)) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    if(!bookingPrice.includes(".")) {
+      bookingPrice = bookingPrice.concat(".00");
+    }
 
-    res.status(202).send({setTo: bookingDurationSetUntil});
-  });
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingPrice: bookingPrice
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
 });
 
 //make router available to other packages when you require('posts.js') - it is getting this router object

@@ -106,9 +106,15 @@
                     <v-row no-gutters>
                         <v-col>
                             <v-container>
-                                <v-col cols="6">
+                                <v-col>
                                     <v-form @submit.prevent="saveBookingDuration" 
-                                    ref="bookingDurationForm">
+                                    ref="bookingManagementForm">
+
+                                        <v-text-field v-model="bookingPrice" required
+                                        v-bind:rules="bookingPriceRules"
+                                        :label="$getLanguageMsg('price')" prepend-icon="mdi-cash"
+                                        />
+
                                         <v-text-field 
                                         :rules="bookingDurationRules"
                                         v-model="bookingDuration"
@@ -237,13 +243,14 @@ export default {
                 // val is optional - if == "", it will return true first, exiting from the rules
                 // if not == "", it will continue checking (it will go to parseInt)
                 // this function is trying to return the first thing that can be seen as "true"
-                val => (val == "" || parseInt(val) > 0) || "Booking duration must a number greater than 0",
+                val => ((val == "" || val == undefined) || parseInt(val) > 0) || "Booking duration must a number greater than 0",
                 // If both false, return outer
-                val => (val == "" || !val.includes(".")) || "Booking duration must be in minutes"
+                val => ((val == "" || val == undefined) || !val.includes(".")) || "Booking duration must be in minutes"
                 //TODO: What if they have a decimal? Do server side? Round down?
             ],
-                val => (val == "" || parseInt(val) > 0) || "Booking duration must a number greater than 0"
-                
+            bookingPrice: "",
+            bookingPriceRules: [
+                val => ((val == "" || val == undefined) || parseFloat(val) > 0) || "Price must a number greater than 0"
             ],
             confirmSavedDialog: false
         }
@@ -320,13 +327,18 @@ export default {
             this.timeRangeToDelete = null;
         },
         saveBookingDuration() {
-            if(this.$refs.bookingDurationForm.validate()) {
-                if(this.bookingDuration != "") {
+            if(this.$refs.bookingManagementForm.validate()) {
+                if(this.bookingDuration != "" && this.bookingDuration != null) {
                     this.confirmSavedDialog = true;
-                    BusinessService.updateBookingDuration(this.id, parseInt(this.bookingDuration));
+                    BusinessService.updateBookingDuration(this.id, this.bookingDuration);
                 }
 
-                this.$refs.bookingDurationForm.reset();
+                if(this.bookingPrice != "" && this.bookingPrice != null) {
+                    this.confirmSavedDialog = true;
+                    BusinessService.updateBookingPrice(this.id, this.bookingPrice);
+                }
+
+                this.$refs.bookingManagementForm.reset();
             }
         }
     }
