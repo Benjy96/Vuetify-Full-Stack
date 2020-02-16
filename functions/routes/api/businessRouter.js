@@ -159,6 +159,24 @@ router.delete('/booking', async (req, res) => {
   }
 });
 
+/* ------ POSTS ------ */
+
+router.post('/bio', async (req, res) => {
+  let uid = req.body.uid;
+  let bio = req.body.bio;
+
+  if(!uid || !bio) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses`).doc(`${uid}`).set({
+      description: bio
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
 router.post('/bookingTitle', async (req, res) => {
   let uid = req.body.uid;
   let bookingTitle = req.body.bookingTitle;

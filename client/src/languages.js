@@ -176,6 +176,18 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'profileManagement': {
+        'en': "Profile Management",
+        'es': "" //TODO
+    },
+    'bioFormText': {
+        'en': "Bio - A short summary of who you are (This is shown under your name on the home screen)",
+        'es': "" //TODO
+    },
+    'invalidBioFormText': {
+        'en': "Your bio is too long",
+        'es': "" //TODO
+    },
     'bookingTitleFormText': {
         'en': "Booking title (Default: Book an appointment)",
         'es': "" //TODO

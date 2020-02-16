@@ -98,6 +98,38 @@
             </v-col>
         </v-row>
 
+                <v-row>
+            <v-col>
+                <v-card>
+                    <v-card-title>{{$getLanguageMsg('profileManagement')}}</v-card-title>
+                    <v-divider></v-divider>
+                    <v-row no-gutters>
+                        <v-col>
+                            <v-container>
+                                <v-col>
+                                    <v-form @submit.prevent="saveProfileInfo" 
+                                    ref="profileManagementForm">
+
+                                        <v-text-field v-model="bio"
+                                        v-bind:rules="bioRules"
+                                        :label="$getLanguageMsg('bioFormText')" 
+                                        prepend-icon="mdi-account-details"
+                                        />
+
+                                        <v-btn type="submit">
+                                        {{$getLanguageMsg('save')}}
+                                        <v-icon right>mdi-content-save</v-icon>
+                                        </v-btn>
+
+                                    </v-form>
+                                </v-col>   
+                            </v-container>
+                        </v-col>
+                    </v-row>
+                </v-card>
+            </v-col>
+        </v-row>
+
         <v-row>
             <v-col>
                 <v-card>
@@ -107,7 +139,7 @@
                         <v-col>
                             <v-container>
                                 <v-col>
-                                    <v-form @submit.prevent="saveBookingDuration" 
+                                    <v-form @submit.prevent="saveBookingDetails" 
                                     ref="bookingManagementForm">
 
                                         <v-text-field v-model="bookingTitle"
@@ -275,7 +307,12 @@ export default {
             bookingTitleRules: [
                 val => val.length < this.bookingTitleLimit || this.$getLanguageMsg('invalidBookingInfoFormText')
             ],
-            bookingTitleLimit: 150,
+            bookingTitleLimit: 100,
+            bio: "",
+            bioRules: [
+                val => val.length < this.bioLimit || this.$getLanguageMsg('invalidBioFormText')
+            ],
+            bioLimit: 150,
             confirmSavedDialog: false
         }
     },
@@ -350,7 +387,17 @@ export default {
             this.adminBookingToDelete = null;
             this.timeRangeToDelete = null;
         },
-        saveBookingDuration() {
+        saveProfileInfo() {
+            if(this.$refs.profileManagementForm.validate()) {
+                if(this.bio != "" && this.bio != null) {
+                    this.confirmSavedDialog = true;
+                    BusinessService.updateBio(this.id, this.bio);
+                }
+
+                this.$refs.bookingManagementForm.reset();
+            }
+        },
+        saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
                 if(this.bookingTitle != "" && this.bookingTitle != null) {
                     this.confirmSavedDialog = true;
