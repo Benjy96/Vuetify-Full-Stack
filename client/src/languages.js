@@ -177,10 +177,14 @@ const messages =
     },
     //Dashboard
     'price': {
-        'en': "How much it costs to book you (Default: Price Upon Asking)",
+        'en': "Price",
         'es': "" //TODO
     },
     'bookingPriceFormText': {
+        'en': "How much it costs to book you (Default: Price Upon Asking)",
+        'es': "" //TODO
+    },
+    'invalidBookingPriceFormText': {
         'en': "If you're setting a booking price, it must be a number greater than 0",
         'es': "" //TODO
     },
@@ -191,6 +195,14 @@ const messages =
     'bookingDurationFormText': {
         'en': "How long your bookings are, in minutes (Default: 60)",
         'es': "" //TODO
+    },
+    'invalidBookingDurationMinutes': {
+        'en': "Booking duration must be in minutes",
+        'es': "" //TODO
+    },
+    'invalidBookingDurationSize': {
+        'en': "Booking duration must a number greater than 0",
+        'es': ""
     },
     'bookingManagement': {
         'en': "Booking Management",

@@ -38,7 +38,7 @@
                 label="email"
                 prepend-icon="mdi-at"
               />
-              <p>Price: {{bookingPrice}}</p>
+              <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
               <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
             </v-form>
           </v-container>

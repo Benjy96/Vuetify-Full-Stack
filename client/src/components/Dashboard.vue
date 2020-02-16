@@ -112,7 +112,7 @@
 
                                         <v-text-field v-model="bookingPrice" required
                                         v-bind:rules="bookingPriceRules"
-                                        :label="$getLanguageMsg('price')" prepend-icon="mdi-cash"
+                                        :label="$getLanguageMsg('bookingPriceFormText')" prepend-icon="mdi-cash"
                                         />
 
                                         <v-text-field 
@@ -243,14 +243,14 @@ export default {
                 // val is optional - if == "", it will return true first, exiting from the rules
                 // if not == "", it will continue checking (it will go to parseInt)
                 // this function is trying to return the first thing that can be seen as "true"
-                val => ((val == "" || val == undefined) || parseInt(val) > 0) || "Booking duration must a number greater than 0",
+                val => ((val == "" || val == undefined) || parseInt(val) > 0) || this.$getLanguageMsg('invalidBookingDurationSize'),
                 // If both false, return outer
-                val => ((val == "" || val == undefined) || !val.includes(".")) || "Booking duration must be in minutes"
+                val => ((val == "" || val == undefined) || !val.includes(".")) || this.$getLanguageMsg('invalidBookingDurationMinutes')
                 //TODO: What if they have a decimal? Do server side? Round down?
             ],
             bookingPrice: "",
             bookingPriceRules: [
-                val => ((val == "" || val == undefined) || parseFloat(val) > 0) || "Price must a number greater than 0"
+                val => ((val == "" || val == undefined) || parseFloat(val) > 0) || this.$getLanguageMsg('invalidBookingPriceFormText')
             ],
             confirmSavedDialog: false
         }
