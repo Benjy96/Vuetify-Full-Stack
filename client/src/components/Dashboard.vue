@@ -394,7 +394,7 @@ export default {
                     BusinessService.updateBio(this.id, this.bio);
                 }
 
-                this.$refs.bookingManagementForm.reset();
+                this.$refs.profileManagementForm.reset();
             }
         },
         saveBookingDetails() {
