@@ -229,6 +229,7 @@ export default {
             adminBookingToDelete: null,
             timeRangeDayToDelete: null,
             timeRangeRangeToDelete: null,
+            // Booking Management Form
             bookingDuration: null,
             bookingDurationRules: [
                 val => parseInt(val) > 0 || "Booking duration must a number greater than 0"
@@ -311,6 +312,7 @@ export default {
             if(this.$refs.bookingDurationForm.validate()) {
                 this.confirmSavedDialog = true;
                 BusinessService.updateBookingDuration(this.id, parseInt(this.bookingDuration));
+                this.$refs.bookingDurationForm.reset();
             }
         }
     }
