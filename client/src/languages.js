@@ -176,6 +176,10 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'bookingTitleFormText': {
+        'en': "Booking title (Default: Book an appointment)",
+        'es': "" //TODO
+    },
     'bookingInfoFormText': {
         'en': "Booking information (What is displayed to customers when trying to book you)",
         'es': "" //TODO

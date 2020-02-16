@@ -32,6 +32,12 @@ class BusinessService {
         axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
     }
 
+    //TODO: Combine update methods - in Dashboard check all then call one function
+        //In back-end, retrieve what's needed in nested ifs
+    static async updateBookingTitle(uid, bookingTitle) {
+        axios.post(`${apiURL}/bookingTitle`, {uid, bookingTitle});
+    }
+
     static async updateBookingInfo(uid, bookingInfo) {
         axios.post(`${apiURL}/bookingInfo`, {uid, bookingInfo});
     }
@@ -43,7 +49,6 @@ class BusinessService {
     static async updateBookingPrice(uid, bookingPrice) {
         axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
     }
-
     /* ----- READ ----- */
 
     static async getUpcomingBookings(uid, dayLimit) {
