@@ -237,6 +237,11 @@ export default {
                 // val is optional - if == "", it will return true first, exiting from the rules
                 // if not == "", it will continue checking (it will go to parseInt)
                 // this function is trying to return the first thing that can be seen as "true"
+                val => (val == "" || parseInt(val) > 0) || "Booking duration must a number greater than 0",
+                // If both false, return outer
+                val => (val == "" || !val.includes(".")) || "Booking duration must be in minutes"
+                //TODO: What if they have a decimal? Do server side? Round down?
+            ],
                 val => (val == "" || parseInt(val) > 0) || "Booking duration must a number greater than 0"
                 
             ],
