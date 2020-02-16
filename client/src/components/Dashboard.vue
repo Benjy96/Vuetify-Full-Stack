@@ -113,6 +113,7 @@
                                         :rules="bookingDurationRules"
                                         v-model="bookingDuration"
                                         :label="$getLanguageMsg('bookingDurationFormText')"
+                                        prepend-icon="mdi-alarm"
                                         ></v-text-field>
 
                                         <v-btn type="submit">
@@ -230,9 +231,14 @@ export default {
             timeRangeDayToDelete: null,
             timeRangeRangeToDelete: null,
             // Booking Management Form
-            bookingDuration: null,
+            bookingDuration: "",
             bookingDurationRules: [
-                val => parseInt(val) > 0 || "Booking duration must a number greater than 0"
+                // The right side can always be converted to true so will return if the other fails
+                // val is optional - if == "", it will return true first, exiting from the rules
+                // if not == "", it will continue checking (it will go to parseInt)
+                // this function is trying to return the first thing that can be seen as "true"
+                val => (val == "" || parseInt(val) > 0) || "Booking duration must a number greater than 0"
+                
             ],
             confirmSavedDialog: false
         }
@@ -310,8 +316,11 @@ export default {
         },
         saveBookingDuration() {
             if(this.$refs.bookingDurationForm.validate()) {
-                this.confirmSavedDialog = true;
-                BusinessService.updateBookingDuration(this.id, parseInt(this.bookingDuration));
+                if(this.bookingDuration != "") {
+                    this.confirmSavedDialog = true;
+                    BusinessService.updateBookingDuration(this.id, parseInt(this.bookingDuration));
+                }
+
                 this.$refs.bookingDurationForm.reset();
             }
         }
