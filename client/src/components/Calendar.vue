@@ -23,7 +23,7 @@
         <v-card>
           <v-container>
             <v-form @submit.prevent="addBooking" ref="addBookingForm">
-              <p>{{$getLanguageMsg('bookAppointment')}}</p>
+              <p class="display-1">{{$getLanguageMsg('bookAppointment')}}</p>
               <v-text-field
                 v-model="bookerName"
                 required
@@ -38,6 +38,7 @@
                 label="email"
                 prepend-icon="mdi-at"
               />
+              <p>Price: {{bookingPrice}}</p>
               <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
             </v-form>
           </v-container>
@@ -130,6 +131,7 @@ export default {
     admin_bookings: null,
     regular_availability: null,
     bookingDuration: 60,
+    bookingPrice: "POA",
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
@@ -140,7 +142,7 @@ export default {
     //Month Viewed Upon Load
     Promise.all([
       this.getAdminBookings(),  //TODO: call for next/prev
-      this.getRegularAvailability(),
+      this.getRegularAvailabilityDetails(),
       this.getUnavailableDays(this.today),
       this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
       this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
@@ -324,10 +326,11 @@ export default {
         this.admin_bookings = res;
       });
     },
-    async getRegularAvailability() {
+    async getRegularAvailabilityDetails() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
         if(res.bookingDuration) this.bookingDuration = res.bookingDuration;
+        if(res.bookingPrice) this.bookingPrice = res.bookingPrice;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?
