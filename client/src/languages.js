@@ -193,11 +193,11 @@ const messages =
         'es': "" //TODO
     },
     'bookingTitleFormText': {
-        'en': "Booking title (Default: Book an appointment)",
+        'en': "Booking title - the headline on the booking form (Default: Book an appointment)",
         'es': "" //TODO
     },
     'bookingInfoFormText': {
-        'en': "Booking information (What is displayed to customers when trying to book you)",
+        'en': "Booking information - what is displayed to customers when trying to book you (Default: Blank)",
         'es': "" //TODO
     },
     'invalidBookingInfoFormText': {
