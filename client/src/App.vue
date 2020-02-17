@@ -3,6 +3,16 @@
 
     <!-- Hidden Nav Drawer -->
     <v-navigation-drawer v-model="drawerRight" app right>
+      <v-list-item v-if="currentUser">
+        <v-list-item-content>
+          <v-list-item-subtitle>
+            {{currentUser.email}}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+      <v-divider v-if="currentUser"></v-divider>
+
       <v-list>
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
@@ -128,6 +138,7 @@ import CustomerService from './services/CustomerService';
 export default {
   created() {
     firebase.auth().onAuthStateChanged((user) => {
+      //TODO: get rid of flickering
       if (user) {
         this.currentUser = user;
         this.$router.push('/');
