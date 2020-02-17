@@ -40,6 +40,34 @@ class BusinessService {
         axios.post(`${apiURL}/occupation`, {uid, occupation});
     }
 
+    //TODO: Restrict writes to back-end? I cleared my business info...
+    static async setProfileImage(uid, image) {
+        if(image != null) {
+            // Create a reference
+            let storageRef = firebase.storage().ref();
+            let ref = storageRef.child(`profileImages/${uid}_profile.jpg`);
+
+            // Upload the file
+            ref.put(image);
+
+            let profilePicPath = ref.root + ref.fullPath;
+
+            db.collection('businesses').doc(uid).set({
+                profileImage: profilePicPath
+            }, {merge: true});
+        }
+    }
+
+    uploadAndGetProfileImageRef(uid) {
+        // Create a reference
+        var storageRef = firebase.storage().ref();
+        var profilePicRef = storageRef.child(`profileImages/${uid}_profile.jpg`);
+
+        // Upload the file
+        profilePicRef.put(this.profilePicture);
+
+    }
+
     //TODO: Combine update methods - in Dashboard check all then call one function
         //In back-end, retrieve what's needed in nested ifs
     static async updateBookingTitle(uid, bookingTitle) {

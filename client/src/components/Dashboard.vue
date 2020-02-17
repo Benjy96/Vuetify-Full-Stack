@@ -239,6 +239,14 @@
                                         prepend-icon="mdi-hammer"
                                         />
 
+                                        <v-file-input v-model="profileImage"
+                                        show-size
+                                        accept=".jpg"
+                                        v-bind:rules="imageRules"
+                                        :label="$getLanguageMsg('profilePicture')"
+                                        prepend-icon="mdi-camera"
+                                        ></v-file-input>
+
                                         <v-btn type="submit">
                                         {{$getLanguageMsg('save')}}
                                         <v-icon right>mdi-content-save</v-icon>
@@ -329,6 +337,10 @@ export default {
                 val => val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
             ],
             occupationLimit: 25,
+            profileImage: null,
+            imageRules: [
+                value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')
+            ],
             confirmSavedDialog: false
         }
     },
@@ -413,6 +425,11 @@ export default {
                 if(this.occupation != "" && this.occupation != null) {
                     this.confirmSavedDialog = true;
                     BusinessService.updateOccupation(this.id, this.occupation);
+                }
+
+                if(this.profileImage != null) {
+                    this.confirmSavedDialog = true;
+                    BusinessService.setProfileImage(this.id, this.profileImage);
                 }
 
                 this.$refs.profileManagementForm.reset();

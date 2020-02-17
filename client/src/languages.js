@@ -58,7 +58,7 @@ const messages =
     //Register.vue
     'picTooLarge': {
         'en': "Picture size should be less than 1 MB!",
-        'es': ""
+        'es': "" //TODO
     },
     'emailNotValid' : {
         'en': "E-mail must be valid",
