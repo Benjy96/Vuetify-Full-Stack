@@ -55,7 +55,7 @@
                 <v-card>
                 <v-card-title>{{$getLanguageMsg('upcomingBookings')}}</v-card-title>
                 <v-divider></v-divider>
-                <v-row>
+                <v-row no-gutters class="grey lighten-5">
                     <v-col>
                         <v-container>
                             <!-- <Bookings/> -->
@@ -73,7 +73,7 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('workingHours')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters class="grey lighten-3">
+                    <v-row no-gutters class="grey lighten-5">
                         <v-col>
                             <v-container>
                                 <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
@@ -123,7 +123,7 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('unavailable')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="grey lighten-5">
                         <v-col>
                             <v-container>
                                 <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
@@ -168,7 +168,7 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('bookingManagement')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="grey lighten-5">
                         <v-col>
                             <v-container>
                                 <v-col>
@@ -221,7 +221,7 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('profileManagement')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters>
+                    <v-row no-gutters class="grey lighten-5">
                         <v-col>
                             <v-container>
                                 <v-col>
