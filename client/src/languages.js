@@ -131,7 +131,7 @@ const messages =
         'es': "" //TODO
     },
     'confirmCancelBooking': {
-        'en': "Are you sure you wish to cancel this booking?",
+        'en': "Are you sure you wish to remove this booking?",
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
     },
     //Calendar.vue

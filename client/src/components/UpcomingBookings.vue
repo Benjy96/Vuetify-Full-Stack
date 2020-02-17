@@ -37,11 +37,11 @@
         </v-toolbar>
       </template>
 
-      <!-- <template v-slot:item.action="{ item }">
-        <v-icon right @click="deleteItem(item)">
+      <template v-slot:item.action="{ item }">
+        <v-icon right @click="cancelBooking(item)">
           mdi-delete
         </v-icon>
-      </template> -->
+      </template>
 
       <template v-slot:no-data>
         <p>{{$getLanguageMsg('noBookings')}}</p>
@@ -68,11 +68,14 @@ export default {
             { text: 'Date', value: 'date' },
             { text: 'From', value: 'from' },
             { text: 'To', value: 'to' },
-            // { text: 'Actions', value: 'action', sortable: false }, //Linked with v-slot:item.action
+            { text: 'Actions', value: 'action', sortable: false }, //Linked with v-slot:item.action
         ],
         date: DateUtils.getCurrentDateString(),
         bookings: [],
-        bookingsDayLimit: 1
+        bookingsDayLimit: 1,
+        //Cancellation
+        confirmCancelBookingDialog: false,
+        bookingToCancel: null
     }
 ),
 
@@ -102,7 +105,7 @@ export default {
             let month = DateUtils.getMonthFromDate(date);
             let day = DateUtils.getDayFromDate(date);
 
-            let bookingsDateKey = `${year}/${month}/${day}`;
+            let bookingsDateKey = `${year}-${month}-${day}`;
 
             this.bookings = res[year][month][day];
 
@@ -111,10 +114,21 @@ export default {
             });
         });
     },
+    cancelBooking (booking) {
+      this.bookingToCancel = booking;
+      if(confirm(this.$getLanguageMsg('confirmCancelBooking'))) {
+        let yearOfBookingToCancel = DateUtils.getYearFromDate(this.bookingToCancel.date);
+        let monthOfBookingToCancel = DateUtils.getMonthFromDate(this.bookingToCancel.date);
+        let dayOfBookingToCancel = DateUtils.getDayFromDate(this.bookingToCancel.date);
 
-    deleteItem (item) {
-      const index = this.desserts.indexOf(item)
-      confirm('Are you sure you want to delete this item?') && this.desserts.splice(index, 1)
+        BusinessService.cancelBooking(this.id, `${yearOfBookingToCancel}-${monthOfBookingToCancel}-${dayOfBookingToCancel}`, this.bookingToCancel)
+          .then(() => {
+              this.bookingToCancel = null;
+              this.initializeDate(this.date);
+        });
+      } else {
+        this.bookingToCancel = null;
+      }
     }
   }
 }
