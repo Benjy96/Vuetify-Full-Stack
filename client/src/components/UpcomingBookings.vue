@@ -2,7 +2,7 @@
     <v-data-table
       :headers="headers"
       :items="bookings"
-      sort-by="date"
+      sort-by="from"
       class="elevation-1"
     >
       <template v-slot:top>
