@@ -1,6 +1,8 @@
 <template>
     <v-container>
 
+    <!-- DIALOGS -->
+
     <v-dialog v-model="confirmSavedDialog" max-width="400">
     <v-card>
         <v-container>
@@ -47,8 +49,25 @@
         </v-card>
     </v-dialog>
 
+        <!-- Bookings Box -->
+        <v-row>
+            <v-col>
+                <v-card>
+                <v-card-title>{{$getLanguageMsg('upcomingBookings')}}</v-card-title>
+                <v-divider></v-divider>
+                <v-row>
+                    <v-col>
+                        <v-container>
+                            <!-- <Bookings/> -->
+                            <UpcomingBookings :id="id"/>
+                        </v-container>
+                    </v-col>
+                </v-row>
+                </v-card>
+            </v-col>
+        </v-row>
+
         <!-- Availability Box -->
-        <!-- How to fucking format the rows and cols? -->
         <v-row>
             <v-col>
                 <v-card>
@@ -226,23 +245,6 @@
                 </v-card>
             </v-col>
         </v-row>
-
-        <!-- Bookings Box -->
-        <v-row>
-            <v-col>
-                <v-card>
-                <v-card-title>{{$getLanguageMsg('upcomingBookings')}}</v-card-title>
-                <v-divider></v-divider>
-                <v-row>
-                    <v-col>
-                        <v-container>
-                            <Bookings/>
-                        </v-container>
-                    </v-col>
-                </v-row>
-                </v-card>
-            </v-col>
-        </v-row>
     </v-container>
 </template>
 
@@ -251,7 +253,8 @@ import { db } from '../firebaseInit';
 import { daysOfWeek } from '../DateUtils';
 
 import firebase from 'firebase';
-import Bookings from './Bookings';
+// import Bookings from './Bookings';
+import UpcomingBookings from './UpcomingBookings';
 import AdminBookingPicker from './AdminBookingPicker';
 import RegularAvailabilityPicker from './RegularAvailabilityPicker';
 import BusinessService from '../services/BusinessService';
@@ -259,7 +262,8 @@ import BusinessService from '../services/BusinessService';
 export default {
     name: 'Dashboard',
     components: {
-        Bookings,
+        // Bookings,
+        UpcomingBookings,
         AdminBookingPicker,
         RegularAvailabilityPicker
     },

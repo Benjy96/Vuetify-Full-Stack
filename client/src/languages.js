@@ -122,6 +122,10 @@ const messages =
         'es': "Inválido"
     },
     //Bookings.vue
+    'noBookings': {
+        'en': "There are no bookings to display",
+        'es': "" //TODO
+    },
     'confirmCancelBooking': {
         'en': "Are you sure you wish to cancel this booking?",
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
