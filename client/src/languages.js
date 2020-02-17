@@ -56,6 +56,10 @@ const messages =
         'es': "Requerido"
     },
     //Register.vue
+    'picTooLarge': {
+        'en': "Picture size should be less than 1 MB!",
+        'es': ""
+    },
     'emailNotValid' : {
         'en': "E-mail must be valid",
         'es': "E-mail tiene que ser válido"

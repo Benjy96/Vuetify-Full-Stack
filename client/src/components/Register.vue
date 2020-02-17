@@ -90,7 +90,7 @@ export default {
                 v => !!v || this.$getLanguageMsg('required')
             ],
             imageRules: [
-                value => !value || value.size < 1000000 || 'Picture size should be less than 1 MB!'
+                value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')
             ]
         }
     },
