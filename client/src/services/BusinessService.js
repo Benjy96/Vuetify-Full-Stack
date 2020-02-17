@@ -55,26 +55,22 @@ class BusinessService {
     }
     /* ----- READ ----- */
 
-    static async getUpcomingBookings(uid, dayLimit) {
-        let year = DateUtils.getCurrentYearString();
-        let month = DateUtils.getCurrentMonthString();
-        let day = DateUtils.getCurrentDayString();
+    static async getUpcomingBookings(uid, date, dayLimit) {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
 
         let snapshot;
         try 
         {
             //limiting by a week
-            dayLimit = DateUtils.getFutureDayString(dayLimit);
+            dayLimit = DateUtils.getFutureDayString_CappedMonth(date, dayLimit);
 
             snapshot = await db.collection(`businesses/${uid}/availability/${year}/month/${month}/days`)
                 //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
                 .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
-                .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
+                .where(firebase.firestore.FieldPath.documentId(), '<', dayLimit)
                 .get();
-
-            //TODO: How to return future hours?
-            //If doing multiple days in future it won't work!!
-                //Would work for single day: where day == day && from > currentTime
         } 
         catch(e) 
         {

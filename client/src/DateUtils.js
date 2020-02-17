@@ -186,14 +186,18 @@ export class DateUtils {
      * If you add more days than the month has, the function returns the max day of the month
      * @param {number} increment 
      */
-    static getFutureDayString(increment) {
-        let d = new Date();
-        d.setDate(d.getDate() + increment);
-        let day = this.getDDFormatedDay(d.getDate());
-        if(day <= this.getCurrentDayString() && increment > 0){
-            return (this.getDaysInMonth(d.getFullYear(), d.getMonth())).toString();
+    static getFutureDayString_CappedMonth(fromDate, increment) {
+        let startDate = new Date(fromDate);
+        let startDay = this.getDDFormatedDay(startDate.getDate());
+
+        let incrementedDate = new Date();
+        incrementedDate.setDate(startDate.getDate() + increment);
+        let incrementedDay = this.getDDFormatedDay(incrementedDate.getDate());
+
+        if(incrementedDay <= startDay && increment > 0){
+            return (this.getDaysInMonth(startDate.getFullYear(), startDate.getMonth())).toString();
         } else {
-            return day.toString();
+            return incrementedDay;
         }
     }
 

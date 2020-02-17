@@ -96,7 +96,7 @@ export default {
          * {"2020":{"02":{"17":[{"bookerName":"Ben","from":"10:00","to":"11:00
          * 
          */
-        BusinessService.getUpcomingBookings(this.id, this.bookingsDayLimit)
+        BusinessService.getUpcomingBookings(this.id, date, this.bookingsDayLimit)
         .then((res) => {
             let year = DateUtils.getYearFromDate(date);
             let month = DateUtils.getMonthFromDate(date);
