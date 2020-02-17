@@ -62,35 +62,35 @@ const messages =
     },
     'password': {
         'en': "Password",
-        'es': "contraseña"
+        'es': "Contraseña"
     },
     'email': {
-        'en': "email",
-        'es': "email"
+        'en': "e-mail",
+        'es': "e-mail"
     },
     'occupation': {
-        'en': "occupation (for example: hairdresser)",
-        'es': "ocupación (por ejemplo: peluquera)"
+        'en': "Occupation (for example: hairdresser)",
+        'es': "Ocupación (por ejemplo: peluquera)"
     },
     'name': {
-        'en': "name",
-        'es': "nombre"
+        'en': "Name",
+        'es': "Nombre"
     },
     'surname': {
-        'en': "surname",
-        'es': "apellido"
+        'en': "Surname",
+        'es': "Apellido"
     },
     'firstname': {
-        'en': "first name",
-        'es': "nombre"
+        'en': "First name",
+        'es': "Nombre"
     },
     'register': {
         'en': "Register",
         'es': "Registrar"
     },
     'profilePicture': {
-        'en': "profile picture",
-        'es': "foto de perfil"
+        'en': "Profile picture",
+        'es': "Foto de perfil"
     },
     //adminBookingPicker
     'add': {
@@ -180,6 +180,10 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'tooLong': {
+        'en': "Too long!",
+        'es': "" //TODO
+    },
     'profileManagement': {
         'en': "Profile Management",
         'es': "" //TODO

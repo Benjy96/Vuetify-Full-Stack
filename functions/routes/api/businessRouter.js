@@ -161,6 +161,8 @@ router.delete('/booking', async (req, res) => {
 
 /* ------ POSTS ------ */
 
+/* -- Profile management -- */
+
 router.post('/bio', async (req, res) => {
   let uid = req.body.uid;
   let bio = req.body.bio;
@@ -176,6 +178,24 @@ router.post('/bio', async (req, res) => {
     });
   }
 });
+
+router.post('/occupation', async (req, res) => {
+  let uid = req.body.uid;
+  let occupation = req.body.occupation;
+
+  if(!uid || !occupation) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses`).doc(`${uid}`).set({
+      occupation: occupation
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
+/* -- Booking management -- */
 
 router.post('/bookingTitle', async (req, res) => {
   let uid = req.body.uid;

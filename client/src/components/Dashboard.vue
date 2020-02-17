@@ -234,6 +234,11 @@
                                         prepend-icon="mdi-account-details"
                                         />
 
+                                        <v-text-field v-model="occupation"
+                                        :label="$getLanguageMsg('occupation')" 
+                                        prepend-icon="mdi-hammer"
+                                        />
+
                                         <v-btn type="submit">
                                         {{$getLanguageMsg('save')}}
                                         <v-icon right>mdi-content-save</v-icon>
@@ -319,6 +324,11 @@ export default {
                 val => val.length < this.bioLimit || this.$getLanguageMsg('invalidBioFormText')
             ],
             bioLimit: 150,
+            occupation: "",
+            occupationRules: [
+                val => val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
+            ],
+            occupationLimit: 25,
             confirmSavedDialog: false
         }
     },
@@ -398,6 +408,11 @@ export default {
                 if(this.bio != "" && this.bio != null) {
                     this.confirmSavedDialog = true;
                     BusinessService.updateBio(this.id, this.bio);
+                }
+
+                if(this.occupation != "" && this.occupation != null) {
+                    this.confirmSavedDialog = true;
+                    BusinessService.updateOccupation(this.id, this.occupation);
                 }
 
                 this.$refs.profileManagementForm.reset();

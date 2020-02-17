@@ -36,6 +36,10 @@ class BusinessService {
         axios.post(`${apiURL}/bio`, {uid, bio});
     }
 
+    static async updateOccupation(uid, occupation) {
+        axios.post(`${apiURL}/occupation`, {uid, occupation});
+    }
+
     //TODO: Combine update methods - in Dashboard check all then call one function
         //In back-end, retrieve what's needed in nested ifs
     static async updateBookingTitle(uid, bookingTitle) {
