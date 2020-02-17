@@ -69,8 +69,8 @@ const messages =
         'es': "e-mail"
     },
     'occupation': {
-        'en': "Occupation (for example: hairdresser)",
-        'es': "Ocupación (por ejemplo: peluquera)"
+        'en': "Occupation (For example: hairdresser)",
+        'es': "Ocupación (Por ejemplo: peluquera)"
     },
     'name': {
         'en': "Name",
