@@ -72,7 +72,7 @@ export default {
         ],
         date: DateUtils.getCurrentDateString(),
         bookings: [],
-        bookingsDayLimit: 7
+        bookingsDayLimit: 1
     }
 ),
 
