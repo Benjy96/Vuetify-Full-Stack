@@ -67,7 +67,7 @@
             </v-col>
         </v-row>
 
-        <!-- Availability Box -->
+        <!-- Working Hours Box -->
         <v-row>
             <v-col>
                 <v-card>
@@ -117,38 +117,52 @@
             </v-col>
         </v-row>
 
-                <v-row>
+        <!-- Exceptional Availability Box -->
+        <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>{{$getLanguageMsg('profileManagement')}}</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('unavailable')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
                             <v-container>
-                                <v-col>
-                                    <v-form @submit.prevent="saveProfileInfo" 
-                                    ref="profileManagementForm">
-
-                                        <v-text-field v-model="bio"
-                                        v-bind:rules="bioRules"
-                                        :label="$getLanguageMsg('bioFormText')" 
-                                        prepend-icon="mdi-account-details"
-                                        />
-
-                                        <v-btn type="submit">
-                                        {{$getLanguageMsg('save')}}
-                                        <v-icon right>mdi-content-save</v-icon>
-                                        </v-btn>
-
-                                    </v-form>
-                                </v-col>   
+                                <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
                             </v-container>
+                        </v-col>
+                        <v-col>
+                            <v-container>
+                                <v-simple-table>
+                                    <template v-slot:default>
+
+                                    <tbody>
+                                        <tr v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
+                                            <td>
+                                                <v-list-item>
+                                                    <v-list-item-content>
+                                                    {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
+                                                    {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+                                                    </v-list-item-content>
+                                                    
+                                                    <v-list-item-action>
+                                                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
+                                                            {{$getLanguageMsg('remove')}}
+                                                            <v-icon right>mdi-delete</v-icon>
+                                                        </v-btn>
+                                                    </v-list-item-action>
+                                                </v-list-item>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    </template>
+                                </v-simple-table>
+                            </v-container> 
                         </v-col>
                     </v-row>
                 </v-card>
             </v-col>
         </v-row>
 
+                <!-- Booking Management Box -->
         <v-row>
             <v-col>
                 <v-card>
@@ -201,45 +215,33 @@
             </v-col>
         </v-row>
 
-        <!-- Exceptional Availability Box -->
+        <!-- Profile Management Box -->
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>{{$getLanguageMsg('unavailable')}}</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('profileManagement')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters>
                         <v-col>
                             <v-container>
-                                <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
-                            </v-container>
-                        </v-col>
-                        <v-col>
-                            <v-container>
-                                <v-simple-table>
-                                    <template v-slot:default>
+                                <v-col>
+                                    <v-form @submit.prevent="saveProfileInfo" 
+                                    ref="profileManagementForm">
 
-                                    <tbody>
-                                        <tr v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-                                            <td>
-                                                <v-list-item>
-                                                    <v-list-item-content>
-                                                    {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
-                                                    {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
-                                                    </v-list-item-content>
-                                                    
-                                                    <v-list-item-action>
-                                                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                                                            {{$getLanguageMsg('remove')}}
-                                                            <v-icon right>mdi-delete</v-icon>
-                                                        </v-btn>
-                                                    </v-list-item-action>
-                                                </v-list-item>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    </template>
-                                </v-simple-table>
-                            </v-container> 
+                                        <v-text-field v-model="bio"
+                                        v-bind:rules="bioRules"
+                                        :label="$getLanguageMsg('bioFormText')" 
+                                        prepend-icon="mdi-account-details"
+                                        />
+
+                                        <v-btn type="submit">
+                                        {{$getLanguageMsg('save')}}
+                                        <v-icon right>mdi-content-save</v-icon>
+                                        </v-btn>
+
+                                    </v-form>
+                                </v-col>   
+                            </v-container>
                         </v-col>
                     </v-row>
                 </v-card>
