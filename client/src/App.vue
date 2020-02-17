@@ -3,13 +3,13 @@
 
     <!-- Hidden Nav Drawer -->
     <v-navigation-drawer v-model="drawerRight" app right>
-      <v-list-item v-if="currentUser">
-        <v-list-item-content>
-          <v-list-item-subtitle>
-            {{currentUser.email}}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
+      <template v-slot:prepend v-if="currentUser">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{currentUser.email}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+      </template>
 
       <v-divider v-if="currentUser"></v-divider>
 
