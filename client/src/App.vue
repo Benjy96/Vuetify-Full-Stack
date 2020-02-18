@@ -143,7 +143,7 @@ export default {
       //TODO: get rid of flickering
       if (user) {
         this.currentUser = user;
-        this.$router.push('/');
+        if(this.$route.name != 'home') this.$router.push({name: 'home'});
       } else if (this.currentUser != null) {
         this.currentUser = null;
         this.$router.push('/login');
