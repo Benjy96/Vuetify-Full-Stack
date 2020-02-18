@@ -9,7 +9,6 @@
         <v-toolbar flat color="white">
 
         <v-menu
-            v-model="menu"
             :close-on-content-click="false"
             :nudge-right="40"
             transition="scale-transition"
@@ -109,9 +108,11 @@ export default {
 
             this.bookings = res[year][month][day];
 
-            this.bookings.forEach(function(booking) {
+            if(this.bookings) {
+              this.bookings.forEach(function(booking) {
                 booking.date = bookingsDateKey;
-            });
+              });
+            }
         });
     },
     cancelBooking (booking) {
