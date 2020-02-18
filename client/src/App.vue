@@ -194,13 +194,16 @@ export default {
     },
     setLocale(locale) {
       //Sets the global locale object to the new language so other components can see it
-      this.$setLocale(locale);
-      //Makes Vue re-render as this.locale is a key on the app
-      this.locale = this.$getLocale();
+      if(locale) {
+        this.$setLocale(locale);
 
-      //If logged in, saves locale to the db
-      if(this.currentUser) {
-        BusinessService.setLocale(this.currentUser.uid, locale);
+        //Makes Vue re-render as this.locale is a key on the app
+        this.locale = this.$getLocale();
+
+        //If logged in, saves locale to the db
+        if(this.currentUser) {
+          BusinessService.setLocale(this.currentUser.uid, locale);
+        }
       }
     },
     async loadLocale() {
