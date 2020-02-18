@@ -32,6 +32,14 @@ class BusinessService {
         axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
     }
 
+    /* -- Profile Management -- */
+
+    static async setLocale(uid, locale) {
+        db.collection(`/businesses`).doc(uid).update({
+            locale: locale
+        });
+    }
+
     static async updateBio(uid, bio) {
         axios.post(`${apiURL}/bio`, {uid, bio});
     }

@@ -134,6 +134,7 @@
 <script>
 import firebase from 'firebase'
 import CustomerService from './services/CustomerService';
+import BusinessService from './services/BusinessService';
 
 export default {
   props: ["cancelDialog"],
@@ -189,6 +190,10 @@ export default {
       this.$setLocale(locale);
       //Makes Vue re-render as this.locale is a key on the app
       this.locale = locale;
+
+      if(this.currentUser) {
+        BusinessService.setLocale(this.currentUser.uid, locale);
+      }
     }
   },
 }
