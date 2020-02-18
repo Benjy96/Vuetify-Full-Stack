@@ -158,7 +158,7 @@ export default {
   },
   data() {
     return {
-      locale: this.$getLocale(),
+      locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
       currentUser: null,
       // cancelDialog: false,
@@ -171,6 +171,13 @@ export default {
         { text: 'English', value: 'en' },
         { text: 'Español', value: 'es' }
       ]
+    }
+  },
+  watch: {
+    currentUser: function() {
+      if(this.currentUser) {
+        this.loadLocale();
+      }    
     }
   },
   methods: {
@@ -186,14 +193,20 @@ export default {
       }
     },
     setLocale(locale) {
-      //Sets the global locale object to the new language
+      //Sets the global locale object to the new language so other components can see it
       this.$setLocale(locale);
       //Makes Vue re-render as this.locale is a key on the app
-      this.locale = locale;
+      this.locale = this.$getLocale();
 
+      //If logged in, saves locale to the db
       if(this.currentUser) {
         BusinessService.setLocale(this.currentUser.uid, locale);
       }
+    },
+    async loadLocale() {
+      //If logged in, loads the locale and sets it globally
+      let locale = await BusinessService.getLocale(this.currentUser.uid);
+      this.setLocale(locale);
     }
   },
 }

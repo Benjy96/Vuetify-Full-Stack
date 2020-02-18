@@ -34,6 +34,10 @@ class BusinessService {
 
     /* -- Profile Management -- */
 
+    static async getLocale(uid) {
+        return (await db.collection('/businesses').doc(uid).get()).data().locale;
+    }
+
     static async setLocale(uid, locale) {
         db.collection(`/businesses`).doc(uid).update({
             locale: locale
