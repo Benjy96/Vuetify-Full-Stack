@@ -136,6 +136,7 @@ import firebase from 'firebase'
 import CustomerService from './services/CustomerService';
 
 export default {
+  props: ["cancelDialog"],
   created() {
     firebase.auth().onAuthStateChanged((user) => {
       //TODO: get rid of flickering
@@ -159,7 +160,7 @@ export default {
       locale: this.$getLocale(),
       drawerRight: false,
       currentUser: null,
-      cancelDialog: false,
+      // cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
         value => !!value || this.$getLanguageMsg('required')
