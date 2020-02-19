@@ -14,10 +14,18 @@
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('surname')" prepend-icon="mdi-account-circle"
                 />
+                <v-text-field v-model="email"
+                required
+                v-bind:rules="emailRules"
+                :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
+                />
                 <v-text-field v-model="occupation"
                 required
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('occupation')" prepend-icon="mdi-hammer"
+                />
+                <v-text-field v-model="address"
+                :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
                 />
                 <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept -->
                 <v-file-input v-model="profilePicture"
@@ -27,11 +35,7 @@
                 :label="$getLanguageMsg('profilePicture')"
                 prepend-icon="mdi-camera"
                 ></v-file-input>
-                <v-text-field v-model="email"
-                required
-                v-bind:rules="emailRules"
-                :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
-                />
+
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
@@ -80,6 +84,7 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
+            address: null,
             profilePicture: null,
             email: '',
             password: '',
@@ -108,6 +113,7 @@ export default {
                             firstname: this.firstname,
                             surname: this.surname,
                             occupation: this.occupation,
+                            address: this.address,
                             email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({

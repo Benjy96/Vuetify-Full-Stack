@@ -40,6 +40,7 @@
                 label="email"
                 prepend-icon="mdi-at"
               />
+              <p v-if="address">{{$getLanguageMsg('businessAddress')}}: {{address}}</p>
               <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
               <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
             </v-form>
@@ -129,6 +130,7 @@ export default {
     addBookingDateObject: null,
     unavailableDays: {},
     currentMonthUnavailableDays: null,
+    address: null,
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
@@ -144,6 +146,7 @@ export default {
   created() {
     //Month Viewed Upon Load
     Promise.all([
+      this.getBusinessDetails(),
       this.getAdminBookings(),  //TODO: call for next/prev
       this.getRegularAvailabilityDetails(),
       this.getUnavailableDays(this.today),
@@ -327,6 +330,11 @@ export default {
       let month = DateUtils.getMonthFromDate(date);
       CustomerService.getAdminBookings(this.id, year, month).then(res => {
         this.admin_bookings = res;
+      });
+    },
+    async getBusinessDetails() {
+      CustomerService.getBusinessDetails(this.id).then(res => {
+        if(res) this.address = res.address;
       });
     },
     async getRegularAvailabilityDetails() {

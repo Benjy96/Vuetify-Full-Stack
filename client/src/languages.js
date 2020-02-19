@@ -72,6 +72,10 @@ const messages =
         'en': "e-mail",
         'es': "e-mail"
     },
+    'address': {
+        'en': "Address (If customers must come to you)",
+        'es': ""//TODO
+    },
     'occupation': {
         'en': "Occupation (For example: hairdresser)",
         'es': "Ocupación (Por ejemplo: peluquera)"
@@ -211,6 +215,10 @@ const messages =
     'invalidBookingInfoFormText': {
         'en': "Your booking information is too long",
         'es': ""
+    },
+    'businessAddress': {
+        'en': "Address",
+        'es': "" //TODO
     },
     'price': {
         'en': "Price",
