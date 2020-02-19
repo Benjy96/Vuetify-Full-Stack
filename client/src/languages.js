@@ -77,15 +77,15 @@ const messages =
         'es': "" //TODO
     },
     'customerTravels': {
-        'en': "The customer will come to me",
+        'en': "The customer will come to me.",
         'es': "" //TODO
     },
     'businessTravels': {
-        'en': "I will go to the customer",
+        'en': "I will go to the customer.",
         'es': "" //TODO
     },
     'onlineBookings': {
-        'en': "My bookings will be online",
+        'en': "My bookings will be online.",
         'es': "" //TODO
     },
     'address': {
@@ -205,6 +205,18 @@ const messages =
     },
     'fullNameRequired': {
         'en': "Please enter your first name and surname",
+        'es': "" //TODO
+    },
+    'online': {
+        'en': "Online",
+        'es': ""//TODO
+    },
+    'bookingsOnline': {
+        'en': "Bookings are online. You will be emailed contact details.",
+        'es': "" //TODO
+    },
+    'location': {
+        'en': "Location",
         'es': "" //TODO
     },
     //Dashboard

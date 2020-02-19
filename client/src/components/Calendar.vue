@@ -40,7 +40,9 @@
                 label="email"
                 prepend-icon="mdi-at"
               />
-              <p v-if="address">{{$getLanguageMsg('businessAddress')}}: {{address}}</p>
+              <p v-if="address">{{$getLanguageMsg('location')}}: {{address}}</p>
+              <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
+              <p v-else>{{$getLanguageMsg(bookingType)}}</p>
               <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
               <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
             </v-form>
@@ -138,6 +140,7 @@ export default {
     bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
+    bookingType: "",
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
@@ -340,7 +343,10 @@ export default {
         if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
         if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
         if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
-        if(bookingDetails.type != 'online' && bookingDetails.address) this.address = bookingDetails.address;
+        if(bookingDetails.type != 'online' && bookingDetails.address) {
+          this.address = bookingDetails.address;
+        }
+        if(bookingDetails.type) this.bookingType = bookingDetails.type;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?
