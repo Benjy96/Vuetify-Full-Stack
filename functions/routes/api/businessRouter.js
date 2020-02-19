@@ -104,10 +104,12 @@ router.delete('/adminBooking', async(req, res) => {
     let admin_bookings = data.admin_bookings;
 
     let newAdminBookingsArray = admin_bookings.filter(item => 
-      (item.fromDate != adminBooking) &&
-      (item.toDate != adminBooking.toDate) &&
-      (item.fromTime != adminBooking.fromTime) &&
-      (item.toTime != adminBooking.toTime)
+      !(
+        (item.fromDate == adminBooking.fromDate) &&
+        (item.toDate == adminBooking.toDate) &&
+        (item.fromTime == adminBooking.fromTime) &&
+        (item.toTime == adminBooking.toTime)
+      )
     );
   
     res.status(202).send(newAdminBookingsArray);
@@ -154,6 +156,121 @@ router.delete('/booking', async (req, res) => {
     }
   } else {
     res.status(404).send('Booking not found');
+  }
+});
+
+/* ------ POSTS ------ */
+
+/* -- Profile management -- */
+
+router.post('/bio', async (req, res) => {
+  let uid = req.body.uid;
+  let bio = req.body.bio;
+
+  if(!uid || !bio) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses`).doc(`${uid}`).set({
+      description: bio
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
+router.post('/occupation', async (req, res) => {
+  let uid = req.body.uid;
+  let occupation = req.body.occupation;
+
+  if(!uid || !occupation) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses`).doc(`${uid}`).set({
+      occupation: occupation
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
+/* -- Booking management -- */
+
+router.post('/bookingTitle', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingTitle = req.body.bookingTitle;
+
+  if(!uid || !bookingTitle) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingTitle: bookingTitle
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
+router.post('/bookingInfo', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingInfo = req.body.bookingInfo;
+
+  if(!uid || !bookingInfo) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingInfo: bookingInfo
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
+  }
+});
+
+//TODO: RATE LIMIT!!!
+router.post('/bookingDuration', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingDuration = parseInt(req.body.bookingDuration);
+
+  if(!uid || !bookingDuration) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingDuration: bookingDuration
+    }, {merge: true}).then(() => {
+  
+      let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+      
+      MetaDataHelper.updateMetaData(uid, 
+        DateUtils.getCurrentDateString(), 
+        bookingDurationSetUntil
+      );
+  
+      res.status(202).send({setTo: bookingDurationSetUntil});
+    });
+  }
+});
+
+router.post('/bookingPrice', async (req, res) => {
+  let uid = req.body.uid;
+  let bookingPrice = req.body.bookingPrice;
+
+  if(!uid || !bookingPrice || !parseFloat(bookingPrice)) {
+    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+    return;
+  } else {
+    if(!bookingPrice.includes(".")) {
+      bookingPrice = bookingPrice.concat(".00");
+    }
+
+    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+      bookingPrice: bookingPrice
+    }, {merge: true}).then(() => {
+      res.status(200).send();
+    });
   }
 });
 

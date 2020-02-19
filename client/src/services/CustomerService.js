@@ -61,22 +61,17 @@ class CustomerService {
         let customer_bookings = [];
         if(bookingsRef.exists) {
             customer_bookings = bookingsRef.data().customer_bookings;
-            window.console.log('returning these bookings fam: ' + JSON.stringify(customer_bookings));
             return customer_bookings;
         } else {
             return null;
         }
     }
 
-    static async getAdminBookings(uid, year, month) {
-        let metaDataDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
-        let admin_bookings = [];
-        if(metaDataDocRef.exists) {
-            admin_bookings = metaDataDocRef.data().admin_bookings;
-            return admin_bookings;
-        } else {
-            return null;
-        }
+    //TODO: Remove duplicates from businessService?
+    static async getAdminBookings(uid) {
+        let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
+        if(snapshot.exists) return snapshot.data()["admin_bookings"];
+        else return [];
     }
 
     static async getRegularAvailability(uid) {

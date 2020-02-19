@@ -1,24 +1,85 @@
 const daysOfWeekNumbered = [
-    {text: "Lunes", value: 1},
-    {text: "Martes", value: 2},
+    {text: "Monday", value: 1},
+    {text: "Tuesday", value: 2},
     {text: "Wednesay", value: 3},
-    {text: "Jueves", value: 4},
-    {text: "Viernes", value: 5},
-    {text: "Sábado", value: 6},
-    {text: "Domingo", value: 7}
+    {text: "Thursday", value: 4},
+    {text: "Friday", value: 5},
+    {text: "Saturday", value: 6},
+    {text: "Sunday", value: 7}
 ];
 
 const daysOfWeek = [
-    "Lunes",
-    "Martes",
-    "Miércoles",
-    "Jueves",
-    "Viernes",
-    "Sábado",
-    "Domingo"
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
 ];
 
 class DateUtils {
+
+        /**
+     * Increments or decrements the month of a date. HOWEVER: Always returns 01 for the DD of YYYY-MM-DD
+     * @param {*} date The date you wish to increment or decrement
+     * @param {*} numMonthIncrements a positive or negative number
+     * @returns {String} YYYY-MM-DD, where DD is 01 and YYYY-MM are incremented or decremented
+     */
+    static incrementMonthOfDate(date, numMonthIncrements) {
+        let year = parseInt(this.getYearFromDate(date));
+        let month = parseInt(this.getMonthFromDate(date));
+        // How to, from a number, calculate a given year and month?
+
+        //It's not just based on the number, but our position
+        if(numMonthIncrements < 0) {
+            let numYearsToDecrease, newMonth;
+
+            //Decreasing but not by over a year
+            if(numMonthIncrements < 12 && month + numMonthIncrements < 0) {
+                numYearsToDecrease = 1;
+                // e.g., Jan (1) - 2 months = -1, which is 12 + -1, which is 11
+                newMonth = 12 + (month + numMonthIncrements);
+            } else if(numMonthIncrements < 12 && month + numMonthIncrements == 0) {
+                numYearsToDecrease = 1;
+                newMonth = 12;
+            } else {
+                numYearsToDecrease = Math.floor(-numMonthIncrements / 12);
+                newMonth = -numMonthIncrements % 12;
+            }
+
+            year -= numYearsToDecrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`;
+        } else if(numMonthIncrements > 0) {
+            let numYearsToIncrease, newMonth;
+
+            //Not going to new year
+            if(numMonthIncrements + month <= 12) {
+                numYearsToIncrease = 0;
+                newMonth = numMonthIncrements + month;
+            } else {
+                newMonth = (numMonthIncrements + month) % 12;
+                numYearsToIncrease = Math.floor((numMonthIncrements + month) / 12);
+            }
+
+            year += numYearsToIncrease;
+
+            return `${year}-${this.formatNumInMMFormat(newMonth)}-01`
+        } else {
+            return date;
+        }
+    }
+
+    static formatNumInMMFormat(month) {
+        if(month >= 10) {
+            return month;
+        } else if(typeof month == 'number') {
+            return "0" + month.toString();
+        } else if(typeof month == 'string') {
+            return "0" + month;
+        }
+    }
 
     /**
      * @returns {String[]} years
@@ -188,7 +249,8 @@ class DateUtils {
         } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[2].split("T")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[2].split("T")[0];
         }
     }
 
@@ -202,7 +264,8 @@ class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(5, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[1];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[1];
         }
     }
 
@@ -216,7 +279,8 @@ class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(0, 4);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[0];
         }
     }
 
@@ -291,6 +355,7 @@ class DateUtils {
     /**
      * @param {*} from a String of format "09:00"
      * @param {*} to a String of format "17:00"
+     * @returns the difference in minutes
      */
     static calcFromToDifference(from, to) {
         let fromHour = from.split(":")[0];
@@ -310,7 +375,7 @@ class DateUtils {
             minDiff = -minDiff;
         }
 
-        return hourDiff + (minDiff / 60);
+        return (hourDiff * 60) + (minDiff);
     }
 
     /**
@@ -555,9 +620,13 @@ class DateUtils {
         endDate = new Date(endDate);
 
         while(currentDate <= endDate) {
+            console.log("pushing " + this.convertDateToYYYYMMDD(currentDate) + " for " + currentDate);
             dateList.push(this.convertDateToYYYYMMDD(currentDate));
             currentDate.setDate(currentDate.getDate() + 1);
         }
+
+        console.log("date list "  + dateList);
+
         return dateList;
     }
 }

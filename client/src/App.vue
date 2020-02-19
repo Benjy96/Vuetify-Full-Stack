@@ -3,17 +3,17 @@
 
     <!-- Hidden Nav Drawer -->
     <v-navigation-drawer v-model="drawerRight" app right>
+      <template v-slot:prepend v-if="currentUser">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>{{currentUser.email}}</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+      </template>
+
+      <v-divider v-if="currentUser"></v-divider>
+
       <v-list>
-        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
-          <v-list-item-action>
-            <v-icon>mdi-calendar</v-icon>
-          </v-list-item-action>
-
-          <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -21,6 +21,16 @@
 
           <v-list-item-content>
             <v-list-item-title>{{$getLanguageMsg('administration')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
+          <v-list-item-action>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -124,13 +134,16 @@
 <script>
 import firebase from 'firebase'
 import CustomerService from './services/CustomerService';
+import BusinessService from './services/BusinessService';
 
 export default {
+  props: ["cancelDialog"],
   created() {
     firebase.auth().onAuthStateChanged((user) => {
+      //TODO: get rid of flickering
       if (user) {
         this.currentUser = user;
-        this.$router.push('/');
+        if(this.$route.name != 'home') this.$router.push({name: 'home'});
       } else if (this.currentUser != null) {
         this.currentUser = null;
         this.$router.push('/login');
@@ -145,10 +158,10 @@ export default {
   },
   data() {
     return {
-      locale: this.$getLocale(),
+      locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
       currentUser: null,
-      cancelDialog: false,
+      // cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
         value => !!value || this.$getLanguageMsg('required')
@@ -158,6 +171,13 @@ export default {
         { text: 'English', value: 'en' },
         { text: 'Español', value: 'es' }
       ]
+    }
+  },
+  watch: {
+    currentUser: function() {
+      if(this.currentUser) {
+        this.loadLocale();
+      }    
     }
   },
   methods: {
@@ -173,10 +193,23 @@ export default {
       }
     },
     setLocale(locale) {
-      //Sets the global locale object to the new language
-      this.$setLocale(locale);
-      //Makes Vue re-render as this.locale is a key on the app
-      this.locale = locale;
+      //Sets the global locale object to the new language so other components can see it
+      if(locale) {
+        this.$setLocale(locale);
+
+        //Makes Vue re-render as this.locale is a key on the app
+        this.locale = this.$getLocale();
+
+        //If logged in, saves locale to the db
+        if(this.currentUser) {
+          BusinessService.setLocale(this.currentUser.uid, locale);
+        }
+      }
+    },
+    async loadLocale() {
+      //If logged in, loads the locale and sets it globally
+      let locale = await BusinessService.getLocale(this.currentUser.uid);
+      this.setLocale(locale);
     }
   },
 }

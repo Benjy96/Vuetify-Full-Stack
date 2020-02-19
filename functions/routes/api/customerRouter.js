@@ -114,14 +114,29 @@ router.post('/booking', async (req, res) => {
     //3. Update meta-data
     MetaDataHelper.updateMetaData(uid, affectedDate, affectedDate);
 
-    //4. Send an email
-    sendBookingEmail(email, uid, affectedDate, from, to);
+    //4. Send an email to the customer & business
+    sendBookingEmails(email, name, uid, affectedDate, from, to);
 });
 
 /** TODO: template?  https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback */
-function sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
-    let docRef = db.collection('mail').doc();
-    docRef.set({
+async function sendBookingEmails(recipientEmail, customerName, businessId, bookingDate, from, to) {
+    // Get business details
+    let businessDetails = (await db.collection(`/businesses`).doc(`${businessId}`).get()).data();
+    let businessName = businessDetails.firstname + " " + businessDetails.surname;
+    let businessEmail = businessDetails.email;
+
+    // Compose customer email
+    let customerEmailDocRef = db.collection('mail').doc();
+
+    let html = 
+    `This is a confirmation of your booking with ${businessName} on ${bookingDate} from ${from}-${to}.
+    <br><br>Your booking confirmation code is: 
+    <blockquote>${customerEmailDocRef.id}</blockquote>
+    <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.
+    To cancel, please go to <a href="https://booking-calendar.web.app/cancel">https://booking-calendar.web.app/cancel</a> 
+    and enter your booking reference.`;
+    
+    customerEmailDocRef.set({
         bookingInfo: {
             date: bookingDate,
             from: from,
@@ -131,11 +146,19 @@ function sendBookingEmail(recipientEmail, businessId, bookingDate, from, to) {
         to: recipientEmail,
         message: {
             subject: 'Booking Confirmation',
-            html: `Hi there!
-            <br>This is a confirmation of your booking on ${bookingDate} from ${from}-${to}.
-            <br>Your booking confirmation code is: 
-            <blockquote>${docRef.id}</blockquote>
-            <br>Don't worry, you won't have to say that or anything. It's just for if you want to cancel your booking.`
+            html: html
+        }
+    });
+
+    // Compose Business email
+    let businessEmailDocRef = db.collection('mail').doc();
+    businessEmailDocRef.set({
+        bookingConfirmationEmail: customerEmailDocRef.id,
+        to: businessEmail,
+        message: {
+            subject: 'New Booking',
+            html: `You have a new booking on ${bookingDate} at ${from}-${to} with ${customerName}. This will be
+            shown on your Dashboard.`
         }
     });
 }

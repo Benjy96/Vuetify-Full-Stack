@@ -25,32 +25,96 @@ class BusinessService {
      * available, and then adds to the "unavailableDays" meta data for a month if it is not
      * @param {*} adminBooking {fromDate: "", toDate: "", fromTime: "" toTime: ""}
      */
+
+    /* ----- POST ----- */
+
     static async createAdminBooking(uid, adminBooking) {
         axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
     }
 
+    /* -- Profile Management -- */
+
+    static async getLocale(uid) {
+        return (await db.collection('/businesses').doc(uid).get()).data().locale;
+    }
+
+    static async setLocale(uid, locale) {
+        db.collection(`/businesses`).doc(uid).update({
+            locale: locale
+        });
+    }
+
+    static async updateBio(uid, bio) {
+        axios.post(`${apiURL}/bio`, {uid, bio});
+    }
+
+    static async updateOccupation(uid, occupation) {
+        axios.post(`${apiURL}/occupation`, {uid, occupation});
+    }
+
+    //TODO: Restrict writes to back-end? I cleared my business info...
+    static async setProfileImage(uid, image) {
+        if(image != null) {
+            // Create a reference
+            let storageRef = firebase.storage().ref();
+            let ref = storageRef.child(`profileImages/${uid}_profile.jpg`);
+
+            // Upload the file
+            ref.put(image);
+
+            let profilePicPath = ref.root + ref.fullPath;
+
+            db.collection('businesses').doc(uid).set({
+                profileImage: profilePicPath
+            }, {merge: true});
+        }
+    }
+
+    uploadAndGetProfileImageRef(uid) {
+        // Create a reference
+        var storageRef = firebase.storage().ref();
+        var profilePicRef = storageRef.child(`profileImages/${uid}_profile.jpg`);
+
+        // Upload the file
+        profilePicRef.put(this.profilePicture);
+
+    }
+
+    //TODO: Combine update methods - in Dashboard check all then call one function
+        //In back-end, retrieve what's needed in nested ifs
+    static async updateBookingTitle(uid, bookingTitle) {
+        axios.post(`${apiURL}/bookingTitle`, {uid, bookingTitle});
+    }
+
+    static async updateBookingInfo(uid, bookingInfo) {
+        axios.post(`${apiURL}/bookingInfo`, {uid, bookingInfo});
+    }
+
+    static async updateBookingDuration(uid, bookingDuration) {
+        axios.post(`${apiURL}/bookingDuration`, {uid, bookingDuration});
+    }
+
+    static async updateBookingPrice(uid, bookingPrice) {
+        axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
+    }
     /* ----- READ ----- */
 
-    static async getUpcomingBookings(uid, dayLimit) {
-        let year = DateUtils.getCurrentYearString();
-        let month = DateUtils.getCurrentMonthString();
-        let day = DateUtils.getCurrentDayString();
+    static async getUpcomingBookings(uid, date, dayLimit) {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        let day = DateUtils.getDayFromDate(date);
 
         let snapshot;
         try 
         {
             //limiting by a week
-            dayLimit = DateUtils.getFutureDayString(dayLimit);
+            dayLimit = DateUtils.getFutureDayString_CappedMonth(date, dayLimit);
 
             snapshot = await db.collection(`businesses/${uid}/availability/${year}/month/${month}/days`)
                 //Firestore supports logical ANDS, which is what chained wheres are, but no OR???
                 .where(firebase.firestore.FieldPath.documentId(), '>=', day) 
-                .where(firebase.firestore.FieldPath.documentId(), '<=', dayLimit)
+                .where(firebase.firestore.FieldPath.documentId(), '<', dayLimit)
                 .get();
-
-            //TODO: How to return future hours?
-            //If doing multiple days in future it won't work!!
-                //Would work for single day: where day == day && from > currentTime
         } 
         catch(e) 
         {
@@ -71,13 +135,19 @@ class BusinessService {
     }
 
     static async getAdminBookings(uid) {
-        //Fetch from meta-data document.
         let snapshot = await db.collection(`/businesses/${uid}/bookings/`).doc('admin').get();
-        if(snapshot.exists) return snapshot.data()["admin_bookings"];
-        else return [];
+        if(snapshot.exists) {
+            if(snapshot.data()["admin_bookings"] != undefined) {
+                return snapshot.data()["admin_bookings"];
+            }
+        } else {
+            return [];
+        }
+        
     }
 
-    /* ----- DELETE/UPDATE ------ */
+    /* ----- DELETE ------ */
+
     static async cancelBooking(uid, date, booking) {
         let res = await axios.delete(`${apiURL}/booking`, {
             data: {

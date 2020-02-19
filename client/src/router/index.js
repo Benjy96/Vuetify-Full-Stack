@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import App from "../App.vue";
 import Home from '../components/Home.vue'
 import Calendar from '../components/Calendar.vue'
 import Login from '../components/Login.vue'
@@ -32,6 +33,11 @@ const routes = [
     meta: {
       requiresGuest: true
     }
+  },
+  {
+    path: '/cancel',
+    component: App,
+    props: { cancelDialog: true }
   },
   {
     path: '/businesses/:id',

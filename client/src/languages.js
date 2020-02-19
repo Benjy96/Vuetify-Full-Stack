@@ -56,41 +56,45 @@ const messages =
         'es': "Requerido"
     },
     //Register.vue
+    'picTooLarge': {
+        'en': "Picture size should be less than 1 MB!",
+        'es': "" //TODO
+    },
     'emailNotValid' : {
         'en': "E-mail must be valid",
         'es': "E-mail tiene que ser válido"
     },
     'password': {
         'en': "Password",
-        'es': "contraseña"
+        'es': "Contraseña"
     },
     'email': {
-        'en': "email",
-        'es': "email"
+        'en': "e-mail",
+        'es': "e-mail"
     },
     'occupation': {
-        'en': "occupation (for example: hairdresser)",
-        'es': "ocupación (por ejemplo: peluquera)"
+        'en': "Occupation (For example: hairdresser)",
+        'es': "Ocupación (Por ejemplo: peluquera)"
     },
     'name': {
-        'en': "name",
-        'es': "nombre"
+        'en': "Name",
+        'es': "Nombre"
     },
     'surname': {
-        'en': "surname",
-        'es': "apellido"
+        'en': "Surname",
+        'es': "Apellido"
     },
     'firstname': {
-        'en': "first name",
-        'es': "nombre"
+        'en': "First name",
+        'es': "Nombre"
     },
     'register': {
         'en': "Register",
         'es': "Registrar"
     },
     'profilePicture': {
-        'en': "profile picture",
-        'es': "foto de perfil"
+        'en': "Profile picture",
+        'es': "Foto de perfil"
     },
     //adminBookingPicker
     'add': {
@@ -122,8 +126,12 @@ const messages =
         'es': "Inválido"
     },
     //Bookings.vue
+    'noBookings': {
+        'en': "There are no bookings to display",
+        'es': "" //TODO
+    },
     'confirmCancelBooking': {
-        'en': "Are you sure you wish to cancel this booking?",
+        'en': "Are you sure you wish to remove this booking?",
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
     },
     //Calendar.vue
@@ -176,6 +184,70 @@ const messages =
         'es': "" //TODO
     },
     //Dashboard
+    'tooLong': {
+        'en': "Too long!",
+        'es': "" //TODO
+    },
+    'profileManagement': {
+        'en': "Profile Management",
+        'es': "" //TODO
+    },
+    'bioFormText': {
+        'en': "Bio - A short summary of who you are (This is shown under your name on the home screen)",
+        'es': "" //TODO
+    },
+    'invalidBioFormText': {
+        'en': "Your bio is too long",
+        'es': "" //TODO
+    },
+    'bookingTitleFormText': {
+        'en': "Booking title - the headline on your booking form (Default: Book an appointment)",
+        'es': "" //TODO
+    },
+    'bookingInfoFormText': {
+        'en': "Booking information - the text under the headline displayed on your booking form (Default: Blank)",
+        'es': "" //TODO
+    },
+    'invalidBookingInfoFormText': {
+        'en': "Your booking information is too long",
+        'es': ""
+    },
+    'price': {
+        'en': "Price",
+        'es': "" //TODO
+    },
+    'bookingPriceFormText': {
+        'en': "Booking price - how much it costs to book you (Default: Price Upon Asking)",
+        'es': "" //TODO
+    },
+    'invalidBookingPriceFormText': {
+        'en': "If you're setting a booking price, it must be a number greater than 0",
+        'es': "" //TODO
+    },
+    'save': {
+        'en': "Save",
+        'es': "Salvar" //TODO
+    },
+    'bookingDurationFormText': {
+        'en': "Booking duration - how long your bookings are, in minutes (Default: 60)",
+        'es': "" //TODO
+    },
+    'invalidBookingDurationMinutes': {
+        'en': "Booking duration must be in minutes",
+        'es': "" //TODO
+    },
+    'invalidBookingDurationSize': {
+        'en': "Booking duration must a number greater than 0",
+        'es': ""
+    },
+    'bookingManagement': {
+        'en': "Booking Management",
+        'es': "" //TODO
+    },
+    'preferenceSaved': {
+        'en': "Your preference has been saved",
+        'es': "" //TODO
+    },
     'yes': {
         'en': "Yes",
         'es': "Si"

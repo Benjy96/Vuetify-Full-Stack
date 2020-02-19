@@ -75,7 +75,7 @@
                 <template v-slot:activator="{ on }">
                     <v-text-field
                         v-model="toDate"
-                        :label="$getLanguageMsg('toTime')"
+                        :label="$getLanguageMsg('toDate')"
                         readonly
                         v-on="on"
                     ></v-text-field>

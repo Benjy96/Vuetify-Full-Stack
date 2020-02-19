@@ -68,6 +68,7 @@
 <script>
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
+import BusinessService from '../services/BusinessService';
 
 export default {
     name: 'register',
@@ -90,7 +91,7 @@ export default {
                 v => !!v || this.$getLanguageMsg('required')
             ],
             imageRules: [
-                value => !value || value.size < 1000000 || 'Picture size should be less than 1 MB!'
+                value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')
             ]
         }
     },
@@ -103,17 +104,11 @@ export default {
                 //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
                     .then((userCredential) => {
-                        var profilePicRef = '';
-                        if(this.profilePicture != null) {
-                            profilePicRef = this.uploadAndGetProfileImageRef(userCredential.user.uid);
-                        }
-
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             firstname: this.firstname,
                             surname: this.surname,
                             occupation: this.occupation,
-                            email: this.email,
-                            profileImage: profilePicRef
+                            email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
                                 Monday: [{from: "09:00", to: "17:00"}],
@@ -121,6 +116,10 @@ export default {
                                 Wednesday: [{from: "09:00", to: "17:00"}],
                                 Thursday: [{from: "09:00", to: "17:00"}],
                                 Friday: [{from: "09:00", to: "17:00"}]
+                            }).then(() => {
+                                if(this.profilePicture != null) {
+                                    BusinessService.setProfileImage(userCredential.user.uid, this.profilePicture);
+                                }
                             }); 
                         });
                     }, err => {
@@ -133,16 +132,6 @@ export default {
         displayErrorModal(message) {
             this.errorModalText = message;
             this.errorModalDialog = true;
-        },
-        uploadAndGetProfileImageRef(uid) {
-            // Create a reference
-            var storageRef = firebase.storage().ref();
-            var profilePicRef = storageRef.child(`profileImages/${uid}_profile.jpg`);
-
-            // Upload the file
-            profilePicRef.put(this.profilePicture);
-
-            return profilePicRef.root + profilePicRef.fullPath;
         }
     }
 }

@@ -50,13 +50,7 @@ export default {
         login() {  //event is a MouseEvent - passed in by Javascript
             if(!this.$refs.form.validate()) return;
 
-            firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-                .then(() => {
-                    this.$router.go({path: this.$router.path});
-                }, err => {
-                    alert(err.message);
-                }
-            );
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password);
         }
     }
 }

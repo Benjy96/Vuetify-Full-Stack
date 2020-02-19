@@ -186,14 +186,18 @@ export class DateUtils {
      * If you add more days than the month has, the function returns the max day of the month
      * @param {number} increment 
      */
-    static getFutureDayString(increment) {
-        let d = new Date();
-        d.setDate(d.getDate() + increment);
-        let day = this.getDDFormatedDay(d.getDate());
-        if(day <= this.getCurrentDayString() && increment > 0){
-            return (this.getDaysInMonth(d.getFullYear(), d.getMonth())).toString();
+    static getFutureDayString_CappedMonth(fromDate, increment) {
+        let startDate = new Date(fromDate);
+        let startDay = this.getDDFormatedDay(startDate.getDate());
+
+        let incrementedDate = new Date();
+        incrementedDate.setDate(startDate.getDate() + increment);
+        let incrementedDay = this.getDDFormatedDay(incrementedDate.getDate());
+
+        if(incrementedDay <= startDay && increment > 0){
+            return (this.getDaysInMonth(startDate.getFullYear(), startDate.getMonth())).toString();
         } else {
-            return day.toString();
+            return incrementedDay;
         }
     }
 
@@ -289,6 +293,14 @@ export class DateUtils {
     }
 
     /**
+     * @param {String} date 
+     */
+    static getWeekdayFromDateString(date) {
+        let d = new Date(date);
+        return this.getWeekdayFromDateObj(d);
+    }
+
+    /**
      * @param {String} date "DD from YYYY-MM-DD"
      */
     static getDayFromDate(date) {
@@ -297,7 +309,8 @@ export class DateUtils {
         } else if(typeof date == 'number') {
             return date.toString().substr(8, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[2].split("T")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[2].split("T")[0];
         }
     }
 
@@ -311,7 +324,8 @@ export class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(5, 2);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[1];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[1];
         }
     }
 
@@ -325,7 +339,8 @@ export class DateUtils {
         } else if (typeof date == 'number') {
             return date.toString().substr(0, 4);
         } else if (typeof date == 'object') {
-            return date.toISOString().split("-")[0];
+            let d = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return d.toISOString().split("-")[0];
         }
     }
 
@@ -470,18 +485,31 @@ export class DateUtils {
     }
 
     /**
-     * 
-     * @param {String} range a String in the format "00:00-23:59".
-     * 
+     * from is exclusive, end is inclusive 
+     * (time 10:00 with from 10:00 == false) 
+     * (time 11:00 with to 11:00 == true)
+     * @param {String} time a String in the format "14:00"
+     * @param {String | {from:"", to: ""}} range a String in the format "00:00-23:59", or an object
+     * with a "from" and "to" property in the format "00:00"
      */
     static timeWithinHourRange(time, range) {
-        let splitRange = range.split("-");
+        let leftHour, leftMinute, rightHour, rightMinute;
 
-        let leftHour = parseInt(splitRange[0].split(":")[0]);   //00
-        let leftMinute = parseInt(splitRange[0].split(":")[1]);
+        if(range.from && range.to) {
+            leftHour = parseInt(range.from.split(":")[0]);
+            leftMinute = parseInt(range.from.split(":")[1]);
 
-        let rightHour = parseInt(splitRange[1].split(":")[0]);  //23
-        let rightMinute = parseInt(splitRange[1].split(":")[1]);
+            rightHour = parseInt(range.to.split(":")[0]);  //23
+            rightMinute = parseInt(range.to.split(":")[1]);
+        } else {
+            let splitRange = range.split("-");
+
+            leftHour = parseInt(splitRange[0].split(":")[0]);   //00
+            leftMinute = parseInt(splitRange[0].split(":")[1]);
+
+            rightHour = parseInt(splitRange[1].split(":")[0]);  //23
+            rightMinute = parseInt(splitRange[1].split(":")[1]);
+        }
 
         let hour = time.split(":")[0];
         let minute = time.split(":")[1];
@@ -512,6 +540,122 @@ export class DateUtils {
                     return false;
                 }
             }
+        }
+    }
+
+    static timeGreaterThan(time, comparisonTime) {
+        let hour, minute, otherHour, otherMinute;
+
+        hour = parseInt(time.split(":")[0]);   //00
+        minute = parseInt(time.split(":")[1]);
+
+        otherHour = parseInt(comparisonTime.split(":")[0]);  //23
+        otherMinute = parseInt(comparisonTime.split(":")[1]);
+
+        //13:00 and 12:00
+        if(hour > otherHour) {
+            return true;
+        }
+        // 09:00 and 10:30
+        else if(hour < otherHour) {
+            return false;
+        }
+        // 10:00 and 10:00
+        else if(hour == otherHour && minute == otherMinute) {
+            return false;
+        } 
+        // 10:30 and 10:15
+        else if(hour == otherHour && minute > otherMinute) {
+            return true;
+        }
+    }
+
+    /**
+     * @param {String} time "00:00"
+     * @param {String} comparisonTime "00:00"
+     */
+    static timeGreaterThanOrEqualTo(time, comparisonTime) {
+        let hour, minute, otherHour, otherMinute;
+
+        hour = parseInt(time.split(":")[0]);   //00
+        minute = parseInt(time.split(":")[1]);
+
+        otherHour = parseInt(comparisonTime.split(":")[0]);  //23
+        otherMinute = parseInt(comparisonTime.split(":")[1]);
+
+        // 10:00 and 09:30
+        if(hour > otherHour) {
+            return true;
+        }
+        // 09:00 and 10:00
+        else if(hour < otherHour) {
+            return false;
+        }
+        // 10:00 and 10:00
+        else if(hour == otherHour && minute == otherMinute) {
+            return true;
+        } 
+        // 10:30 and 10:15
+        else if(hour == otherHour && minute > otherMinute) {
+            return true;
+        }
+    }
+
+    /**
+     * @param {String} time "00:00"
+     * @param {String} comparisonTime "00:00"
+     */
+    static timeLessThanOrEqualTo(time, comparisonTime) {
+        let hour, minute, otherHour, otherMinute;
+
+        hour = parseInt(time.split(":")[0]);   //00
+        minute = parseInt(time.split(":")[1]);
+
+        otherHour = parseInt(comparisonTime.split(":")[0]);  //23
+        otherMinute = parseInt(comparisonTime.split(":")[1]);
+
+        // 09:00 and 10:00
+        if(hour < otherHour) {
+            return true;
+        }
+        // 10:00 and 09:00
+        else if(hour > otherHour) {
+            return false;
+        }
+        // 10:00 and 10:00
+        else if(hour == otherHour && minute == otherMinute) {
+            return true;
+        } 
+        // 10:15 and 10:30 or 10:15 and 10:15
+        else if(hour == otherHour && minute <= otherMinute) {
+            return true;
+        }
+    }
+
+    static timeLessThan(time, comparisonTime) {
+        let hour, minute, otherHour, otherMinute;
+
+        hour = parseInt(time.split(":")[0]);   //00
+        minute = parseInt(time.split(":")[1]);
+
+        otherHour = parseInt(comparisonTime.split(":")[0]);  //23
+        otherMinute = parseInt(comparisonTime.split(":")[1]);
+
+        // 09:00 and 10:00
+        if(hour < otherHour) {
+            return true;
+        }
+        // 10:00 and 09:00
+        else if(hour > otherHour) {
+            return false;
+        }
+        // 10:00 and 10:00
+        else if(hour == otherHour && minute == otherMinute) {
+            return false;
+        } 
+        // 10:15 and 10:30 or 10:15 and 10:15
+        else if(hour == otherHour && minute < otherMinute) {
+            return true;
         }
     }
 
@@ -629,6 +773,61 @@ export class DateUtils {
     }
 
     /**
+     * Returns true if either the from or to is within the other from->to
+     * - 9->10 with 9->10 == true
+     * - 9->10 with 8->10 == true
+     * - 9->10 with 9->11 == true
+     */
+    static rangeIntersectsRange(from, to, otherFrom, otherTo) {
+        if(
+        //range from->to lies entirely within other range from->to       
+        (DateUtils.timeGreaterThanOrEqualTo(from, otherFrom)
+        && DateUtils.timeLessThanOrEqualTo(to, otherTo))
+        
+        ||
+
+        //range to lies within other range from->to
+        (DateUtils.timeLessThan(to, otherTo)
+        && DateUtils.timeGreaterThan(to, otherFrom))
+
+        ||
+
+        //range from lies within other range from->to
+        (DateUtils.timeGreaterThan(from, otherFrom)
+        && DateUtils.timeLessThan(from, otherTo))
+        )
+        {
+            return true;
+        } 
+        else return false;
+    }
+
+    /**
+     * returns true if a is within b or if b is within a
+     * 
+     * needed for variable booking durations
+     * bc a booking might not intersect an interval but the interval may intersect a booking if durations change
+     * e.g., book 9->10 then change to 2 hour durations, starting from 8am
+     * for the interval 8->10, with just the first check, it'd be true
+     * 
+     */
+    static rangesIntersect(from, to, otherFrom, otherTo) {
+        if(
+                      
+            DateUtils.rangeIntersectsRange(from, to, otherFrom, otherTo)
+            
+            ||
+
+            DateUtils.rangeIntersectsRange(otherFrom, otherTo, from, to)
+
+        )
+        {
+            return true;
+        }
+        else return false;
+    }
+
+    /**
      * 
      * @returns true if the date > from and < to - i.e., from 2020-01-01 and date 2020-01-01 is FALSE
      */
@@ -645,14 +844,15 @@ export class DateUtils {
     }
 
     /**
-     * @returns true if date >= from and < to - i.e., from 2020-01-01 and date 2020-01-01 is TRUE
+     * Inclusive from, inclusive to.
+     * @returns true if date >= from and <= to - i.e., from 2020-01-01 and date 2020-01-01 is TRUE
      */
     static dateWithin(date, from, to) {
         let midDate = new Date(date);
         let fromDate = new Date(from);
         let toDate = new Date(to);
 
-        if(fromDate <= midDate && midDate < toDate) {
+        if(fromDate <= midDate && midDate <= toDate) {
             return true;
         } else {
             return false;
@@ -678,7 +878,7 @@ export class DateUtils {
      * @param {*} range an object containing a from and to in "00:00" format
      * @param {*} intervalDuration in minutes
      */
-    static intervalsInRange(range, intervalDuration) {
+    static getIntervalsInRange(range, intervalDuration) {
         let intervals = [];
         let fromHourInMins = parseInt(range.from.split(":")[0]);
         let fromMinuteInMins = parseInt(range.from.split(":")[1]);
@@ -694,7 +894,7 @@ export class DateUtils {
             How to get the time difference?
         */
 
-        for(let i = startTimeInMins; i <= endTimeInMins; i += intervalDuration) {
+        for(let i = startTimeInMins; i < endTimeInMins; i += intervalDuration) {
 
             //convert i & i + intervalDuration min to 24h time
 
@@ -732,8 +932,8 @@ export class DateUtils {
             let twentyFourHourEndTime = `${hour}:${minute}`;
 
             intervals.push({
-                start: twentyFourHourStartTime,
-                end: twentyFourHourEndTime
+                from: twentyFourHourStartTime,
+                to: twentyFourHourEndTime
             });
         }
 
