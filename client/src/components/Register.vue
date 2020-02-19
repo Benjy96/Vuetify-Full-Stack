@@ -1,5 +1,5 @@
 <template>
-    <v-card width="400px" class="mx-auto mt-5">
+    <v-card width="600px" class="mx-auto mt-5">
         <v-card-title><h1>{{$getLanguageMsg('register')}}</h1></v-card-title>
 
         <v-card-text>
@@ -24,8 +24,22 @@
                 v-bind:rules="nameRules"
                 :label="$getLanguageMsg('occupation')" prepend-icon="mdi-hammer"
                 />
-                <v-text-field v-model="address"
+                <v-select
+                required v-bind:rules="nameRules"
+                v-model="bookingType"
+                :items="bookingTypes"
+                :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
+                ></v-select>
+                <v-text-field v-if="bookingType == 'businessTravels' || bookingType == 'customerTravels'" 
+                v-model="address"
+                required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
+                />
+                <v-text-field
+                v-else-if="bookingType == 'online'"
+                v-model="onlineContactDetails"
+                required v-bind:rules="nameRules"
+                :label="$getLanguageMsg('onlineContactDetails')" prepend-icon="mdi-headset"
                 />
                 <!-- https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/file#accept -->
                 <v-file-input v-model="profilePicture"
@@ -84,7 +98,14 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
+            bookingType: '',
+            bookingTypes: [
+                {text: this.$getLanguageMsg('businessTravels'), value: 'businessTravels' },
+                {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
+                {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
+            ],
             address: null,
+            onlineContactDetails: null,
             profilePicture: null,
             email: '',
             password: '',
@@ -113,7 +134,6 @@ export default {
                             firstname: this.firstname,
                             surname: this.surname,
                             occupation: this.occupation,
-                            address: this.address,
                             email: this.email
                         }).then(() => {
                             db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
@@ -125,6 +145,12 @@ export default {
                             }).then(() => {
                                 if(this.profilePicture != null) {
                                     BusinessService.setProfileImage(userCredential.user.uid, this.profilePicture);
+                                }
+
+                                if(this.bookingType != 'online') {
+                                    BusinessService.setAddress(userCredential.user.uid, this.bookingType, this.address);
+                                } else {
+                                    BusinessService.setOnlineContactDetails(userCredential.user.uid, this.bookingType, this.onlineContactDetails);
                                 }
                             }); 
                         });

@@ -332,11 +332,6 @@ export default {
         this.admin_bookings = res;
       });
     },
-    async getBusinessDetails() {
-      CustomerService.getBusinessDetails(this.id).then(res => {
-        if(res) this.address = res.address;
-      });
-    },
     async getRegularAvailabilityDetails() {
       CustomerService.getRegularAvailability(this.id).then(res => {
         this.regular_availability = res;
@@ -344,6 +339,7 @@ export default {
         if(res.bookingInfo) this.bookingInfo = res.bookingInfo;
         if(res.bookingDuration) this.bookingDuration = res.bookingDuration;
         if(res.bookingPrice) this.bookingPrice = res.bookingPrice;
+        if(res.bookingType != 'online' && res.address) this.address = res.address;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?

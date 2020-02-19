@@ -72,9 +72,29 @@ const messages =
         'en': "e-mail",
         'es': "e-mail"
     },
+    'bookingTravelType': {
+        'en': "Will you have to travel?",
+        'es': "" //TODO
+    },
+    'customerTravels': {
+        'en': "The customer will come to me",
+        'es': "" //TODO
+    },
+    'businessTravels': {
+        'en': "I will go to the customer",
+        'es': "" //TODO
+    },
+    'onlineBookings': {
+        'en': "My bookings will be online",
+        'es': "" //TODO
+    },
     'address': {
-        'en': "Address (If customers must come to you)",
+        'en': "Address (Where you are based)",
         'es': ""//TODO
+    },
+    'onlineContactDetails': {
+        'en': "Online booking contact (For example: Abcd@Discord)",
+        'es': "" //TODO
     },
     'occupation': {
         'en': "Occupation (For example: hairdresser)",

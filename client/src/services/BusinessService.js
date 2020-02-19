@@ -70,6 +70,20 @@ class BusinessService {
         }
     }
 
+    static async setAddress(uid, bookingType, address) {
+        db.collection(`/businesses/${uid}/availability`).doc('regular').update({
+            bookingType: bookingType,
+            address: address
+        });
+    }
+
+    static async setOnlineContactDetails(uid, bookingType, onlineContactDetails) {
+        db.collection(`/businesses/${uid}/availability`).doc('regular').update({
+            bookingType: bookingType,
+            onlineContactDetails: onlineContactDetails
+        });
+    }
+
     uploadAndGetProfileImageRef(uid) {
         // Create a reference
         var storageRef = firebase.storage().ref();
