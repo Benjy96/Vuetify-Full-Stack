@@ -57,7 +57,7 @@
                     v-if="toTimeDialogToggle"
                     v-model="toTime"
                     full-width
-                    :min="minFromTime">
+                    :min="fromTime">
                         <v-spacer></v-spacer>
                         <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
                         <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('ok')}}</v-btn>
@@ -114,12 +114,14 @@ export default {
                             1. Do not render clickable booking slot
         */
         validate() {
-            db.collection(`businesses/${this.id}/availability/`).doc('regular')
+            db.collection('businesses').doc(this.id)
                 .update({
-                    [this.day]: firebase.firestore.FieldValue.arrayUnion({
-                        from: this.fromTime,
-                        to: this.toTime
-                    })
+                    "regularAvailability": {
+                        [this.day]: firebase.firestore.FieldValue.arrayUnion({
+                            from: this.fromTime,
+                            to: this.toTime
+                        })
+                    }
                 })
                 .then(this.$emit('saved-time-range', this.day)
             );
