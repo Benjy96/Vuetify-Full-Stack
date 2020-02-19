@@ -16,7 +16,7 @@ class MetaDataHelper {
 
         let promises = [];
 
-        //WARNING: if you use var i only affectedDates[31] will be called
+        //WARNING: if you use var i only affectedDates[31] will be called - use let instead
 
         //The loop was completing iterations and THEN the callbacks were being called with the 
         //last value of the loop. 
@@ -108,14 +108,13 @@ class MetaDataHelper {
         TODO: What if we instead have a day collection, where you add different "types" to it,
         like an admin booking & customer booking?
 
-        TODO: Move to back-end? Listener? Any time you add to booking or admin or regular hours collection?
+        TODO: Listener? Any time you add to booking or admin or regular hours collection?
     */
    /** 
     * Checks regular hours & admin/customer bookings
     * @returns {boolean}
     */
    //TODO: Reduce reads by fetching doc in parent function and passing to helpers
-   //TODO: What if deleting admin booking?
     static async isDateAvailable(uid, date) {
         let businessDoc = await db.collection(`/businesses`).doc(uid).get();
         let regularAvailability = businessDoc.data().regularAvailability;

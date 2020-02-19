@@ -35,58 +35,6 @@ router.get('/', async (req, res) => {
   res.send(businesses);
 });
 
-/** Create an admin booking */
-router.post('/adminBooking', async(req, res) => {
-  let uid = req.body.uid;
-  let adminBooking = req.body.adminBooking;
-
-  if(!uid || !adminBooking) {
-    res.status(400).send();
-  }
-
-  //1. Get from year, month, and day
-  let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
-
-  //2. Get to year, month, and day
-  let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
-
-  if(fromYear == toYear){
-      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-  } else {
-      db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-
-      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-  }
-
-  res.status(200).send();
-
-  MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
-});
-
 /** Cancel Admin Booking */
 router.delete('/adminBooking', async(req, res) => {
   let uid = req.body.uid;
@@ -160,6 +108,117 @@ router.delete('/booking', async (req, res) => {
 });
 
 /* ------ POSTS ------ */
+/** Create an admin booking */
+router.post('/adminBooking', async(req, res) => {
+  let uid = req.body.uid;
+  let adminBooking = req.body.adminBooking;
+
+  if(!uid || !adminBooking) {
+    res.status(400).send();
+  }
+
+  //1. Get from year, month, and day
+  let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
+
+  //2. Get to year, month, and day
+  let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
+
+  if(fromYear == toYear){
+      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .set(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          },
+          { merge: true }
+      );
+  } else {
+      db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .set(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          },
+          { merge: true }
+      );
+
+      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+      .set(
+          {
+              admin_bookings: admin.firestore.FieldValue.arrayUnion({
+                  ...adminBooking
+              })
+          },
+          { merge: true }
+      );
+  }
+
+  res.status(200).send();
+
+  MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
+});
+
+// Put creates or replaces something - calling it multiple times would have the same effect
+router.put('/regularAvailability', async(req, res) => {
+  let uid = req.body.uid;
+  let day = req.body.day;
+  let ranges = req.body.ranges;
+
+  if(!uid || !day || !ranges) {
+    res.status(400).send();
+    return;
+  }
+
+  let docRef = db.collection('businesses').doc(uid);
+  await docRef.update({
+      "regularAvailability": {
+          [day]: ranges
+      }
+  }, {merge: true});
+
+  res.status(200).send();
+
+  let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+  //TODO: Standardise
+  MetaDataHelper.updateMetaData(uid, 
+    DateUtils.getCurrentDateString(), 
+    bookingDurationSetUntil
+  );
+});
+
+// Post adds to something and changes its state
+router.post('/regularAvailability', async(req, res) => {
+  let uid = req.body.uid;
+  let day = req.body.day;
+  let from = req.body.from;
+  let to = req.body.to;
+
+  if(!uid || !day || !from || !to) {
+    res.status(400).send();
+    return;
+  }
+
+  await db.collection('businesses').doc(uid)
+  .set({
+      "regularAvailability": {
+          [day]: admin.firestore.FieldValue.arrayUnion({
+              from: from,
+              to: to
+          })
+      }
+  }, {merge: true});
+
+  res.status(200).send();
+
+  let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+  //TODO: Standardise
+  MetaDataHelper.updateMetaData(uid, 
+    DateUtils.getCurrentDateString(), 
+    bookingDurationSetUntil
+  );
+});
 
 /* -- Profile management -- */
 
@@ -243,7 +302,7 @@ router.post('/bookingDuration', async (req, res) => {
     }, {merge: true}).then(() => {
   
       let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-      
+      //TODO: Standardise
       MetaDataHelper.updateMetaData(uid, 
         DateUtils.getCurrentDateString(), 
         bookingDurationSetUntil

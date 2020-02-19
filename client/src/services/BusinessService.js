@@ -104,27 +104,15 @@ class BusinessService {
      * Merges a range into the regular availability array
      */
     static async addRegularAvailabilityRange(uid, day, from, to) {
-        await db.collection('businesses').doc(uid)
-        .set({
-            "regularAvailability": {
-                [day]: firebase.firestore.FieldValue.arrayUnion({
-                    from: from,
-                    to: to
-                })
-            }
-        }, {merge: true});
+        axios.post(`${apiURL}/regularAvailability`, {uid, day, from, to});
     }
 
     /**
      * Replaces the current regular availability array
      */
+    //TODO: Do we need to do this server-side or can we do client side?
     static async setDayRegularAvailability(uid, day, ranges) {
-        let docRef = db.collection('businesses').doc(uid);
-        docRef.update({
-            "regularAvailability": {
-                [day]: ranges
-            }
-        }, {merge: true});
+        axios.put(`${apiURL}/regularAvailability`, {uid, day, ranges});
     }
     /* ----- READ ----- */
 
