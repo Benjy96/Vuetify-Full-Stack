@@ -35,7 +35,9 @@ class BusinessService {
     /* -- Profile Management -- */
 
     static async getLocale(uid) {
-        return (await db.collection('/businesses').doc(uid).get()).data().locale;
+        let doc = await db.collection('/businesses').doc(uid).get();
+        if(doc.data().locale) return doc.data().locale;
+        else return null;
     }
 
     static async setLocale(uid, locale) {
@@ -70,20 +72,6 @@ class BusinessService {
         }
     }
 
-    static async setAddress(uid, bookingType, address) {
-        db.collection(`/businesses/${uid}/availability`).doc('regular').update({
-            bookingType: bookingType,
-            address: address
-        });
-    }
-
-    static async setOnlineContactDetails(uid, bookingType, onlineContactDetails) {
-        db.collection(`/businesses/${uid}/availability`).doc('regular').update({
-            bookingType: bookingType,
-            onlineContactDetails: onlineContactDetails
-        });
-    }
-
     uploadAndGetProfileImageRef(uid) {
         // Create a reference
         var storageRef = firebase.storage().ref();
@@ -111,7 +99,39 @@ class BusinessService {
     static async updateBookingPrice(uid, bookingPrice) {
         axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
     }
+
+    /**
+     * Merges a range into the regular availability array
+     */
+    static async addRegularAvailabilityRange(uid, day, from, to) {
+        await db.collection('businesses').doc(uid)
+        .set({
+            "regularAvailability": {
+                [day]: firebase.firestore.FieldValue.arrayUnion({
+                    from: from,
+                    to: to
+                })
+            }
+        }, {merge: true});
+    }
+
+    /**
+     * Replaces the current regular availability array
+     */
+    static async setDayRegularAvailability(uid, day, ranges) {
+        let docRef = db.collection('businesses').doc(uid);
+        docRef.update({
+            "regularAvailability": {
+                [day]: ranges
+            }
+        }, {merge: true});
+    }
     /* ----- READ ----- */
+
+    static async getRegularAvailability(uid) {
+        let doc = await db.collection('businesses').doc(uid).get();
+        if(doc.exists) return doc.data().regularAvailability;
+    }
 
     static async getUpcomingBookings(uid, date, dayLimit) {
         let year = DateUtils.getYearFromDate(date);

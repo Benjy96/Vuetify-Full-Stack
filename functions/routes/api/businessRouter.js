@@ -205,7 +205,7 @@ router.post('/bookingTitle', async (req, res) => {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   } else {
-    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+    db.collection('businesses').doc(uid).set({
       bookingTitle: bookingTitle
     }, {merge: true}).then(() => {
       res.status(200).send();
@@ -221,7 +221,7 @@ router.post('/bookingInfo', async (req, res) => {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   } else {
-    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+    db.collection(`businesses`).doc(uid).set({
       bookingInfo: bookingInfo
     }, {merge: true}).then(() => {
       res.status(200).send();
@@ -238,7 +238,7 @@ router.post('/bookingDuration', async (req, res) => {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   } else {
-    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+    db.collection(`businesses`).doc(uid).set({
       bookingDuration: bookingDuration
     }, {merge: true}).then(() => {
   
@@ -266,7 +266,7 @@ router.post('/bookingPrice', async (req, res) => {
       bookingPrice = bookingPrice.concat(".00");
     }
 
-    db.collection(`businesses/${uid}/availability/`).doc('regular').set({
+    db.collection(`businesses`).doc(uid).set({
       bookingPrice: bookingPrice
     }, {merge: true}).then(() => {
       res.status(200).send();

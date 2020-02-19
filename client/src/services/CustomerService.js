@@ -76,17 +76,8 @@ class CustomerService {
 
     static async getBusinessDetails(uid) {
         let businessDoc = await db.collection(`/businesses`).doc(`${uid}`).get();
-        if(businessDoc.exists) {
+        if(businessDoc.exists){
             return businessDoc.data();
-        } else return null;
-    }
-
-    static async getRegularAvailability(uid) {
-        let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc('regular').get();
-        let regular_availability = [];
-        if(regularHoursDoc.exists){
-            regular_availability = regularHoursDoc.data();
-            return regular_availability;
         } else {
             return null;
         }

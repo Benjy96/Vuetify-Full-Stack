@@ -123,7 +123,7 @@ async function sendBookingEmails(recipientEmail, customerName, businessId, booki
     // Get business details
     let businessDetails = (await db.collection(`/businesses`).doc(`${businessId}`).get()).data();
     let businessName = businessDetails.firstname + " " + businessDetails.surname;
-    let businessEmail = businessDetails.email;
+    let businessEmail = (await db.collection(`/businesses_private`).doc(`${businessId}`).get()).data().email;
 
     // Compose customer email
     let customerEmailDocRef = db.collection('mail').doc();

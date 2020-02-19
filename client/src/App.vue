@@ -209,7 +209,7 @@ export default {
     async loadLocale() {
       //If logged in, loads the locale and sets it globally
       let locale = await BusinessService.getLocale(this.currentUser.uid);
-      this.setLocale(locale);
+      if(locale) this.setLocale(locale);
     }
   },
 }

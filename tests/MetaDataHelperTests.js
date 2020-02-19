@@ -39,7 +39,7 @@ class MetaDataHelperTests {
      * - Has regular availability of 09:00-17:00
      */
     static async setRegularHours() {
-        db.collection('/businesses/6c6qWcNvsOhBpF0CgUox4LsG2v62/availability').doc('regular').set({
+        db.collection('/businesses').doc('/6c6qWcNvsOhBpF0CgUox4LsG2v62/').set({
             "Miércoles": [
                 {
                     from: "09:00",

@@ -117,16 +117,17 @@ class MetaDataHelper {
    //TODO: Reduce reads by fetching doc in parent function and passing to helpers
    //TODO: What if deleting admin booking?
     static async isDateAvailable(uid, date) {
-        let regularHoursDoc = await db.collection(`/businesses/${uid}/availability`).doc(`regular`).get();
+        let businessDoc = await db.collection(`/businesses`).doc(uid).get();
+        let regularAvailability = businessDoc.data().regularAvailability;
 
-        if(regularHoursDoc.exists) {
+        if(regularAvailability) {
             let userBookingDuration = 60;
-            if(regularHoursDoc.data().bookingDuration) {
-                userBookingDuration = regularHoursDoc.data().bookingDuration;
+            if(businessDoc.data().bookingDetails) {
+                userBookingDuration = businessDoc.data().bookingDetails.duration;
             }
             //1 - Set remaining hours based on regular hours
-            let remainingTime = this.getTimeRemainingForRegularHours(regularHoursDoc.data(), date);
-    
+            let remainingTime = this.getTimeRemainingForRegularHours(regularAvailability, date);
+
             if(remainingTime.length > 0) {
                 let year = DateUtils.getYearFromDate(date);
                 let month = DateUtils.getMonthFromDate(date);

@@ -75,9 +75,8 @@
 </template>
 
 <script>
-import { db } from '../firebaseInit';
 import { daysOfWeek } from '../DateUtils';
-import firebase from 'firebase';
+import BusinessService from '../services/BusinessService';
 
 export default {
     props: ['id'],
@@ -114,17 +113,8 @@ export default {
                             1. Do not render clickable booking slot
         */
         validate() {
-            db.collection('businesses').doc(this.id)
-                .update({
-                    "regularAvailability": {
-                        [this.day]: firebase.firestore.FieldValue.arrayUnion({
-                            from: this.fromTime,
-                            to: this.toTime
-                        })
-                    }
-                })
-                .then(this.$emit('saved-time-range', this.day)
-            );
+            BusinessService.addRegularAvailabilityRange(this.id, this.day, this.fromTime, this.toTime)
+            .then(this.$emit('saved-time-range', this.day));
         }
     }
 }

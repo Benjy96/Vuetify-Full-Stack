@@ -264,7 +264,6 @@
 </template>
 
 <script>
-import { db } from '../firebaseInit';
 import { daysOfWeek } from '../DateUtils';
 
 import firebase from 'firebase';
@@ -351,18 +350,17 @@ export default {
     },
     methods: {
         getRanges() {
-            db.collection(`businesses/${this.id}/availability/`).doc('regular').get().then((snapshot) => {
-                if(snapshot.exists) {
-                    let regularDoc = snapshot.data();
+            BusinessService.getRegularAvailability(this.id).then(regularAvailability => {
+                if(regularAvailability) {
                     this.daysOfWeek.forEach(day => {
                         let weekday = day;
                         this.ranges[weekday] = [];
-                        if(regularDoc[weekday]){
-                            regularDoc[weekday].forEach(range => {
+                        if(regularAvailability[weekday]) {
+                            regularAvailability[weekday].forEach(range => {
                                 this.ranges[weekday].push(range);
                             });
                         }
-                    })
+                    });
                 }
             });
         },
@@ -377,15 +375,12 @@ export default {
             let day = this.timeRangeDayToDelete;
             let range = this.timeRangeRangeToDelete;
 
-            let dayRef = db.collection(`businesses/${this.id}/availability`).doc('regular');
             //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
             //- matched by EXCLUSION
             let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
             this.ranges[day] = dayArray;
 
-            dayRef.update({
-                [day]: dayArray
-            });
+            BusinessService.setDayRegularAvailability(this.id, day, dayArray);
         },
         getAdminBookings() {
             BusinessService.getAdminBookings(this.id).then(res => {

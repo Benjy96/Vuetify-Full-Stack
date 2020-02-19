@@ -26,17 +26,17 @@
                 />
                 <v-select
                 required v-bind:rules="nameRules"
-                v-model="bookingType"
-                :items="bookingTypes"
+                v-model="bookingTravelType"
+                :items="bookingTravelTypes"
                 :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
                 ></v-select>
-                <v-text-field v-if="bookingType == 'businessTravels' || bookingType == 'customerTravels'" 
+                <v-text-field v-if="bookingTravelType == 'businessTravels' || bookingTravelType == 'customerTravels'" 
                 v-model="address"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
                 />
                 <v-text-field
-                v-else-if="bookingType == 'online'"
+                v-else-if="bookingTravelType == 'online'"
                 v-model="onlineContactDetails"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('onlineContactDetails')" prepend-icon="mdi-headset"
@@ -98,8 +98,8 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
-            bookingType: '',
-            bookingTypes: [
+            bookingTravelType: '',
+            bookingTravelTypes: [
                 {text: this.$getLanguageMsg('businessTravels'), value: 'businessTravels' },
                 {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
                 {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
@@ -125,34 +125,38 @@ export default {
         register() {
             if(!this.$refs.form.validate()) return;
 
-            try { 
+            try {
+                //TODO: Ensure safe - move to back-end so can't write from front-end or make sure authenticated for current user
+                //OR: Split so the bookign details all on a central booking doc like regular availability atm?
                 firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
                 //1. https://firebase.google.com/docs/reference/js/firebase.auth.Auth.html#createuserwithemailandpassword
                 //2. https://firebase.google.com/docs/reference/js/firebase.auth.html#usercredential
                     .then((userCredential) => {
+                        db.collection('businesses_private').doc(userCredential.user.uid).set({
+                                email: this.email
+                        });
+
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             firstname: this.firstname,
                             surname: this.surname,
                             occupation: this.occupation,
-                            email: this.email
-                        }).then(() => {
-                            db.collection(`/businesses/${userCredential.user.uid}/availability`).doc('regular').set({
+                            regularAvailability: {
                                 Monday: [{from: "09:00", to: "17:00"}],
                                 Tuesday: [{from: "09:00", to: "17:00"}],
                                 Wednesday: [{from: "09:00", to: "17:00"}],
                                 Thursday: [{from: "09:00", to: "17:00"}],
                                 Friday: [{from: "09:00", to: "17:00"}]
-                            }).then(() => {
-                                if(this.profilePicture != null) {
-                                    BusinessService.setProfileImage(userCredential.user.uid, this.profilePicture);
-                                }
-
-                                if(this.bookingType != 'online') {
-                                    BusinessService.setAddress(userCredential.user.uid, this.bookingType, this.address);
-                                } else {
-                                    BusinessService.setOnlineContactDetails(userCredential.user.uid, this.bookingType, this.onlineContactDetails);
-                                }
-                            }); 
+                            },
+                            bookingDetails: {
+                                travelType: this.bookingTravelType,
+                                address: this.address,
+                                onlineContactDetails: this.onlineContactDetails
+                            },
+                            locale: this.$getLocale()
+                        }).then(() => {
+                            if(this.profilePicture != null) {
+                                BusinessService.setProfileImage(userCredential.user.uid, this.profilePicture);
+                            }
                         });
                     }, err => {
                         this.displayErrorModal(err.message);

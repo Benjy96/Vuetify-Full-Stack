@@ -134,6 +134,7 @@ export default {
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
+    bookingTitle: "",
     bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
@@ -148,7 +149,6 @@ export default {
     Promise.all([
       this.getBusinessDetails(),
       this.getAdminBookings(),  //TODO: call for next/prev
-      this.getRegularAvailabilityDetails(),
       this.getUnavailableDays(this.today),
       this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
       this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
@@ -332,14 +332,15 @@ export default {
         this.admin_bookings = res;
       });
     },
-    async getRegularAvailabilityDetails() {
-      CustomerService.getRegularAvailability(this.id).then(res => {
-        this.regular_availability = res;
-        if(res.bookingTitle) this.bookingTitle = res.bookingTitle;
-        if(res.bookingInfo) this.bookingInfo = res.bookingInfo;
-        if(res.bookingDuration) this.bookingDuration = res.bookingDuration;
-        if(res.bookingPrice) this.bookingPrice = res.bookingPrice;
-        if(res.bookingType != 'online' && res.address) this.address = res.address;
+    async getBusinessDetails() {
+      CustomerService.getBusinessDetails(this.id).then(res => {
+        this.regular_availability = res.regularAvailability;
+        let bookingDetails = res.bookingDetails;
+        if(bookingDetails.title) this.bookingTitle = bookingDetails.title;
+        if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
+        if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
+        if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
+        if(bookingDetails.type != 'online' && bookingDetails.address) this.address = bookingDetails.address;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?

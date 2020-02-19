@@ -47,7 +47,7 @@ exports.app = functions.https.onRequest(app);
 exports.setRegularHours = functions.firestore.document('/businesses/{businessId}').onCreate((change, context) => {
   let newBusinessId = change.id();
 
-  db.collection(`/businesses/${newBusinessId}/availability`).doc('regular').set({
+  db.collection(`/businesses`).doc(newBusinessId).set({
     Lunes: [{from: "09:00", to: "17:00"}],
     Martes: [{from: "09:00", to: "17:00"}],
     Miércoles: [{from: "09:00", to: "17:00"}],
