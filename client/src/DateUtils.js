@@ -528,7 +528,7 @@ export class DateUtils {
             if(hour > leftHour && hour < rightHour) {
                 return true;
             } else if(hour == leftHour) {
-                if(minute >= leftHour) {
+                if(minute >= leftMinute) {
                     return true;
                 } else {
                     return false;

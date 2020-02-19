@@ -452,7 +452,7 @@ class DateUtils {
             if(hour > leftHour && hour < rightHour) {
                 return true;
             } else if(hour == leftHour) {
-                if(minute >= leftHour) {
+                if(minute >= leftMinute) {
                     return true;
                 } else {
                     return false;
@@ -620,7 +620,6 @@ class DateUtils {
         endDate = new Date(endDate);
 
         while(currentDate <= endDate) {
-            console.log("pushing " + this.convertDateToYYYYMMDD(currentDate) + " for " + currentDate);
             dateList.push(this.convertDateToYYYYMMDD(currentDate));
             currentDate.setDate(currentDate.getDate() + 1);
         }
