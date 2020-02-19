@@ -908,8 +908,6 @@ export class DateUtils {
             let hour = Math.floor(i / 60);
             let minute = 0;
             if(i % 60 != 0){    //what if lower than 60?
-                window.console.log("i is " + i);
-                window.console.log('% op: ' + i % 60);
                 minute = i % 60;
             }
 
@@ -920,6 +918,12 @@ export class DateUtils {
 
             //Incremented time
             let incrementedTime = i + intervalDuration;
+            
+            // If beyond the end of the range, don't add to intervals
+            if(incrementedTime > endTimeInMins) {
+                continue;
+            }
+
             hour = Math.floor(incrementedTime / 60);
             minute = 0;
             if(incrementedTime % 60 != 0){
@@ -930,7 +934,7 @@ export class DateUtils {
             hour = this.formatHourToHH(hour);
 
             let twentyFourHourEndTime = `${hour}:${minute}`;
-
+        
             intervals.push({
                 from: twentyFourHourStartTime,
                 to: twentyFourHourEndTime
