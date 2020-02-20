@@ -109,6 +109,7 @@ router.delete('/booking', async (req, res) => {
 
 /* ------ POSTS ------ */
 /** Create an admin booking */
+//TODO: Clean up old ones upon adding new ones?
 router.post('/adminBooking', async(req, res) => {
   let uid = req.body.uid;
   let adminBooking = req.body.adminBooking;
@@ -117,50 +118,22 @@ router.post('/adminBooking', async(req, res) => {
     res.status(400).send();
   }
 
-  //1. Get from year, month, and day
-  let fromYear = DateUtils.getYearFromDate(adminBooking.fromDate);
-
-  //2. Get to year, month, and day
-  let toYear = DateUtils.getYearFromDate(adminBooking.toDate);
-
-  if(fromYear == toYear){
-      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-  } else {
-      db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-
-      await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
-      .set(
-          {
-              admin_bookings: admin.firestore.FieldValue.arrayUnion({
-                  ...adminBooking
-              })
-          },
-          { merge: true }
-      );
-  }
+  await db.collection(`/businesses/${uid}/bookings/`).doc('admin')
+  .set(
+      {
+          admin_bookings: admin.firestore.FieldValue.arrayUnion({
+              ...adminBooking
+          })
+      },
+      { merge: true }
+  );
 
   res.status(200).send();
 
   MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
 });
 
-// Put creates or replaces something - calling it multiple times would have the same effect
+// Put creates or replaces something - calling it multiple times would have the same effect - replace a reg availability day
 router.put('/regularAvailability', async(req, res) => {
   let uid = req.body.uid;
   let day = req.body.day;
@@ -188,7 +161,7 @@ router.put('/regularAvailability', async(req, res) => {
   );
 });
 
-// Post adds to something and changes its state
+// Post adds to something and changes its state - Push a range to a reg availability day
 router.post('/regularAvailability', async(req, res) => {
   let uid = req.body.uid;
   let day = req.body.day;
