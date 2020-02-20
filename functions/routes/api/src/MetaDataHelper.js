@@ -14,15 +14,29 @@ class MetaDataHelper {
         // Meta-data Get affected dates for marking unavailable
         let affectedDates = DateUtils.getDatesBetweenInclusive(affectedFromDate, affectedToDate);
 
+        // Get business info
+        let businessDoc = await db.collection(`/businesses`).doc(uid).get();
+        let businessData = businessDoc.data();
+
+        // Get admin bookings - they are stored as an overview rather than per day like customer bookings
+        let adminBookingsDoc = await db.collection(`/businesses/${uid}/bookings`).doc('admin').get();
+        let adminBookings = [];
+        if(adminBookingsDoc.exists) {
+            adminBookings = adminBookingsDoc.data().admin_bookings;
+        }
+
+        // Create storage for each async isDateAvailable operation/result
         let promises = [];
 
-        //WARNING: if you use var i only affectedDates[31] will be called - use let instead
-
-        //The loop was completing iterations and THEN the callbacks were being called with the 
-        //last value of the loop. 
-        //See: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
-        for(let i in affectedDates) {   
-            promises.push(this.isDateAvailable(uid, affectedDates[i]));
+        /**
+         * WARNING: The loop below was completing iterations and THEN the callbacks were being called with the last value of the loop. 
+         * 
+         * If you use var i only affectedDates[31] will be called - use let instead
+         * 
+         * See: https://stackoverflow.com/questions/11488014/asynchronous-process-inside-a-javascript-for-loop
+         */
+        for(let i in affectedDates) {       
+            promises.push(this.isDateAvailable(uid, affectedDates[i], businessData, adminBookings));
         }
         /*
 
@@ -56,7 +70,7 @@ class MetaDataHelper {
         // Set each meta-data document
         let yearMonths = Object.keys(metaDataArrays);
         for(let i in yearMonths) {
-            this.setUnavailableDays(uid, yearMonths[i], metaDataArrays[yearMonths[i]]);
+            this.setMonthUnavailableDays(uid, yearMonths[i], metaDataArrays[yearMonths[i]]);
         }
        });
     }
@@ -115,14 +129,13 @@ class MetaDataHelper {
     * @returns {boolean}
     */
    //TODO: Reduce reads by fetching doc in parent function and passing to helpers
-    static async isDateAvailable(uid, date) {
-        let businessDoc = await db.collection(`/businesses`).doc(uid).get();
-        let regularAvailability = businessDoc.data().regularAvailability;
+    static async isDateAvailable(uid, date, businessData, admin_bookings) {
+        let regularAvailability = businessData.regularAvailability;
 
         if(regularAvailability) {
             let userBookingDuration = 60;
-            if(businessDoc.data().bookingDetails) {
-                userBookingDuration = businessDoc.data().bookingDetails.duration;
+            if(businessData.bookingDetails) {
+                userBookingDuration = businessData.bookingDetails.duration;
             }
             //1 - Set remaining hours based on regular hours
             let remainingTime = this.getTimeRemainingForRegularHours(regularAvailability, date);
@@ -156,80 +169,73 @@ class MetaDataHelper {
                 }
     
                 //3 - Check admin bookings for day
-                let adminDoc = await db.collection(`/businesses/${uid}/bookings`).doc('admin').get();
-                let admin_bookings = [];
-                if(adminDoc.exists) {
-                    admin_bookings = adminDoc.data().admin_bookings;
-    
-                    //Get the relevant admin booking for this day
-                    for(var i in admin_bookings) {
-                        //The day is in the middle of a large range of time
-                        if(DateUtils.dateBetween(date, admin_bookings[i].fromDate, admin_bookings[i].toDate)) {
-                            return false;
-                        }
-    
-                        /* 
-    
-                            ** We only need to count the hours in the reg range! **
-                            I.e., 
-                            count to reg To if largest To
-                            count from reg from if admin from >= reg from
-    
-                            Simply need to determine the largest/smallest from and to:
-    
-                            if adFrom > regFrom, countFrom = regFrom (reg hours are what we're subtracting from)
-                            else countFrom = adminFrom
-                            if adTo > regTo, countTo = regTo
-                            else countTo = adTo
-    
-                        */
-    
-                        //Admin Booking on one day - take from the regular hours of that day
-                        for(let rangeIndex in remainingTime) {
-                            if(admin_bookings[i].fromDate == date && admin_bookings[i].toDate == date) {  
-                                //accessing the regular hour wrong.. its the left of the key i need                
-                                let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
-                                let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
-    
-                                if(admin_bookings[i].toTime < countFrom){
-                                    continue;
-                                }
-        
-                                if(admin_bookings[i].fromTime > countFrom && admin_bookings[i].fromTime <= countTo) {
-                                    countFrom = admin_bookings[i].fromTime;
-                                }
-        
-                                if(admin_bookings[i].toTime < countTo && admin_bookings[i].toTime >= countFrom) {
-                                    countTo = admin_bookings[i].toTime;
-                                }
-        
-                                //If admin doesn't intersect inside, it is outside, and ALL reg hours should be subtracted                   
-                                remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
-                            //Admin from == date or Admin to == date
-                            } else if(admin_bookings[i].toDate == date) {
-                                let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
-                                let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
-        
-                                //Otherwise, the admin booking extends beyond the regular hours, and we should subtract all to
-                                if(admin_bookings[i].toTime < countTo) {
-                                    countTo = admin_bookings[i].toTime;
-                                }
-        
-                                remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
-                            } else if(admin_bookings[i].fromDate == date) {
-                                let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
-                                let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
-        
-                                //Otherwise, the admin booking extends beyond the regular hours, and we should subtract all from
-                                if(admin_bookings[i].fromTime > countFrom) {
-                                    countFrom = admin_bookings[i].fromTime;
-                                }
-        
-                                remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
+                for(var i in admin_bookings) {
+                    //The day is in the middle of a large range of time
+                    if(DateUtils.dateBetween(date, admin_bookings[i].fromDate, admin_bookings[i].toDate)) {
+                        return false;
+                    }
+
+                    /* 
+
+                        ** We only need to count the hours in the reg range! **
+                        I.e., 
+                        count to reg To if largest To
+                        count from reg from if admin from >= reg from
+
+                        Simply need to determine the largest/smallest from and to:
+
+                        if adFrom > regFrom, countFrom = regFrom (reg hours are what we're subtracting from)
+                        else countFrom = adminFrom
+                        if adTo > regTo, countTo = regTo
+                        else countTo = adTo
+
+                    */
+
+                    //Admin Booking on one day - take from the regular hours of that day
+                    for(let rangeIndex in remainingTime) {
+                        if(admin_bookings[i].fromDate == date && admin_bookings[i].toDate == date) {  
+                            //accessing the regular hour wrong.. its the left of the key i need                
+                            let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
+                            let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
+
+                            if(admin_bookings[i].toTime < countFrom){
+                                continue;
                             }
+    
+                            if(admin_bookings[i].fromTime > countFrom && admin_bookings[i].fromTime <= countTo) {
+                                countFrom = admin_bookings[i].fromTime;
+                            }
+    
+                            if(admin_bookings[i].toTime < countTo && admin_bookings[i].toTime >= countFrom) {
+                                countTo = admin_bookings[i].toTime;
+                            }
+    
+                            //If admin doesn't intersect inside, it is outside, and ALL reg hours should be subtracted                   
+                            remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
+                        //Admin from == date or Admin to == date
+                        } else if(admin_bookings[i].toDate == date) {
+                            let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
+                            let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
+    
+                            //Otherwise, the admin booking extends beyond the regular hours, and we should subtract all to
+                            if(admin_bookings[i].toTime < countTo) {
+                                countTo = admin_bookings[i].toTime;
+                            }
+    
+                            remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
+                        } else if(admin_bookings[i].fromDate == date) {
+                            let countFrom = DateUtils.getLeftTimeFromRangeString(remainingTime[rangeIndex].range);
+                            let countTo = DateUtils.getRightTimeFromRangeString(remainingTime[rangeIndex].range);
+    
+                            //Otherwise, the admin booking extends beyond the regular hours, and we should subtract all from
+                            if(admin_bookings[i].fromTime > countFrom) {
+                                countFrom = admin_bookings[i].fromTime;
+                            }
+    
+                            remainingTime[rangeIndex].remainingTime -= DateUtils.calcFromToDifference(countFrom, countTo);
                         }
-                    }   
-                }
+                    }
+                }// for each admin booking
                 
                 //4 - Time left?
                 if(this.isTimeLeft(remainingTime, userBookingDuration) == false) {
@@ -256,7 +262,7 @@ class MetaDataHelper {
         );
     }
 
-    static async setUnavailableDays(uid, yearMonth, days) {
+    static async setMonthUnavailableDays(uid, yearMonth, days) {
         let year = yearMonth.split("-")[0];
         let month = yearMonth.split("-")[1];
 
