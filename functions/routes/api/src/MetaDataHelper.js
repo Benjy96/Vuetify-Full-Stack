@@ -128,7 +128,6 @@ class MetaDataHelper {
     * Checks regular hours & admin/customer bookings
     * @returns {boolean}
     */
-   //TODO: Reduce reads by fetching doc in parent function and passing to helpers
     static async isDateAvailable(uid, date, businessData, admin_bookings) {
         let regularAvailability = businessData.regularAvailability;
 
