@@ -4,6 +4,36 @@ const admin = require('firebase-admin');
 const { DateUtils } = require('./DateUtils');
 const { daysOfWeek } = require('./DateUtils');
 
+/**
+
+Meta Data & When to Calculate It
+
+Assuming no bookings, Regular Availability determines whether a day is available. It is simple. If there is an hour, 
+then it is available.
+
+The problem is that admin bookings and customer bookings "impact" this simple truth. 
+
+Think of regular availability like a long green line. Anywhere a customer or admin booking is is like a red block or another red line 
+over that green line, and our simple check of "is there a green line" won't work because the red line is sitting 
+on top of it, blocking it.
+
+We therefore use meta-data to determine whether a date is available or not. We calculate this in the back-end every time we 
+add or delete an admin booking, a customer booking, or regular availability.
+
+The problem I was stuck on was: How far ahead in advance, for regular availability, do we calculate meta-data if we change it?
+
+It's simple for customer and admin bookings, as they are the red line, and they only affect specific points in the underlying, 
+infinite length (time) of the green line (regular availability).
+
+I was doing just 12 months ahead for regular availability, and I was thinking about perhaps calculating it upon view if 
+has not been updated since X, Y, Z, but then I realised: You only need to calculate meta-data when you change the regular 
+availability for where there is a red line affecting the green line - we can already determine client-side, quite simply, 
+that if the green line is there alone, it is available. The problem was checking meta-data for where there are both red and green lines. 
+Therefore, when updating regular availability, the green line will change, and that's fine, but we need to calculate meta-data for the 
+bits with red over the green, i.e., where there are customer bookings and admin bookings. We need to essentially "re-calculate" 
+what we did before, as we've reset the baseline.
+
+*/
 class MetaDataHelper {
 
     /**

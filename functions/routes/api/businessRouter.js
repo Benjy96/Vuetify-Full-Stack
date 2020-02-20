@@ -154,7 +154,7 @@ router.put('/regularAvailability', async(req, res) => {
   res.status(200).send();
 
   let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-  //TODO: Standardise
+  //TODO: We need to check as far ahead as there may be admin/customer bookings
   MetaDataHelper.updateMetaData(uid, 
     DateUtils.getCurrentDateString(), 
     bookingDurationSetUntil
@@ -186,7 +186,7 @@ router.post('/regularAvailability', async(req, res) => {
   res.status(200).send();
 
   let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-  //TODO: Standardise
+  //TODO: We need to check as far ahead as there may be admin/customer bookings
   MetaDataHelper.updateMetaData(uid, 
     DateUtils.getCurrentDateString(), 
     bookingDurationSetUntil
@@ -275,7 +275,7 @@ router.post('/bookingDuration', async (req, res) => {
     }, {merge: true}).then(() => {
   
       let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-      //TODO: Standardise
+      //TODO: We need to check as far ahead as there may be admin/customer bookings
       MetaDataHelper.updateMetaData(uid, 
         DateUtils.getCurrentDateString(), 
         bookingDurationSetUntil
