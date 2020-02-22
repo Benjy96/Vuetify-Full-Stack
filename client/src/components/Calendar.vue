@@ -13,11 +13,33 @@
 
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <div class="flex-grow-1"></div>
+          <v-btn v-if="isUser" color="primary" class="mr-4" @click="newBookingSlotDialog = true" dark>Add Booking Slot</v-btn>
           <v-btn outlined @click="type = typeToSwitchTo">{{$getLanguageMsg(typeToSwitchTo)}}</v-btn>
         </v-toolbar>
       </v-sheet>
 
       <!-- ***** DIALOGS ***** -->
+
+      <v-dialog v-model="newBookingSlotDialog" width="500">
+        <v-card>
+          <v-container>
+            <!-- .stop is shorthand for Event.stopPropagation()
+            events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
+            <v-form @submit.prevent="addEvent">
+              <v-text-field v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
+              <v-text-field v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
+              <v-text-field v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
+
+              <v-btn
+                type="submit"
+                color="primary"
+                class="mr-4"
+                @click.stop="newBookingSlotDialog = false"
+              >Add Booking Slot</v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
 
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
@@ -81,6 +103,8 @@
         </v-card>
       </v-dialog>
 
+      <!-- ***** END DIALOGS ***** -->
+
       <v-sheet height="600" v-if="!isFetchingMonthData">
         <!-- ***** CALENDAR ***** -->
 
@@ -116,9 +140,12 @@ import { DateUtils } from "../DateUtils";
 import { daysOfWeek } from "../DateUtils";
 import CustomerService from "../services/CustomerService";
 
+import firebase from "firebase";
+
 export default {
   props: ["id"],
   data: () => ({
+    isUser: false,
     isFetchingMonthData: true,
     isFetchingDayData: false,
     today: new Date().toISOString().substr(0, 10),
@@ -127,6 +154,10 @@ export default {
     typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
+    newBookingSlotDialog: false,
+    newBookingSlotDate: null,
+    newBookingSlotStart: null,
+    newBookingSlotEnd: null,
     dialog: false,
     dialogDate: false,
     addBookingDateObject: null,
@@ -140,14 +171,18 @@ export default {
     bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
-    bookingType: "",
+    bookingType: "online",
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
     events: [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
-    // events: []
   }),
   created() {
+    // Check if own calendar
+    if(firebase.auth().currentUser && firebase.auth().currentUser.uid == this.id){
+      this.isUser = true;
+    }
+
     //Month Viewed Upon Load
     Promise.all([
       this.getBusinessDetails(),
@@ -223,6 +258,9 @@ export default {
     }
   },
   methods: {
+    addEvent() {
+      
+    },
     clearEvents() {
       this.events = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
     },

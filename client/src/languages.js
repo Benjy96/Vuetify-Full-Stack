@@ -159,6 +159,10 @@ const messages =
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
     },
     //Calendar.vue
+    'date': {
+        'en': "Date",
+        'es': "Fecha"
+    },
     'day': {
         'en': "Day",
         'es': "Dia"
