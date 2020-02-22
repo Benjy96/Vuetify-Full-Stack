@@ -224,7 +224,7 @@ export default {
   },
   methods: {
     clearEvents() {
-      this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+      this.events = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
     },
     setAvailableTimes(date) {
       this.clearEvents();
