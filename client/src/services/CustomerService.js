@@ -74,6 +74,9 @@ class CustomerService {
         else return [];
     }
 
+    /**
+     * Returns the top-level business document /businesses/uid
+     */
     static async getBusinessDetails(uid) {
         let businessDoc = await db.collection(`/businesses`).doc(`${uid}`).get();
         if(businessDoc.exists){
