@@ -119,7 +119,7 @@
           @click:date="loadAndViewDay"
           @click:day="loadAndViewDay"
           @change="updateRange"
-          :events="events"
+          :events="visibleEvents"
           event-color="green"
         >
           <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
@@ -175,7 +175,8 @@ export default {
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
-    events: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
+    visibleEvents: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}],
+    events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
   }),
   created() {
     // Check if own calendar
@@ -281,13 +282,12 @@ export default {
       // 2
       BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
 
-      this.events.push({
-        name: "",
-        start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
-        end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
-      });
-
-      window.console.log(JSON.stringify(this.events));
+      //TODO: If day view push to visible, else push events
+      // this.events.push({
+      //   name: "",
+      //   start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
+      //   end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
+      // });
 
       this.newBookingSlotDate = null;
       this.newBookingSlotStart = null;
@@ -295,12 +295,17 @@ export default {
 
       this.newBookingSlotDialog = false;
     },
-    clearEvents() {
-      this.events = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
+    // Clears the Calendar events array so that the events aren't displayed on the month view
+    hideEvents() {
+      this.visibleEvents = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
+    },
+    // Clears events for the day, keeping user added "Irregular Availability" and the default event for Vue reactivity
+    unhideEvents(year, month) {
+      this.visibleEvents = this.events[year][month];//.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
+      // this.events = this.hiddenEvents.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
     },
     // Renders available booking slots
     setAvailableTimes(date) { //TODO: take specific availability into account - specific takes priority
-      this.clearEvents();
       /*
         When is an interval in a booking? <--- The killer question
 
@@ -312,6 +317,9 @@ export default {
       if(date < DateUtils.getCurrentDateString() || this.dateInUnavailableDays(date)) {
         return;
       }
+
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
 
       // 3 & 4: Check if times intersect with customer bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
@@ -386,9 +394,9 @@ export default {
 
               // No admin booking or customer booking
               if(intervalAvailable == true) {
-                this.events = this.events.filter(event => (event.start != start) && (event.end != end));
+                this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
 
-                this.events.push({
+                this.events[year][month].push({
                   name: "",
                   start: start,
                   end: end
@@ -432,15 +440,23 @@ export default {
         this.unavailableDays[year] = {};
       }
 
+      if(this.events[year] == null) {
+        this.events[year] = {};
+      }
+
       let data = await CustomerService.getMonthAvailabilityData(this.id, year, month);
 
       this.unavailableDays[year][month] = data.unavailableDays;
       if(data.irregularAvailability) {
-        data.irregularAvailability.forEach(x => {
-          window.console.log('pushing ' + JSON.stringify(x));
-          this.events.push(x);
-        });
-        // this.events = this.events.concat(data.irregularAvailability);
+        //TODO: what if outdated?
+        if(this.events[year][month] == null) {
+          this.events[year][month] = [];
+          this.events[year][month] = data.irregularAvailability;
+        }
+        // this.events[year][month] = [];
+        // data.irregularAvailability.forEach(x => { 
+        //   this.events.push(x);
+        // });
       }
     },
     async getDayBookings(date) {
@@ -563,7 +579,7 @@ export default {
 
           if (!this.unavailableDays[year][month]) {
             this.isFetchingMonthData = true;
-            this.getUnavailableDays(this.focus).then(() => {
+            this.getMonthAvailabilityData(this.focus).then(() => {
               this.isFetchingMonthData = false;
             });
           }
@@ -590,12 +606,9 @@ export default {
             this.isFetchingMonthData = true;
 
             Promise.all([
-              this.getUnavailableDays(nextMonthDate),
-              this.getUnavailableDays(
-                DateUtils.getNextMonthDate(nextMonthDate)
-              ),
-              this.getUnavailableDays(
-                DateUtils.incrementMonthOfDate(nextMonthDate, 2)
+              this.getMonthAvailabilityData(nextMonthDate),
+              this.getMonthAvailabilityData(DateUtils.getNextMonthDate(nextMonthDate)),
+              this.getMonthAvailabilityData(DateUtils.incrementMonthOfDate(nextMonthDate, 2)
               )
             ]).then(() => {
               this.isFetchingMonthData = false;
@@ -607,23 +620,17 @@ export default {
     //@change is called any time the days displayed are changed
     //start & end encapsulate the scope of days
     updateRange({ start, end }) {
+      let date = start.date;
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
+
       if(this.type == 'month') {
-        this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+        this.hideEvents();
         this.typeToSwitchTo = 'day';
       } else if(this.type == 'day') {
+        this.unhideEvents(year, month);
         this.typeToSwitchTo = 'month';
       }
-      // else if(this.type == 'week' || this.type == '4day') {
-      //   let from = new Date(this.start);
-      //   let to = new Date(this.end);
-
-      //   for(let day = from; day <= to; day.setDate(day.getDate() + 1)) {
-      //     this.setAvailableTimes(DateUtils.convertDateToYYYYMMDD(day));
-      //   }
-      // }
-      // else if(this.type == 'day') {
-      //   this.setAvailableTimes(start.date);
-      // }
 
       this.start = start;
       this.end = end;
