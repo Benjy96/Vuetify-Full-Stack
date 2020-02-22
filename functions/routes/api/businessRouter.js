@@ -155,6 +155,17 @@ router.put('/regularAvailability', async(req, res) => {
 
   let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
   //TODO: We need to check as far ahead as there may be admin/customer bookings
+
+  /**
+   * 
+   * HOWEVER, we do need to calculate as far ahead as there may be customer bookings or admin bookings. 
+   * THAT IS THE PROBLEM. This is because regular availability is handled client-side assuming there are no customer or admin bookings. 
+   * The problem of conditional rendering is introduced whenever there is a customer or admin booking. 
+   * The meta-data is there to determine whether a customer or admin booking "affects" the nice, clean, simple 
+   * basic rendering based upon regular availability. It's like a line and anywhere an admin booking or customer booking is, 
+   * it is distended, and standard checks won't work. Therefore, we need to update meta-data as far as the data is "non-standard".
+   * 
+   */
   MetaDataHelper.updateMetaData(uid, 
     DateUtils.getCurrentDateString(), 
     bookingDurationSetUntil
