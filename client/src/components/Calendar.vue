@@ -25,16 +25,15 @@
           <v-container>
             <!-- .stop is shorthand for Event.stopPropagation()
             events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
-            <v-form @submit.prevent="addEvent">
-              <v-text-field v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
-              <v-text-field v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
-              <v-text-field v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
+            <v-form @submit.prevent="addEvent" ref="addEventForm">
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
 
               <v-btn
                 type="submit"
                 color="primary"
                 class="mr-4"
-                @click.stop="newBookingSlotDialog = false"
               >Add Booking Slot</v-btn>
             </v-form>
           </v-container>
@@ -139,8 +138,7 @@
 import { DateUtils } from "../DateUtils";
 import { daysOfWeek } from "../DateUtils";
 import CustomerService from "../services/CustomerService";
-
-import firebase from "firebase";
+import BusinessService from '../services/BusinessService';
 
 export default {
   props: ["id"],
@@ -154,10 +152,12 @@ export default {
     typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
+    // NEW BOOKING >
     newBookingSlotDialog: false,
     newBookingSlotDate: null,
     newBookingSlotStart: null,
     newBookingSlotEnd: null,
+    // NEW BOOKING <
     dialog: false,
     dialogDate: false,
     addBookingDateObject: null,
@@ -175,11 +175,11 @@ export default {
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
-    events: [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
+    events: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
   }),
   created() {
     // Check if own calendar
-    if(firebase.auth().currentUser && firebase.auth().currentUser.uid == this.id){
+    if(BusinessService.isCurrentUser(this.id)){
       this.isUser = true;
     }
 
@@ -187,14 +187,17 @@ export default {
     Promise.all([
       this.getBusinessDetails(),
       this.getAdminBookings(),  //TODO: call for next/prev
-      this.getUnavailableDays(this.today),
-      this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
-      this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
+      this.getMonthAvailabilityData(this.today),
+      this.getMonthAvailabilityData(DateUtils.getNextMonthDate(this.today)),
+      this.getMonthAvailabilityData(DateUtils.incrementMonthOfDate(this.today, 2))
     ]).then(() => {
       this.isFetchingMonthData = false;
     });
   },
   computed: {
+    requiredRule() {
+      return [v => !!v || this.$getLanguageMsg("required")]
+    },
     emailRules() {
       const rules = [];
 
@@ -259,12 +262,44 @@ export default {
   },
   methods: {
     addEvent() {
-      
+      if(!this.$refs.addEventForm.validate()) return;
+      /**
+       * 
+       * 1. If date not passed
+       * 2. Store in db
+       * 3. Clear current events - go to other method
+       * 4. Re-render current events
+       * 
+       * Also TODO: Retrieve these events from setAvailableTimes
+       */
+
+      // 1
+      if(this.newBookingSlotDate < DateUtils.getCurrentDateString()) {
+        return; //TODO: add date rule
+      }
+
+      // 2
+      BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
+
+      this.events.push({
+        name: "",
+        start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
+        end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
+      });
+
+      window.console.log(JSON.stringify(this.events));
+
+      this.newBookingSlotDate = null;
+      this.newBookingSlotStart = null;
+      this.newBookingSlotEnd = null;
+
+      this.newBookingSlotDialog = false;
     },
     clearEvents() {
       this.events = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
     },
-    setAvailableTimes(date) {
+    // Renders available booking slots
+    setAvailableTimes(date) { //TODO: take specific availability into account - specific takes priority
       this.clearEvents();
       /*
         When is an interval in a booking? <--- The killer question
@@ -389,8 +424,7 @@ export default {
         }
       });
     },
-    //TODO: instead of separating unavailable days into sep documents - do one document with an array?
-    async getUnavailableDays(date) {
+    async getMonthAvailabilityData(date) {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
@@ -398,9 +432,16 @@ export default {
         this.unavailableDays[year] = {};
       }
 
-      this.unavailableDays[year][
-        month
-      ] = await CustomerService.getUnavailableDays(this.id, year, month);
+      let data = await CustomerService.getMonthAvailabilityData(this.id, year, month);
+
+      this.unavailableDays[year][month] = data.unavailableDays;
+      if(data.irregularAvailability) {
+        data.irregularAvailability.forEach(x => {
+          window.console.log('pushing ' + JSON.stringify(x));
+          this.events.push(x);
+        });
+        // this.events = this.events.concat(data.irregularAvailability);
+      }
     },
     async getDayBookings(date) {
       //Don't need a loader if we already have a dialog covering the bookings

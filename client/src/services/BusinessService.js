@@ -10,6 +10,12 @@ const apiURL = 'api/business';
 
 class BusinessService {
 
+    static isCurrentUser(id) {
+        if(firebase.auth().currentUser && firebase.auth().currentUser.uid == id){
+            return true;
+        } else return false;
+    }
+
     /*
         Owner/Business PoV CRUD Operations.
 
@@ -27,6 +33,9 @@ class BusinessService {
      */
 
     /* ----- POST ----- */
+    static async addBookingSlot(uid, date, start, end) {
+        axios.post(`${apiURL}/irregularAvailability`, {uid, date, start, end});
+    }
 
     static async createAdminBooking(uid, adminBooking) {
         axios.post(`${apiURL}/adminBooking`, {uid, adminBooking});
