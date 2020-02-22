@@ -140,12 +140,11 @@ export default {
     bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
-    bookingType: "",
+    bookingType: "online",
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
     events: [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
-    // events: []
   }),
   created() {
     //Month Viewed Upon Load
@@ -339,14 +338,16 @@ export default {
       CustomerService.getBusinessDetails(this.id).then(res => {
         this.regular_availability = res.regularAvailability;
         let bookingDetails = res.bookingDetails;
-        if(bookingDetails.title) this.bookingTitle = bookingDetails.title;
-        if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
-        if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
-        if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
-        if(bookingDetails.type != 'online' && bookingDetails.address) {
-          this.address = bookingDetails.address;
+        if(bookingDetails) {
+          if(bookingDetails.title) this.bookingTitle = bookingDetails.title;
+          if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
+          if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
+          if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
+          if(bookingDetails.type != 'online' && bookingDetails.address) {
+            this.address = bookingDetails.address;
+          }
+          if(bookingDetails.type) this.bookingType = bookingDetails.type;
         }
-        if(bookingDetails.type) this.bookingType = bookingDetails.type;
       });
     },
     //TODO: instead of separating unavailable days into sep documents - do one document with an array?
