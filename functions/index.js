@@ -25,6 +25,7 @@ app.use('*/api/customer', customerRouter);
 // express.static is a built-in middleware function in Express. 
 // Defines where to serve static files from. public is our static asset folder on prod.
 // https://expressjs.com/en/starter/static-files.html
+// To see running locally, go to: http://localhost:5000/firebase-payment-test/us-central1/app/about
 app.use('/about', express.static(__dirname + '/lander/web/'));
 
 // __dirname is a Node.JS Global Object: https://nodejs.org/docs/latest/api/globals.html
