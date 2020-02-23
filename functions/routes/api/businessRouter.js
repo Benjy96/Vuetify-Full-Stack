@@ -207,17 +207,15 @@ router.post('/regularAvailability', async(req, res) => {
 // Post adds to something and changes its state - Push a range to a reg availability day
 router.post('/irregularAvailability', async(req, res) => {
   let uid = req.body.uid;
-  let date = req.body.date;
+  let year = req.body.year;
+  let month = req.body.month;
   let start = req.body.start;
   let end = req.body.end;
 
-  if(!uid || !date || !start || !end) {
+  if(!uid || !year || !month || !start || !end) {
     res.status(400).send();
     return;
   }
-
-  let year = DateUtils.getYearFromDate(date);
-  let month = DateUtils.getMonthFromDate(date);
 
   start = date + " " + start;
   end = date + " " + end;

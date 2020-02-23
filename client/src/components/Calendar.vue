@@ -279,16 +279,21 @@ export default {
         return; //TODO: add date rule
       }
 
+      let year = DateUtils.getYearFromDate(this.newBookingSlotDate);
+      let month = DateUtils.getMonthFromDate(this.newBookingSlotDate);
+
       // 2
-      BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
+      BusinessService.addBookingSlot(this.id, year, month, this.newBookingSlotStart, this.newBookingSlotEnd);
 
-      //TODO: If day view push to visible, else push events
-      // this.events.push({
-      //   name: "",
-      //   start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
-      //   end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
-      // });
+      this.events[year][month].push({
+        name: "",
+        start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
+        end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
+      });
 
+      this.focus = this.newBookingSlotDate;
+      this.switchType();
+      
       this.newBookingSlotDate = null;
       this.newBookingSlotStart = null;
       this.newBookingSlotEnd = null;
@@ -448,11 +453,10 @@ export default {
 
       this.unavailableDays[year][month] = data.unavailableDays;
       if(data.irregularAvailability) {
-        //TODO: what if outdated?
         if(this.events[year][month] == null) {
           this.events[year][month] = [];
-          this.events[year][month] = data.irregularAvailability;
         }
+        this.events[year][month] = data.irregularAvailability;
         // this.events[year][month] = [];
         // data.irregularAvailability.forEach(x => { 
         //   this.events.push(x);
