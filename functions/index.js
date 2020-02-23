@@ -7,7 +7,7 @@ const app = express();
 
   Back-end server/API.
 
-  Using cloud functions & express/router.
+  Using cloud functions & express/router. https://firebase.google.com/docs/hosting/functions#use_a_web_framework
 
 */
 
