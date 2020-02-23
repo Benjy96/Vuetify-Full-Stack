@@ -35,7 +35,7 @@ app.use(express.static(__dirname + '/public/'));
 // i.e. - prevent express trying to look for a file like "hello.html" if you browsed to
 // app.com/hello
 
-/* ----- Handled by firebase.json rewrites property ----- */
+/* ----- Handled by firebase.json rewrites property in production ----- */
 app.get(/.*/, (req, res) => {
   console.log("Received a request to the server");
   res.sendFile(__dirname + '/public/index.html')
