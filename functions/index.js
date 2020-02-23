@@ -24,6 +24,7 @@ app.use('*/api/customer', customerRouter);
 
 // express.static is a built-in middleware function in Express. 
 // Defines where to serve static files from. public is our static asset folder on prod.
+// https://expressjs.com/en/starter/static-files.html
 app.use('/about', express.static(__dirname + '/lander/web/'));
 
 // __dirname is a Node.JS Global Object: https://nodejs.org/docs/latest/api/globals.html
