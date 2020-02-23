@@ -510,7 +510,7 @@ export default {
       // Handle owner-added, specific bookings
       let year = DateUtils.getYearFromDate(dateObject.date);
       let month = DateUtils.getMonthFromDate(dateObject.date);
-      for (let i = 0; i < this.events[year][month].length; i++) {
+      for(let i in this.events[year][month]) {
         let eventDate = this.events[year][month][i].start.split(" ")[0];
         if(dateObject.date == eventDate) return true;
       }
