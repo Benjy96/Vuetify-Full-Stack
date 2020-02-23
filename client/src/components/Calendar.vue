@@ -25,7 +25,7 @@
           <v-container>
             <!-- .stop is shorthand for Event.stopPropagation()
             events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
-            <v-form @submit.prevent="addEvent" ref="addEventForm">
+            <v-form @submit.prevent="addBookingSlot" ref="addBookingSlotForm">
               <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
               <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
               <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
@@ -262,8 +262,8 @@ export default {
     }
   },
   methods: {
-    addEvent() {
-      if(!this.$refs.addEventForm.validate()) return;
+    addBookingSlot() {
+      if(!this.$refs.addBookingSlotForm.validate()) return;
       /**
        * 
        * 1. If date not passed
@@ -507,7 +507,7 @@ export default {
         return false;
       }
 
-      // Handle owner-added, specific bookings
+      // Handle specific availability
       let year = DateUtils.getYearFromDate(dateObject.date);
       let month = DateUtils.getMonthFromDate(dateObject.date);
       for(let i in this.events[year][month]) {
@@ -515,9 +515,10 @@ export default {
         if(dateObject.date == eventDate) return true;
       }
 
-      // Handle admin bookings (for current month) & customer bookings
+      // Handle meta-data (admin bookings & customer bookings make a day unavailable)
       if (this.dateInUnavailableDays(dateObject)) return false;
 
+      // Handle regular availability
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
       if (this.regular_availability != null) {
         if (dayOfWeek in this.regular_availability) {
@@ -625,8 +626,7 @@ export default {
         }
       }
     },
-    //@change is called any time the days displayed are changed
-    //start & end encapsulate the scope of days
+    //@change is called any time the days displayed are changed - start & end encapsulate the scope of days
     updateRange({ start, end }) {
       let date = start.date;
       let year = DateUtils.getYearFromDate(date);
