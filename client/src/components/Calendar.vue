@@ -310,13 +310,12 @@ export default {
         for(let range in this.regular_availability[dayOfWeek]) {
           if(this.regular_availability[dayOfWeek][range] != null) {
             let regularRange = this.regular_availability[dayOfWeek][range];
-            //TODO: check based upon intervals
             let regIntervals = DateUtils.getIntervalsInRange(regularRange, this.bookingDuration);
             for (let i in regIntervals) {
               let interval = regIntervals[i];
 
               if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-                //TODO: Specific modal to proceed
+                //TODO: Overwrite functionality to split a regular hour?
                 this.$emit('open-generic-dialog', ["information", "You are already available for a portion of this time."]);
                 return;
               }
