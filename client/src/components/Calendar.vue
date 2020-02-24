@@ -264,14 +264,25 @@ export default {
   methods: {
     addBookingSlot() {
       if(!this.$refs.addBookingSlotForm.validate()) return;
+
+      //TODO: If admin booking
+      // this.$emit('open-generic-dialog', ["info", "You have booked time off already. Do you wish to do this anyway?"]);
+      //TODO: Can we do this with a generic modal? Can we pass data back down? Or do we need a specific modal?
+        //If modifying state still probably need a local dialog? Or could say: If you wish to proceed, try again
+        //and have a bool like: alreadyTried = false which is then true
+
+      //TODO: If customer booking
+      this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
+
+      //TODO: If regular availability
+      this.$emit('open-generic-dialog', ["info", "You are already available at this time. Do you wish to overwrite?"]);
+
       /**
        * 
        * 1. If date not passed
        * 2. Store in db
-       * 3. Clear current events - go to other method
-       * 4. Re-render current events
+       * 3. Show new event
        * 
-       * Also TODO: Retrieve these events from setAvailableTimes
        */
 
       // 1
@@ -285,6 +296,7 @@ export default {
       // 2
       BusinessService.addBookingSlot(this.id, year, month, this.newBookingSlotStart, this.newBookingSlotEnd);
 
+      // 3
       this.events[year][month].push({
         name: "",
         start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
