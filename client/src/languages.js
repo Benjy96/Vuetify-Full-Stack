@@ -5,6 +5,14 @@ const messages =
         'en': "Booking Calendar",
         'es': "Calendario de Reservas"
     },
+    'error': {
+        'en': "Error",
+        'es': "" //TODO
+    },
+    'information': {
+        'en': "Information",
+        'es': "" //TODO
+    },
     //Home.vue
     'businesses': {
         'en': "Businesses",

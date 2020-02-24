@@ -179,6 +179,8 @@ export default {
     events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
   }),
   created() {
+    this.$emit('open-generic-dialog', ['error', "This is a test error. Don't panic."]);
+
     // Check if own calendar
     if(BusinessService.isCurrentUser(this.id)){
       this.isUser = true;

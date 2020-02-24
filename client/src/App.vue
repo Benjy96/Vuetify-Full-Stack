@@ -99,12 +99,12 @@
     <!-- https://vuejs.org/v2/api/#vm-emit -->
     <v-dialog v-model="genericDialog" persistent max-width="400">
       <v-card>
-        <v-card-title class="headline">Use Google's location service?</v-card-title>
-        <v-card-text>Let Google help apps determine location. This means sending anonymous location data to Google, even when no apps are running.</v-card-text>
+        <v-card-title class="headline">{{$getLanguageMsg(genericDialogTitle)}}</v-card-title>
+        <v-card-text>{{genericDialogText}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="green darken-1" text @click="dialog = false">Disagree</v-btn>
-          <v-btn color="green darken-1" text @click="dialog = false">Agree</v-btn>
+          <v-btn v-if="genericDialogTitle == 'information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
+          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -173,6 +173,8 @@ export default {
   data() {
     return {
       genericDialog: false,
+      genericDialogTitle: "information",
+      genericDialogText: "",
       locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
       currentUser: null,
@@ -227,8 +229,11 @@ export default {
       if(locale) this.setLocale(locale);
     },
     openGenericDialog(event) {
+      //TODO: Can we make an enum/something to enforce the words im gonna use
+      this.genericDialogTitle = event[0];
+      this.genericDialogText = event[1];
       this.genericDialog = true;
-      window.console.log(event); //TODO: Can we make an enum/something to enforce the words im gonna use
+      
       //to classify dialogs?
     }
   } // methods
