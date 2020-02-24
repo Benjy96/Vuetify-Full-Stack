@@ -298,6 +298,7 @@ export default {
       // 2
       BusinessService.addBookingSlot(this.id, year, month, this.newBookingSlotStart, this.newBookingSlotEnd);
       BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
+      await BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
 
       // 3
       this.events[year][month].push({
@@ -306,8 +307,7 @@ export default {
         end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
       });
 
-      this.focus = this.newBookingSlotDate;
-      this.switchType();
+      this.loadAndViewDay(this.newBookingSlotDate);
       
       this.newBookingSlotDate = null;
       this.newBookingSlotStart = null;
