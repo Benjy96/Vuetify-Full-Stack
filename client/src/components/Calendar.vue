@@ -328,6 +328,7 @@ export default {
       await BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
 
       // 3
+      if(!this.events[year][month]) this.events[year][month] = [];
       this.events[year][month].push({
         name: "",
         start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
@@ -441,8 +442,12 @@ export default {
 
               // No admin booking or customer booking
               if(intervalAvailable == true) {
-                this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
-
+                if(this.events[year][month]) {
+                  this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
+                } else {
+                  this.events[year][month] = [];
+                }
+                
                 this.events[year][month].push({
                   name: "",
                   start: start,
