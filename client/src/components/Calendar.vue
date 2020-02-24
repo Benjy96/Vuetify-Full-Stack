@@ -297,6 +297,7 @@ export default {
 
       // 2
       BusinessService.addBookingSlot(this.id, year, month, this.newBookingSlotStart, this.newBookingSlotEnd);
+      BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
 
       // 3
       this.events[year][month].push({

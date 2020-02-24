@@ -207,18 +207,20 @@ router.post('/regularAvailability', async(req, res) => {
 // Post adds to something and changes its state - Push a range to a reg availability day
 router.post('/irregularAvailability', async(req, res) => {
   let uid = req.body.uid;
-  let year = req.body.year;
-  let month = req.body.month;
+  let date = req.body.date;
   let start = req.body.start;
   let end = req.body.end;
 
-  if(!uid || !year || !month || !start || !end) {
+  if(!uid || !date || !start || !end) {
     res.status(400).send();
     return;
   }
 
   start = date + " " + start;
   end = date + " " + end;
+
+  let year = DateUtils.getYearFromDate(date);
+  let month = DateUtils.getMonthFromDate(date);
 
   await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).set({
       "irregularAvailability": admin.firestore.FieldValue.arrayUnion({

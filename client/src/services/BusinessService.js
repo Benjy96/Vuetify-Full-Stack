@@ -33,8 +33,8 @@ class BusinessService {
      */
 
     /* ----- POST ----- */
-    static async addBookingSlot(uid, year, month, start, end) {
-        axios.post(`${apiURL}/irregularAvailability`, {uid, year, month, start, end});
+    static async addBookingSlot(uid, date, start, end) {
+        axios.post(`${apiURL}/irregularAvailability`, {uid, date, start, end});
     }
 
     static async createAdminBooking(uid, adminBooking) {
