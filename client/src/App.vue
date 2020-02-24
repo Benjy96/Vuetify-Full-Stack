@@ -95,7 +95,7 @@
       <v-app-bar-nav-icon color="white" @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
 
-        <!-- TODO: vm.$emit( eventName, […args] ) -->
+    <!-- TODO: vm.$emit( eventName, […args] ) -->
     <!-- https://vuejs.org/v2/api/#vm-emit -->
     <v-dialog v-model="genericDialog" persistent max-width="400">
       <v-card>
@@ -233,8 +233,6 @@ export default {
       this.genericDialogTitle = event[0];
       this.genericDialogText = event[1];
       this.genericDialog = true;
-      
-      //to classify dialogs?
     }
   } // methods
 }

@@ -179,14 +179,12 @@ export default {
     events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
   }),
   created() {
-    this.$emit('open-generic-dialog', ['error', "This is a test error. Don't panic."]);
-
     // Check if own calendar
     if(BusinessService.isCurrentUser(this.id)){
       this.isUser = true;
     }
 
-    //Month Viewed Upon Load
+    // Month Viewed Upon Load
     Promise.all([
       this.getBusinessDetails(),
       this.getAdminBookings(),  //TODO: call for next/prev
@@ -264,28 +262,19 @@ export default {
     }
   },
   methods: {
-    addBookingSlot() {
+    /**
+     * 
+     * 1. If date not passed: Else display modal / Validation error
+     * 1.1. If no intersecting customer bookings
+     * 1.2. If no intersecting admin bookings
+     * 1.3. If not in regular hours
+     * 
+     * 2. Store in DB
+     * 3. Show new events
+     * 
+     */
+    async addBookingSlot() {
       if(!this.$refs.addBookingSlotForm.validate()) return;
-
-      //TODO: If admin booking
-      // this.$emit('open-generic-dialog', ["info", "You have booked time off already. Do you wish to do this anyway?"]);
-      //TODO: Can we do this with a generic modal? Can we pass data back down? Or do we need a specific modal?
-        //If modifying state still probably need a local dialog? Or could say: If you wish to proceed, try again
-        //and have a bool like: alreadyTried = false which is then true
-
-      //TODO: If customer booking
-      this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
-
-      //TODO: If regular availability
-      this.$emit('open-generic-dialog', ["info", "You are already available at this time. Do you wish to overwrite?"]);
-
-      /**
-       * 
-       * 1. If date not passed
-       * 2. Store in db
-       * 3. Show new event
-       * 
-       */
 
       // 1
       if(this.newBookingSlotDate < DateUtils.getCurrentDateString()) {
@@ -294,10 +283,49 @@ export default {
 
       let year = DateUtils.getYearFromDate(this.newBookingSlotDate);
       let month = DateUtils.getMonthFromDate(this.newBookingSlotDate);
+      let day = DateUtils.getDayFromDate(this.newBookingSlotDate);
+
+      // 1.1 - Check customer bookings
+      let bookings = await CustomerService.getBookings(this.id, year, month, day);
+
+      for(let i in bookings) {
+        if(DateUtils.rangesIntersect(bookings[i].from, bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+          this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
+          return;
+        }
+      }
+
+      // 1.2 - Check admin bookings
+      for(let i in this.admin_bookings) {
+        if(DateUtils.rangesIntersect(this.admin_bookings[i].from, this.admin_bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+          this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+          return;
+        }
+      }
+
+      // 1.3 - Check regular availability based upon intervals (I1)
+      let dayOfWeek = DateUtils.getWeekdayFromDateString(this.newBookingSlotDate);
+
+      if (this.regular_availability[dayOfWeek] != null) {
+        for(let range in this.regular_availability[dayOfWeek]) {
+          if(this.regular_availability[dayOfWeek][range] != null) {
+            let regularRange = this.regular_availability[dayOfWeek][range];
+            //TODO: check based upon intervals
+            let regIntervals = DateUtils.getIntervalsInRange(regularRange, this.bookingDuration);
+            for (let i in regIntervals) {
+              let interval = regIntervals[i];
+
+              if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+                //TODO: Specific modal to proceed
+                this.$emit('open-generic-dialog', ["information", "You are already available for a portion of this time."]);
+                return;
+              }
+            }
+          }
+        }
+      }
 
       // 2
-      BusinessService.addBookingSlot(this.id, year, month, this.newBookingSlotStart, this.newBookingSlotEnd);
-      BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
       await BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
 
       // 3
