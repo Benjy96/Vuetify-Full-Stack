@@ -7,7 +7,7 @@ const messages =
     },
     //Home.vue
     'businesses': {
-        'en': "Businesses",
+        'en': "Book a Business",
         'es': "Empresas"
     },
     //App.vue - root page
