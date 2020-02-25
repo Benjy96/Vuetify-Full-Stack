@@ -2,7 +2,7 @@ const messages =
 {
     //App.vue
     'title': {
-        'en': "Booking Calendar",
+        'en': "Booker",
         'es': "Calendario de Reservas"
     },
     //Home.vue
