@@ -296,14 +296,35 @@ export default {
       }
 
       // 1.2 - Check admin bookings
-      if(this.admin_bookings) {
-        for(let i in this.admin_bookings) {
-          //TODO: Handle the varying dates of admin bookings
-          if(DateUtils.rangesIntersect(this.admin_bookings[i].from, this.admin_bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+      //get the time range from the admin booking
+      for(let x = 0; x < this.admin_bookings.length; x++) {
+        let adminBooking = this.admin_bookings[x];
+        if(DateUtils.dateWithin(this.newBookingSlotDate, adminBooking.fromDate, adminBooking.toDate)) {
+          let fromTime, toTime;
+
+          if(this.newBookingSlotDate == adminBooking.fromDate && this.newBookingSlotDate == adminBooking.toDate) {
+            fromTime = adminBooking.fromTime;
+            toTime = adminBooking.toTime;
+          }
+          else if(this.newBookingSlotDate == adminBooking.fromDate) {
+            fromTime = adminBooking.fromTime;
+            toTime = "24:00";
+          } 
+          else if(this.newBookingSlotDate == adminBooking.toDate) {
+            fromTime = "00:00";
+            toTime = adminBooking.toTime;
+          }
+          else {
             this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
-        }
+
+          // If interval is not in an admin booking
+          if(DateUtils.rangesIntersect(this.newBookingSlotStart, this.newBookingSlotEnd, fromTime, toTime)) {
+            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            return;
+          }
+        } // for each admin booking
       }
 
       // 1.3 - Check regular availability based upon intervals (I1)
@@ -392,7 +413,6 @@ export default {
               // 3: Check intervals v admin bookings
               if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
 
-                //TODO: Put into the check for adding specific availability slots
                 //TODO: Can we make the specific availability functionality transferrable to admin dashboard? Reuse?
                 //get the time range from the admin booking
                 for(let x = 0; x < this.admin_bookings.length; x++) {
