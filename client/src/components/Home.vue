@@ -12,8 +12,8 @@
             <v-list-item>
               <v-list-item-avatar color="grey">
                 <v-img v-if="businessImages[business.id] != ''" 
-                  :src="businessImages[business.id]"></v-img>
-                <v-icon v-else color="white">mdi-account-circle</v-icon>
+                  :src="businessImages[business.id]" class="elevation-3"></v-img>
+                <v-icon v-else color="white" class="elevation-3">mdi-account-circle</v-icon>
               </v-list-item-avatar>
               <v-list-item-content>
                 <v-list-item-title style="text-align: left" class="headline">{{ business.firstname }} {{ business.surname }}</v-list-item-title>
