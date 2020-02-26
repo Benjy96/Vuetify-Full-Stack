@@ -5,6 +5,14 @@ const messages =
         'en': "Booking Calendar",
         'es': "Calendario de Reservas"
     },
+    'error': {
+        'en': "Error",
+        'es': "" //TODO
+    },
+    'information': {
+        'en': "Information",
+        'es': "" //TODO
+    },
     //Home.vue
     'businesses': {
         'en': "Businesses",
@@ -159,6 +167,10 @@ const messages =
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
     },
     //Calendar.vue
+    'date': {
+        'en': "Date",
+        'es': "Fecha"
+    },
     'day': {
         'en': "Day",
         'es': "Dia"

@@ -877,6 +877,12 @@ export class DateUtils {
     /**
      * @param {*} range an object containing a from and to in "00:00" format
      * @param {*} intervalDuration in minutes
+     * TODO: Should this function enforce booking durations for regular hours? 
+     * 
+     * I.e., What if the owner sets a regular hour outside their booking duration? Such as 60 min duration
+     * but 14:00 -> 15:30 availability?
+     * 
+     * @returns {[array]} An array of "from" - "to" objects
      */
     static getIntervalsInRange(range, intervalDuration) {
         let intervals = [];
@@ -920,6 +926,10 @@ export class DateUtils {
             let incrementedTime = i + intervalDuration;
             
             // If beyond the end of the range, don't add to intervals
+                //TODO: Why did I do this? Why not add an extra interval?
+                // this is quite inflexible
+                // it enforces booking durations but reduces flexibility in regular hours
+            //NOTE ISSUE 1 (NI1): enforcing booking durations 
             if(incrementedTime > endTimeInMins) {
                 continue;
             }
