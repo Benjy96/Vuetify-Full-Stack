@@ -136,10 +136,14 @@
         </v-card>
       </v-dialog>
 
+    <!-- Main content -->
+    <!-- https://vuetifyjs.com/en/components/grids -->
     <v-content>
-      <v-container> <!-- https://vuetifyjs.com/en/components/grids -->
-        <router-view v-on:open-generic-dialog="openGenericDialog($event)"/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
-      </v-container>
+        <v-container>
+          <v-fade-transition mode="out-in">
+          <router-view v-on:open-generic-dialog="openGenericDialog($event)"/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
+          </v-fade-transition>
+        </v-container>
     </v-content>
     
   </v-app>
