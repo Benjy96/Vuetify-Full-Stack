@@ -28,6 +28,10 @@ app.use('*/api/customer', customerRouter);
 // To see running locally, go to: http://localhost:5000/firebase-payment-test/us-central1/app/about
 app.use('/about', express.static(__dirname + '/lander/web/'));
 
+//TODO: Now need to add a Vue-routed 404 page - if we navigate to a non-existent route we will get nothing
+//as we're now allowing any route that won't return from the server to be redirected to index.html (our Vue app)
+app.use(/.*/, express.static(__dirname + '/public/index.html'));
+
 // __dirname is a Node.JS Global Object: https://nodejs.org/docs/latest/api/globals.html
 // For any route (after the main url) except the api route already used, send back index.html
 // i.e. - prevent express trying to look for a file like "hello.html" if you browsed to
