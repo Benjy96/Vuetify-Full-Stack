@@ -95,6 +95,20 @@
       <v-app-bar-nav-icon color="white" @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
 
+    <!-- TODO: vm.$emit( eventName, […args] ) -->
+    <!-- https://vuejs.org/v2/api/#vm-emit -->
+    <v-dialog v-model="genericDialog" persistent max-width="400">
+      <v-card>
+        <v-card-title class="headline">{{$getLanguageMsg(genericDialogTitle)}}</v-card-title>
+        <v-card-text>{{genericDialogText}}</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn v-if="genericDialogTitle == 'information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
+          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
     <v-dialog v-model="cancelDialog" max-width="400">
         <v-card>
           <v-container>
@@ -124,7 +138,7 @@
 
     <v-content>
       <v-container> <!-- https://vuetifyjs.com/en/components/grids -->
-        <router-view/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
+        <router-view v-on:open-generic-dialog="openGenericDialog($event)"/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
       </v-container>
     </v-content>
     
@@ -158,6 +172,9 @@ export default {
   },
   data() {
     return {
+      genericDialog: false,
+      genericDialogTitle: "information",
+      genericDialogText: "",
       locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
       currentUser: null,
@@ -210,8 +227,14 @@ export default {
       //If logged in, loads the locale and sets it globally
       let locale = await BusinessService.getLocale(this.currentUser.uid);
       if(locale) this.setLocale(locale);
+    },
+    openGenericDialog(event) {
+      //TODO: Can we make an enum/something to enforce the words im gonna use
+      this.genericDialogTitle = event[0];
+      this.genericDialogText = event[1];
+      this.genericDialog = true;
     }
-  },
+  } // methods
 }
 </script>
 
