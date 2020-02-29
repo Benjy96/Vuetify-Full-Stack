@@ -1,6 +1,7 @@
 # Book a Business
 
-https://fir-payment-test.firebaseapp.com/
+https://booking-calendar.web.app/about
+https://booking-calendar.web.app/
 
 Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions.
 
