@@ -51,6 +51,16 @@ class CustomerService {
         return unavailableDays;
     }
 
+    /**
+     * The month document contains unavailable days and specific availability
+     */
+    static async getMonthAvailabilityData(uid, year, month) {
+        let monthDocRef = await db.collection(`/businesses/${uid}/availability/${year}/month/`).doc(`${month}`).get();
+        if(monthDocRef.exists) {
+            return monthDocRef.data();
+        }
+    }
+
     /*
         Month & Day PoV READ Operations
     */

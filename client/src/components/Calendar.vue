@@ -13,11 +13,32 @@
 
           <v-toolbar-title>{{ title }}</v-toolbar-title>
           <div class="flex-grow-1"></div>
+          <v-btn v-if="isUser" color="primary" class="mr-4" @click="newBookingSlotDialog = true" dark>Add Booking Slot</v-btn>
           <v-btn outlined @click="type = typeToSwitchTo">{{$getLanguageMsg(typeToSwitchTo)}}</v-btn>
         </v-toolbar>
       </v-sheet>
 
       <!-- ***** DIALOGS ***** -->
+
+      <v-dialog v-model="newBookingSlotDialog" width="500">
+        <v-card>
+          <v-container>
+            <!-- .stop is shorthand for Event.stopPropagation()
+            events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
+            <v-form @submit.prevent="addBookingSlot" ref="addBookingSlotForm">
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
+
+              <v-btn
+                type="submit"
+                color="primary"
+                class="mr-4"
+              >Add Booking Slot</v-btn>
+            </v-form>
+          </v-container>
+        </v-card>
+      </v-dialog>
 
       <v-dialog v-model="dialog" max-width="500">
         <v-card>
@@ -81,6 +102,8 @@
         </v-card>
       </v-dialog>
 
+      <!-- ***** END DIALOGS ***** -->
+
       <v-sheet height="600" v-if="!isFetchingMonthData">
         <!-- ***** CALENDAR ***** -->
 
@@ -96,7 +119,7 @@
           @click:date="loadAndViewDay"
           @click:day="loadAndViewDay"
           @change="updateRange"
-          :events="events"
+          :events="visibleEvents"
           event-color="green"
         >
           <!-- TODO: Add logic method to the @click so u can't click a day if it's unavailable -->
@@ -115,10 +138,12 @@
 import { DateUtils } from "../DateUtils";
 import { daysOfWeek } from "../DateUtils";
 import CustomerService from "../services/CustomerService";
+import BusinessService from '../services/BusinessService';
 
 export default {
   props: ["id"],
   data: () => ({
+    isUser: false,
     isFetchingMonthData: true,
     isFetchingDayData: false,
     today: new Date().toISOString().substr(0, 10),
@@ -127,6 +152,12 @@ export default {
     typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
+    // NEW BOOKING >
+    newBookingSlotDialog: false,
+    newBookingSlotDate: null,
+    newBookingSlotStart: null,
+    newBookingSlotEnd: null,
+    // NEW BOOKING <
     dialog: false,
     dialogDate: false,
     addBookingDateObject: null,
@@ -144,21 +175,30 @@ export default {
     email: "",
     bookerName: "",
     bookingCreatedDialog: false,
-    events: [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}]
+    visibleEvents: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}],
+    events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
   }),
   created() {
-    //Month Viewed Upon Load
+    // Check if own calendar
+    if(BusinessService.isCurrentUser(this.id)){
+      this.isUser = true;
+    }
+
+    // Month Viewed Upon Load
     Promise.all([
       this.getBusinessDetails(),
       this.getAdminBookings(),  //TODO: call for next/prev
-      this.getUnavailableDays(this.today),
-      this.getUnavailableDays(DateUtils.getNextMonthDate(this.today)),
-      this.getUnavailableDays(DateUtils.incrementMonthOfDate(this.today, 2))
+      this.getMonthAvailabilityData(this.today),
+      this.getMonthAvailabilityData(DateUtils.getNextMonthDate(this.today)),
+      this.getMonthAvailabilityData(DateUtils.incrementMonthOfDate(this.today, 2))
     ]).then(() => {
       this.isFetchingMonthData = false;
     });
   },
   computed: {
+    requiredRule() {
+      return [v => !!v || this.$getLanguageMsg("required")]
+    },
     emailRules() {
       const rules = [];
 
@@ -222,11 +262,122 @@ export default {
     }
   },
   methods: {
-    clearEvents() {
-      this.events = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
+    /**
+     * 
+     * 1. If date not passed: Else display modal / Validation error
+     * 1.1. If no intersecting customer bookings
+     * 1.2. If no intersecting admin bookings
+     * 1.3. If not in regular hours
+     * 
+     * 2. Store in DB
+     * 3. Show new events
+     * 
+     */
+    async addBookingSlot() {
+      if(!this.$refs.addBookingSlotForm.validate()) return;
+
+      // 1
+      if(this.newBookingSlotDate < DateUtils.getCurrentDateString()) {
+        return; //TODO: add date rule
+      }
+
+      let year = DateUtils.getYearFromDate(this.newBookingSlotDate);
+      let month = DateUtils.getMonthFromDate(this.newBookingSlotDate);
+      let day = DateUtils.getDayFromDate(this.newBookingSlotDate);
+
+      // 1.1 - Check customer bookings
+      let bookings = await CustomerService.getBookings(this.id, year, month, day);
+
+      for(let i in bookings) {
+        if(DateUtils.rangesIntersect(bookings[i].from, bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+          this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
+          return;
+        }
+      }
+
+      // 1.2 - Check admin bookings
+      //get the time range from the admin booking
+      for(let x = 0; x < this.admin_bookings.length; x++) {
+        let adminBooking = this.admin_bookings[x];
+        if(DateUtils.dateWithin(this.newBookingSlotDate, adminBooking.fromDate, adminBooking.toDate)) {
+          let fromTime, toTime;
+
+          if(this.newBookingSlotDate == adminBooking.fromDate && this.newBookingSlotDate == adminBooking.toDate) {
+            fromTime = adminBooking.fromTime;
+            toTime = adminBooking.toTime;
+          }
+          else if(this.newBookingSlotDate == adminBooking.fromDate) {
+            fromTime = adminBooking.fromTime;
+            toTime = "24:00";
+          } 
+          else if(this.newBookingSlotDate == adminBooking.toDate) {
+            fromTime = "00:00";
+            toTime = adminBooking.toTime;
+          }
+          else {
+            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            return;
+          }
+
+          // If interval is not in an admin booking
+          if(DateUtils.rangesIntersect(this.newBookingSlotStart, this.newBookingSlotEnd, fromTime, toTime)) {
+            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            return;
+          }
+        } // for each admin booking
+      }
+
+      // 1.3 - Check regular availability based upon intervals (I1)
+      let dayOfWeek = DateUtils.getWeekdayFromDateString(this.newBookingSlotDate);
+
+      if (this.regular_availability[dayOfWeek] != null) {
+        for(let range in this.regular_availability[dayOfWeek]) {
+          if(this.regular_availability[dayOfWeek][range] != null) {
+            let regularRange = this.regular_availability[dayOfWeek][range];
+            let regIntervals = DateUtils.getIntervalsInRange(regularRange, this.bookingDuration);
+            for (let i in regIntervals) {
+              let interval = regIntervals[i];
+
+              if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
+                //TODO: Overwrite functionality to split a regular hour?
+                this.$emit('open-generic-dialog', ["information", "You are already available for a portion of this time."]);
+                return;
+              }
+            }
+          }
+        }
+      }
+
+      // 2
+      await BusinessService.addBookingSlot(this.id, this.newBookingSlotDate, this.newBookingSlotStart, this.newBookingSlotEnd);
+
+      // 3
+      if(!this.events[year][month]) this.events[year][month] = [];
+      this.events[year][month].push({
+        name: "",
+        start: this.newBookingSlotDate + " " + this.newBookingSlotStart,
+        end: this.newBookingSlotDate + " " + this.newBookingSlotEnd,
+      });
+
+      this.loadAndViewDay(this.newBookingSlotDate);
+      
+      this.newBookingSlotDate = null;
+      this.newBookingSlotStart = null;
+      this.newBookingSlotEnd = null;
+
+      this.newBookingSlotDialog = false;
     },
-    setAvailableTimes(date) {
-      this.clearEvents();
+    // Clears the Calendar events array so that the events aren't displayed on the month view
+    hideEvents() {
+      this.visibleEvents = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
+    },
+    // Clears events for the day, keeping user added "Irregular Availability" and the default event for Vue reactivity
+    unhideEvents(year, month) {
+      this.visibleEvents = this.events[year][month];//.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
+      // this.events = this.hiddenEvents.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
+    },
+    // Renders available booking slots
+    setAvailableTimes(date) { //TODO: take specific availability into account - specific takes priority
       /*
         When is an interval in a booking? <--- The killer question
 
@@ -238,6 +389,9 @@ export default {
       if(date < DateUtils.getCurrentDateString() || this.dateInUnavailableDays(date)) {
         return;
       }
+
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
 
       // 3 & 4: Check if times intersect with customer bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
@@ -259,6 +413,7 @@ export default {
               // 3: Check intervals v admin bookings
               if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
 
+                //TODO: Can we make the specific availability functionality transferrable to admin dashboard? Reuse?
                 //get the time range from the admin booking
                 for(let x = 0; x < this.admin_bookings.length; x++) {
 
@@ -312,9 +467,13 @@ export default {
 
               // No admin booking or customer booking
               if(intervalAvailable == true) {
-                this.events = this.events.filter(event => (event.start != start) && (event.end != end));
-
-                this.events.push({
+                if(this.events[year][month]) {
+                  this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
+                } else {
+                  this.events[year][month] = [];
+                }
+                
+                this.events[year][month].push({
                   name: "",
                   start: start,
                   end: end
@@ -350,8 +509,7 @@ export default {
         }
       });
     },
-    //TODO: instead of separating unavailable days into sep documents - do one document with an array?
-    async getUnavailableDays(date) {
+    async getMonthAvailabilityData(date) {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
@@ -359,9 +517,23 @@ export default {
         this.unavailableDays[year] = {};
       }
 
-      this.unavailableDays[year][
-        month
-      ] = await CustomerService.getUnavailableDays(this.id, year, month);
+      if(this.events[year] == null) {
+        this.events[year] = {};
+      }
+
+      let data = await CustomerService.getMonthAvailabilityData(this.id, year, month);
+
+      this.unavailableDays[year][month] = data.unavailableDays;
+      if(data.irregularAvailability) {
+        if(this.events[year][month] == null) {
+          this.events[year][month] = [];
+        }
+        this.events[year][month] = data.irregularAvailability;
+        // this.events[year][month] = [];
+        // data.irregularAvailability.forEach(x => { 
+        //   this.events.push(x);
+        // });
+      }
     },
     async getDayBookings(date) {
       //Don't need a loader if we already have a dialog covering the bookings
@@ -411,9 +583,18 @@ export default {
         return false;
       }
 
-      //Handles admin bookings (for current month) & customer bookings
+      // Handle specific availability
+      let year = DateUtils.getYearFromDate(dateObject.date);
+      let month = DateUtils.getMonthFromDate(dateObject.date);
+      for(let i in this.events[year][month]) {
+        let eventDate = this.events[year][month][i].start.split(" ")[0];
+        if(dateObject.date == eventDate) return true;
+      }
+
+      // Handle meta-data (admin bookings & customer bookings make a day unavailable)
       if (this.dateInUnavailableDays(dateObject)) return false;
 
+      // Handle regular availability
       let dayOfWeek = daysOfWeek[dateObject.weekday - 1];
       if (this.regular_availability != null) {
         if (dayOfWeek in this.regular_availability) {
@@ -483,7 +664,7 @@ export default {
 
           if (!this.unavailableDays[year][month]) {
             this.isFetchingMonthData = true;
-            this.getUnavailableDays(this.focus).then(() => {
+            this.getMonthAvailabilityData(this.focus).then(() => {
               this.isFetchingMonthData = false;
             });
           }
@@ -510,12 +691,9 @@ export default {
             this.isFetchingMonthData = true;
 
             Promise.all([
-              this.getUnavailableDays(nextMonthDate),
-              this.getUnavailableDays(
-                DateUtils.getNextMonthDate(nextMonthDate)
-              ),
-              this.getUnavailableDays(
-                DateUtils.incrementMonthOfDate(nextMonthDate, 2)
+              this.getMonthAvailabilityData(nextMonthDate),
+              this.getMonthAvailabilityData(DateUtils.getNextMonthDate(nextMonthDate)),
+              this.getMonthAvailabilityData(DateUtils.incrementMonthOfDate(nextMonthDate, 2)
               )
             ]).then(() => {
               this.isFetchingMonthData = false;
@@ -524,26 +702,19 @@ export default {
         }
       }
     },
-    //@change is called any time the days displayed are changed
-    //start & end encapsulate the scope of days
+    //@change is called any time the days displayed are changed - start & end encapsulate the scope of days
     updateRange({ start, end }) {
+      let date = start.date;
+      let year = DateUtils.getYearFromDate(date);
+      let month = DateUtils.getMonthFromDate(date);
+
       if(this.type == 'month') {
-        this.events = [{start:"2000-01-01 00:00",end:"2000-01-01 00:00", name:""}];
+        this.hideEvents();
         this.typeToSwitchTo = 'day';
       } else if(this.type == 'day') {
+        this.unhideEvents(year, month);
         this.typeToSwitchTo = 'month';
       }
-      // else if(this.type == 'week' || this.type == '4day') {
-      //   let from = new Date(this.start);
-      //   let to = new Date(this.end);
-
-      //   for(let day = from; day <= to; day.setDate(day.getDate() + 1)) {
-      //     this.setAvailableTimes(DateUtils.convertDateToYYYYMMDD(day));
-      //   }
-      // }
-      // else if(this.type == 'day') {
-      //   this.setAvailableTimes(start.date);
-      // }
 
       this.start = start;
       this.end = end;
