@@ -6,7 +6,7 @@
         <v-card>
           <v-form>
             <v-container>
-              <v-row>
+              <v-row class="mx-5">
                 <v-col cols="12" md="4">
                   <v-text-field label="Company (disabled)" disabled/>
                 </v-col>
