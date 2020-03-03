@@ -34,6 +34,16 @@
           </v-list-item-content>
         </v-list-item>
 
+        <v-list-item link v-if="currentUser" to="/profile">
+          <v-list-item-action>
+            <v-icon>mdi-account-circle</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>User Profile</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link v-if="!currentUser" to="/register">
           <v-list-item-action>
             <v-icon>mdi-account-edit</v-icon>
