@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import App from "../App.vue";
-import Home from '../components/Home.vue'
-import Calendar from '../components/Calendar.vue'
-import Login from '../components/Login.vue'
-import Register from '../components/Register.vue'
-import Dashboard from '../components/Dashboard.vue'
+import Home from '../components/pages/Home.vue'
+import Calendar from '../components/pages/Calendar.vue'
+import Login from '../components/pages/Login.vue'
+import Register from '../components/pages/Register.vue'
+import Dashboard from '../components/pages/Dashboard.vue'
+import Profile from '../components/pages/Profile.vue'
 
 import firebase from 'firebase'
 
@@ -49,6 +50,14 @@ const routes = [
     path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
     meta: {
       requiresAuth: true
     }

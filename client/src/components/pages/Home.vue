@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { db } from '../firebaseInit';
+import { db } from '../../firebaseInit';
 import firebase from 'firebase';
 
 export default {

@@ -80,7 +80,7 @@
                             </v-container>
                         </v-col>
                         <v-col>
-                            <v-container>
+                            <v-card>
                                 <v-simple-table>
                                     <template v-slot:default>
                                     <thead>
@@ -110,7 +110,7 @@
                                     </tbody>
                                     </template>
                                 </v-simple-table>
-                            </v-container> 
+                            </v-card>
                         </v-col>
                     </v-row>
                 </v-card>
@@ -162,7 +162,7 @@
             </v-col>
         </v-row>
 
-                <!-- Booking Management Box -->
+        <!-- Booking Management Box -->
         <v-row>
             <v-col>
                 <v-card>
@@ -264,14 +264,14 @@
 </template>
 
 <script>
-import { daysOfWeek } from '../DateUtils';
+import { daysOfWeek } from '../../DateUtils';
 
 import firebase from 'firebase';
 // import Bookings from './Bookings';
-import UpcomingBookings from './UpcomingBookings';
-import AdminBookingPicker from './AdminBookingPicker';
-import RegularAvailabilityPicker from './RegularAvailabilityPicker';
-import BusinessService from '../services/BusinessService';
+import UpcomingBookings from '../UpcomingBookings';
+import AdminBookingPicker from '../AdminBookingPicker';
+import RegularAvailabilityPicker from '../RegularAvailabilityPicker';
+import BusinessService from '../../services/BusinessService';
 
 export default {
     name: 'Dashboard',
