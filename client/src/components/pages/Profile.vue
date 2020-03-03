@@ -1,100 +1,62 @@
 <template>
-  <v-container
-    fill-height
-    fluid
-    grid-list-xl>
+  <v-container>
     <v-row>
-      <v-col xs="12" md="8">
+      <!-- Fill screen on smallest, otherwise allow 4 spaces for other column -->
+      <v-col cols="12" md="8">
         <v-card>
-          <v-form >
-            <v-container py-0>
-              <v-layout wrap>
-                <v-flex
-                  xs12
-                  md4
-                >
-                  <v-text-field
-                    label="Company (disabled)"
-                    disabled/>
-                </v-flex>
-                <v-flex
-                  xs12
-                  md4
-                >
-                  <v-text-field
-                    label="User Name"
-                  />
-                </v-flex>
-                <v-flex
-                  xs12
-                  md4
-                >
+          <v-form>
+            <v-container>
+              <v-row>
+                <v-col cols="12" md="4">
+                  <v-text-field label="Company (disabled)" disabled/>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field label="User Name"/>
+                </v-col>
+                <v-col cols="12" md="4">
                   <v-text-field label="Email Address"/>
-                </v-flex>
-                <v-flex
-                  xs12
-                  md6
-                >
+                </v-col>
+                <v-col cols="12" md="6">
                   <v-text-field label="First Name"/>
-                </v-flex>
-                <v-flex
-                  xs12
-                  md6
-                >
+                </v-col>
+                <v-col cols="12" md="6">
                   <v-text-field label="Last Name"/>
-                </v-flex>
-                <v-flex
-                  xs12
-                  md12
-                >
-                  <v-text-field
-                    label="Adress"
-                    />
-                </v-flex>
-                <v-flex
-                  xs12
-                  md4>
-                  <v-text-field
-                    label="City"
-                    />
-                </v-flex>
-                <v-flex
-                  xs12
-                  md4>
-                  <v-text-field
-                    label="Country"
-                    />
-                </v-flex>
-                <v-flex
-                  xs12
-                  md4>
+                </v-col>
+                <v-col cols="12" md="12">
+                  <v-text-field label="Adress"/>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field label="City"/>
+                </v-col>
+                <v-col cols="12" md="4">
+                  <v-text-field label="Country"/>
+                </v-col>
+                <v-col cols="12" md="4">
                   <v-text-field label="Postal Code"/>
-                </v-flex>
-                <v-flex xs12>
+                </v-col>
+                <v-col cols="12">
                   <v-textarea
-                    
                     label="About Me"
                     value="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
                   />
-                </v-flex>
-                <v-flex
-                  xs12
-                  text-xs-right
-                >
+                </v-col>
+                <v-col cols="12" class="text-xs-right">
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="success"
                   >
                     Update Profile
                   </v-btn>
-                </v-flex>
-              </v-layout>
+                </v-col>
+              </v-row>
             </v-container>
           </v-form>
         </v-card>
       </v-col>
-      <v-col xs="12" md="4">
-        <v-card class="v-card-profile">
+
+      <!-- Profile Column -->
+      <v-col cols="12" md="4">
+        <v-card>
           <v-avatar
             slot="offset"
             class="mx-auto d-block"
