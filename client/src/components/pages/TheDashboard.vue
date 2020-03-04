@@ -267,7 +267,7 @@
 import { daysOfWeek } from '../../DateUtils';
 
 import firebase from 'firebase';
-// import Bookings from './Bookings';
+// import Bookings from '../Bookings';
 import UpcomingBookings from '../UpcomingBookings';
 import AdminBookingPicker from '../AdminBookingPicker';
 import RegularAvailabilityPicker from '../RegularAvailabilityPicker';
