@@ -2,7 +2,7 @@
   <v-app :key="locale">
 
     <!-- Hidden Nav Drawer -->
-    <v-navigation-drawer v-model="drawerRight" app right>
+    <v-navigation-drawer v-model="drawerRight" app right dark>
       <template v-slot:prepend v-if="currentUser">
           <v-list-item>
             <v-list-item-content>
@@ -13,7 +13,7 @@
 
       <v-divider v-if="currentUser"></v-divider>
 
-      <v-list>
+      <v-list class="text-left">
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -36,7 +36,7 @@
 
         <v-list-item link v-if="currentUser" to="/profile">
           <v-list-item-action>
-            <v-icon>mdi-account-circle</v-icon>
+            <v-icon>mdi-account</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
