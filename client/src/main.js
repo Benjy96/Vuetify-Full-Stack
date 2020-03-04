@@ -1,10 +1,16 @@
 import Vue from 'vue'
 import App from './App.vue'
-import vuetify from './plugins/vuetify';
 import router from './router'
+
+// Initialise Firebase
+import './firebaseInit';
+
+// Plugins
+import vuetify from './plugins/vuetify';
 import languageSwitcher from './plugins/languageSwitcher';
 
-import './firebaseInit';
+// Globally register our generic components
+import './globalComponents';
 
 Vue.config.productionTip = false
 
