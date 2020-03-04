@@ -65,6 +65,7 @@ export default {
             if(this.fullWidth) {
                 styles.maxWidth = "100%";
             } else {
+                // Vertical | Horizontal
                 styles.margin = "0 auto";
                 styles.maxWidth = "calc(100% - 32px)";
             }
@@ -73,10 +74,10 @@ export default {
             so when we offset it, it's moving relative to the card! */
             styles.position = "relative";
             /* top only affects POSITIONED elements - offsets from top */
-            styles.top = "-24px";
+            styles.top = `-${this.offset * 2}px`;
             /* Brings header closer to content div beneath */
             styles.marginBottom = `-${this.offset}px`;
-            styles.marginTop = '24px';
+            styles.marginTop = `${this.offset * 2}px`;
 
             return styles;
         }
