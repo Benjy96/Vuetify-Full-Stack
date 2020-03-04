@@ -3,7 +3,7 @@
     <v-row>
       <!-- Fill screen on smallest, otherwise allow 4 spaces for other column -->
       <v-col cols="12" md="8">
-        <BaseCard title="Edit Profile">
+        <BaseCard title="Edit Profile" subtitle="Complete your profile">
           <v-form>
             <v-container>
               <v-row class="mx-5">

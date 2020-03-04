@@ -6,12 +6,12 @@
             v-if="title"
             :color="color"
             :class="`elevation-${elevation}`"
-            class="pa-3 text-left"
+            class="text-left pa-3"
             dark
             >
-                <h4 v-text="title" class="title font-weight-light"/>
+                <div v-text="title" class="display-1 font-weight-light"/>
                 <p v-if="subtitle" v-text="subtitle"
-                class="font-weight-thin"/>
+                class="subtitle font-weight-thin"/>
             </v-card>
 
             <!-- Slot for any content you want offset if not using default title -->
@@ -72,9 +72,10 @@ export default {
             styles.position = "relative";
             /* top only affects POSITIONED elements - offsets from top */
             styles.top = `-${this.offset * 2}px`;
+
             /* Brings header closer to content div beneath */
-            styles.marginBottom = `-${this.offset}px`;
-            styles.marginTop = `${this.offset * 2}px`;
+            styles.marginBottom = `-${this.offset * 2}px`;
+            styles.marginTop = `${this.offset}px`;
 
             return styles;
         }
