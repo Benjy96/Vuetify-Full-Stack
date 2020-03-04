@@ -56,21 +56,21 @@
 
       <!-- Profile Column -->
       <v-col cols="12" md="4">
-        <v-card>
+        <BaseCard>
+          <!-- Goes into BaseCard offset slot -->
           <v-avatar
             slot="offset"
-            class="mx-auto d-block"
             size="130"
+            class="elevation-6"
           >
-            <img
-              src="https://demos.creative-tim.com/vue-material-dashboard/img/marc.aba54d65.jpg"
-            >
+            <img src="https://demos.creative-tim.com/vue-material-dashboard/img/marc.aba54d65.jpg">
           </v-avatar>
-          <v-card-text>
-            <h1>Alec Thompson</h1>
-            <p class="font-weight-light">Description description description description description description...</p>
-          </v-card-text>
-        </v-card>
+          <!-- Goes into BaseCard default slot -->
+          <div>
+            <h1 class="display-1">Alec Thompson</h1>
+            <p class="pt-4 font-weight-light">Description description description description description description...</p>
+          </div>
+        </BaseCard>
       </v-col>
     </v-row>
   </v-container>
