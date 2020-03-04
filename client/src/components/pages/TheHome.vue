@@ -1,9 +1,5 @@
 <template>
   <div>
-    <BaseCard title="Test" subtitle="another">
-      <p slot="body">test</p>
-    </BaseCard>
-    <v-divider></v-divider>
     <h1>{{$getLanguageMsg('businesses')}}</h1>
     <v-divider></v-divider>
       <v-row id="businessesDisplay">
