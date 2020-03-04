@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <!-- Head of Card -->
-        <div :id="widthId" :style="styles">
+        <div :style="styles">
             <v-card 
             v-if="title"
             :color="color"
@@ -13,7 +13,7 @@
                 class="font-weight-thin"/>
             </v-card>
 
-            <!-- Slot for any content you want offset if not using title -->
+            <!-- Slot for any content you want offset if not using default title -->
             <slot v-else name="offset"/>
         </div>
 
@@ -59,13 +59,6 @@ export default {
         }
     },
     computed: {
-        widthId() {
-            if(this.fullWidth) {
-                return "BaseCardHead--full-width";
-            } else {
-                return "BaseCardHead";
-            }
-        },
         styles() {
             let styles = {};
 
