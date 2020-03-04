@@ -1,15 +1,16 @@
 <template>
     <v-card>
         <!-- Head of Card -->
-        <div :style="styles">
+        <div :style="headerStyles">
             <v-card 
             v-if="title"
             :color="color"
             :class="`elevation-${elevation}`"
+            class="pa-3 text-left"
             dark
             >
                 <h4 v-text="title" class="title font-weight-light"/>
-                <p v-text="subtitle"
+                <p v-if="subtitle" v-text="subtitle"
                 class="font-weight-thin"/>
             </v-card>
 
@@ -55,7 +56,7 @@ export default {
         }
     },
     computed: {
-        styles() {
+        headerStyles() {
             let styles = {};
 
             if(this.fullWidth) {
