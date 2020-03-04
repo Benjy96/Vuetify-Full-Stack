@@ -67,34 +67,26 @@ export default {
             }
         },
         styles() {
-            //TODO: Combine with the offset stuff - how does Vue interpret the styles object returned?
-            return {
-                /* makes the positioning relative to the container (v-card) 
-                so when we offset it, it's moving relative to the card! */
-                position: "relative",
-            
-                /* top only affects POSITIONED elements - offsets from top */
-                top: "-24px",
+            let styles = {};
 
-                /* Brings header closer to content div beneath */
-                marginBottom: `-${this.offset}px`,
-
-                marginTop: `24px`
+            if(this.fullWidth) {
+                styles.maxWidth = "100%";
+            } else {
+                styles.margin = "0 auto";
+                styles.maxWidth = "calc(100% - 32px)";
             }
+
+            /* makes the positioning relative to the container (v-card) 
+            so when we offset it, it's moving relative to the card! */
+            styles.position = "relative";
+            /* top only affects POSITIONED elements - offsets from top */
+            styles.top = "-24px";
+            /* Brings header closer to content div beneath */
+            styles.marginBottom = `-${this.offset}px`;
+            styles.marginTop = '24px';
+
+            return styles;
         }
-    }
-    
+    } 
 }
 </script>
-
-<style scoped>
-#BaseCardHead {
-    /* Centers the header - vertical | horizontal */
-    margin: 0 auto;
-    max-width: calc(100% - 32px);
-}
-
-#BaseCardHead--full-width {
-    max-width: 100%;
-}
-</style>
