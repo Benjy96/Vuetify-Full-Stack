@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BaseCard title="Test" subtitle="another" color="green">
+    <BaseCard title="Test" subtitle="another">
       <p slot="body">test</p>
     </BaseCard>
     <v-divider></v-divider>
