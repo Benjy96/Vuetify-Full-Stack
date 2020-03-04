@@ -17,9 +17,9 @@
             <slot v-else name="offset"/>
         </div>
 
-        <!-- Body of Card -->
+        <!-- Body of Card: Default Slot -->
         <v-card-text>
-            <slot name="body"/>
+            <slot/>
         </v-card-text>
 
     </v-card>
@@ -27,7 +27,7 @@
 
 <script>
 export default {
-
+    // API
     props: {
         fullWidth: {
             type: Boolean,
@@ -50,10 +50,6 @@ export default {
             default: undefined
         },
         subtitle: {
-            type: String,
-            default: undefined
-        },
-        text: {
             type: String,
             default: undefined
         }
