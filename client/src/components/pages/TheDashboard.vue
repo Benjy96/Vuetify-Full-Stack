@@ -22,12 +22,12 @@
             <p>{{$getLanguageMsg('confirmRemove')}}</p>
             <v-btn color="error" 
             @click="confirmDeleteAdminBooking">
-            {{$getLanguageMsg('yes')}}
+            {{$getLanguageMsg('Yes')}}
             </v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" 
             @click="cancelDelete">
-            {{$getLanguageMsg('cancel')}}
+            {{$getLanguageMsg('Cancel')}}
             </v-btn>
         </v-container>
         </v-card>
@@ -39,11 +39,11 @@
             <p>{{$getLanguageMsg('confirmRemove')}}</p>
             <v-btn color="error" class="mr-4"
             @click="confirmDeleteTimeRange">
-            {{$getLanguageMsg('yes')}}
+            {{$getLanguageMsg('Yes')}}
             </v-btn>
             <v-btn color="primary" 
             @click="cancelDelete">
-            {{$getLanguageMsg('cancel')}}
+            {{$getLanguageMsg('Cancel')}}
             </v-btn>
         </v-container>
         </v-card>
@@ -53,7 +53,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                <v-card-title>{{$getLanguageMsg('upcomingBookings')}}</v-card-title>
+                <v-card-title>{{$getLanguageMsg('Upcoming bookings')}}</v-card-title>
                 <v-divider></v-divider>
                 <v-row no-gutters class="grey lighten-5">
                     <v-col>
@@ -86,7 +86,7 @@
                                     <thead>
                                         <tr>
                                             <th class="text-center">{{$getLanguageMsg('day')}}</th>
-                                            <th class="text-center">{{$getLanguageMsg('hours')}}</th>
+                                            <th class="text-center">{{$getLanguageMsg('Hours')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -100,7 +100,7 @@
 
                                                     <v-list-item-action>
                                                         <v-btn @click="deleteTimeRangeDialog(day, range)">
-                                                            {{$getLanguageMsg('remove')}}
+                                                            {{$getLanguageMsg('Remove')}}
                                                             <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
                                                     </v-list-item-action>
@@ -121,7 +121,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>{{$getLanguageMsg('unavailable')}}</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('Unavailable')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters class="grey lighten-5">
                         <v-col>
@@ -145,7 +145,7 @@
                                                     
                                                     <v-list-item-action>
                                                         <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                                                            {{$getLanguageMsg('remove')}}
+                                                            {{$getLanguageMsg('Remove')}}
                                                             <v-icon right>mdi-delete</v-icon>
                                                         </v-btn>
                                                     </v-list-item-action>
@@ -166,7 +166,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>{{$getLanguageMsg('bookingManagement')}}</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('Booking Management')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters class="grey lighten-5">
                         <v-col>
@@ -202,7 +202,7 @@
                                         ></v-text-field>
 
                                         <v-btn type="submit">
-                                        {{$getLanguageMsg('save')}}
+                                        {{$getLanguageMsg('Save')}}
                                         <v-icon right>mdi-content-save</v-icon>
                                         </v-btn>
 
@@ -219,7 +219,7 @@
         <v-row>
             <v-col>
                 <v-card>
-                    <v-card-title>{{$getLanguageMsg('profileManagement')}}</v-card-title>
+                    <v-card-title>{{$getLanguageMsg('Profile Management')}}</v-card-title>
                     <v-divider></v-divider>
                     <v-row no-gutters class="grey lighten-5">
                         <v-col>
@@ -248,7 +248,7 @@
                                         ></v-file-input>
 
                                         <v-btn type="submit">
-                                        {{$getLanguageMsg('save')}}
+                                        {{$getLanguageMsg('Save')}}
                                         <v-icon right>mdi-content-save</v-icon>
                                         </v-btn>
 

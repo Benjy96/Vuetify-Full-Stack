@@ -3,7 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="grey lighten-3">
-          <v-btn outlined class="mr-4" @click="setToday">{{$getLanguageMsg('today')}}</v-btn>
+          <v-btn outlined class="mr-4" @click="setToday">{{$getLanguageMsg('Today')}}</v-btn>
           <v-btn fab text small @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
           </v-btn>
@@ -26,9 +26,9 @@
             <!-- .stop is shorthand for Event.stopPropagation()
             events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
             <v-form @submit.prevent="addBookingSlot" ref="addBookingSlotForm">
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('Date')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('From time')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('To time')" />
 
               <v-btn
                 type="submit"
@@ -45,13 +45,13 @@
           <v-container>
             <v-form @submit.prevent="addBooking" ref="addBookingForm">
               <p v-if="bookingTitle != ''" class="display-1">{{bookingTitle}}</p>
-              <p v-else class="display-1">{{$getLanguageMsg('bookAppointment')}}</p>
+              <p v-else class="display-1">{{$getLanguageMsg('Book an appointment')}}</p>
               <p v-if="bookingInfo != ''">{{bookingInfo}}</p>
               <v-text-field
                 v-model="bookerName"
                 required
                 v-bind:rules="nameRules"
-                :label="$getLanguageMsg('name')"
+                :label="$getLanguageMsg('Name')"
                 prepend-icon="mdi-account-circle"
               />
               <v-text-field
@@ -61,11 +61,11 @@
                 label="email"
                 prepend-icon="mdi-at"
               />
-              <p v-if="address">{{$getLanguageMsg('location')}}: {{address}}</p>
+              <p v-if="address">{{$getLanguageMsg('Location')}}: {{address}}</p>
               <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
               <p v-else>{{$getLanguageMsg(bookingType)}}</p>
               <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
-              <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
+              <v-btn type="submit" color="primary">{{$getLanguageMsg('Book')}}</v-btn>
             </v-form>
           </v-container>
         </v-card>
@@ -197,12 +197,12 @@ export default {
   },
   computed: {
     requiredRule() {
-      return [v => !!v || this.$getLanguageMsg("required")]
+      return [v => !!v || this.$getLanguageMsg("Required")]
     },
     emailRules() {
       const rules = [];
 
-      const requiredRule = v => !!v || this.$getLanguageMsg("required");
+      const requiredRule = v => !!v || this.$getLanguageMsg("Required");
       const invalidRule = v =>
         /.+@.+/.test(v) || this.$getLanguageMsg("emailNotValid");
 
@@ -213,7 +213,7 @@ export default {
     nameRules() {
       const rules = [];
 
-      const requiredRule = v => !!v || this.$getLanguageMsg("required");
+      const requiredRule = v => !!v || this.$getLanguageMsg("Required");
       //const fullNameRule = v => (v || '').indexOf(' ') > -1 || this.$getLanguageMsg('fullNameRequired');
 
       rules.push(requiredRule);
@@ -224,7 +224,7 @@ export default {
       return this.$getLanguageMsg("emailNotValid");
     },
     required() {
-      return this.$getLanguageMsg("required");
+      return this.$getLanguageMsg("Required");
     },
     locale() {
       return this.$getLocale();
@@ -290,7 +290,7 @@ export default {
 
       for(let i in bookings) {
         if(DateUtils.rangesIntersect(bookings[i].from, bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-          this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
+          this.$emit('open-generic-dialog', ["Error", "There is already a customer booking at this time."]);
           return;
         }
       }
@@ -315,13 +315,13 @@ export default {
             toTime = adminBooking.toTime;
           }
           else {
-            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', ["Error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
 
           // If interval is not in an admin booking
           if(DateUtils.rangesIntersect(this.newBookingSlotStart, this.newBookingSlotEnd, fromTime, toTime)) {
-            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', ["Error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
         } // for each admin booking
@@ -340,7 +340,7 @@ export default {
 
               if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
                 //TODO: Overwrite functionality to split a regular hour?
-                this.$emit('open-generic-dialog', ["information", "You are already available for a portion of this time."]);
+                this.$emit('open-generic-dialog', ["Information", "You are already available for a portion of this time."]);
                 return;
               }
             }

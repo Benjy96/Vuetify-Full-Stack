@@ -7,17 +7,17 @@
                 <v-text-field v-model="firstname"
                 required
                 v-bind:rules="nameRules"
-                :label="$getLanguageMsg('firstname')" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('First name')" prepend-icon="mdi-account-circle"
                 />
                 <v-text-field v-model="surname"
                 required
                 v-bind:rules="nameRules"
-                :label="$getLanguageMsg('surname')" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('Surname')" prepend-icon="mdi-account-circle"
                 />
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
+                :label="$getLanguageMsg('e-mail')" prepend-icon="mdi-at"
                 />
                 <v-text-field v-model="occupation"
                 required
@@ -54,7 +54,7 @@
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
+                :label="$getLanguageMsg('Password')" prepend-icon="mdi-lock" 
                 />
 
                 <input type="submit" hidden/>
@@ -74,7 +74,7 @@
                 <p>{{ errorModalText }}</p>
                 <v-btn type="submit" color="error" 
                 @click="errorModalDialog = !errorModalDialog">
-                {{$getLanguageMsg('ok')}}
+                {{$getLanguageMsg('Ok')}}
                 </v-btn>
             </v-container>
             </v-card>
@@ -110,11 +110,11 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                v => !!v || this.$getLanguageMsg('required'),
+                v => !!v || this.$getLanguageMsg('Required'),
                 v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ],
             nameRules: [
-                v => !!v || this.$getLanguageMsg('required')
+                v => !!v || this.$getLanguageMsg('Required')
             ],
             imageRules: [
                 value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')

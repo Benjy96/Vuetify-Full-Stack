@@ -15,7 +15,7 @@
                 <template v-slot:activator="{ on }">
                     <v-text-field
                         v-model="fromDate"
-                        :label="$getLanguageMsg('fromDate')"
+                        :label="$getLanguageMsg('From date')"
                         readonly
                         v-on="on"
                     ></v-text-field>
@@ -23,8 +23,8 @@
 
                 <v-date-picker v-model="fromDate" :max="toDate">
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="fromDateDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                    <v-btn text color="primary" @click="$refs.fromDateDialog.save(fromDate)">{{$getLanguageMsg('ok')}}</v-btn>
+                    <v-btn text color="primary" @click="fromDateDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                    <v-btn text color="primary" @click="$refs.fromDateDialog.save(fromDate)">{{$getLanguageMsg('Ok')}}</v-btn>
                 </v-date-picker>
 
             </v-dialog>
@@ -40,7 +40,7 @@
                 <template v-slot:activator="{ on }">
                 <v-text-field
                     v-model="fromTime"
-                    :label="$getLanguageMsg('fromTime')"
+                    :label="$getLanguageMsg('From time')"
                     readonly
                     v-on="on"
                 ></v-text-field>
@@ -54,8 +54,8 @@
                 :max = "maxFromTime"
                 >
                 <v-spacer></v-spacer>
-                <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                 </v-time-picker>
             </v-dialog>
         </v-col>
@@ -75,7 +75,7 @@
                 <template v-slot:activator="{ on }">
                     <v-text-field
                         v-model="toDate"
-                        :label="$getLanguageMsg('toDate')"
+                        :label="$getLanguageMsg('To date')"
                         readonly
                         v-on="on"
                     ></v-text-field>
@@ -83,8 +83,8 @@
 
                 <v-date-picker v-model="toDate" :min="fromDate">
                     <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="toDateDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                    <v-btn text color="primary" @click="$refs.toDateDialog.save(toDate)">{{$getLanguageMsg('ok')}}</v-btn>
+                    <v-btn text color="primary" @click="toDateDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                    <v-btn text color="primary" @click="$refs.toDateDialog.save(toDate)">{{$getLanguageMsg('Ok')}}</v-btn>
                 </v-date-picker>
             </v-dialog>
         </v-col>
@@ -99,7 +99,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="toTime"
-                            :label="$getLanguageMsg('toTime')"
+                            :label="$getLanguageMsg('To time')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -112,8 +112,8 @@
                     full-width
                     :min="minFromTime">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                     </v-time-picker>
             </v-dialog>
         </v-col>
@@ -121,7 +121,7 @@
 
     <v-row>
         <v-col>
-            <v-btn @click="add">{{$getLanguageMsg('add')}}</v-btn>
+            <v-btn @click="add">{{$getLanguageMsg('Add')}}</v-btn>
         </v-col>
     </v-row>
 
@@ -130,7 +130,7 @@
         <v-container>
             <p>{{$getLanguageMsg('timeTravel')}}</p>
             <v-btn type="submit" color="error" @click="errorDialogToggle = !errorDialogToggle">
-            {{$getLanguageMsg('ok')}}
+            {{$getLanguageMsg('Ok')}}
             </v-btn>
         </v-container>
         </v-card>

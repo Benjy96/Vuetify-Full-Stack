@@ -12,7 +12,7 @@
                         </v-col>
                         <v-col>
                             <v-btn @click="cancelBooking(booking, currentYear, currentMonth, dayKey)">
-                                {{$getLanguageMsg('cancel')}}
+                                {{$getLanguageMsg('Cancel')}}
                                 <v-icon right>mdi-cancel</v-icon>
                             </v-btn>
                         </v-col>
@@ -28,7 +28,7 @@
                 <p>{{$getLanguageMsg('confirmCancelBooking')}}</p>
                 <v-btn type="submit" color="error" 
                 @click="confirmCancelBooking">
-                {{$getLanguageMsg('cancel')}}
+                {{$getLanguageMsg('Cancel')}}
                 </v-btn>
             </v-container>
             </v-card>

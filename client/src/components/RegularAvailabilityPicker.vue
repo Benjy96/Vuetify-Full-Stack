@@ -17,7 +17,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="fromTime"
-                            :label="$getLanguageMsg('fromTime')"
+                            :label="$getLanguageMsg('From time')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -31,8 +31,8 @@
                     :max = "toTime"
                     >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
@@ -46,7 +46,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="toTime"
-                            :label="$getLanguageMsg('toTime')"
+                            :label="$getLanguageMsg('To time')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -59,15 +59,15 @@
                     full-width
                     :min="fromTime">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-btn @click="validate">{{$getLanguageMsg('add')}}</v-btn>
+                <v-btn @click="validate">{{$getLanguageMsg('Add')}}</v-btn>
             </v-col>
         </v-row>
     </v-form>

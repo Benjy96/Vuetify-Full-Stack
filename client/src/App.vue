@@ -60,7 +60,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('registerBusiness')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Register')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -70,7 +70,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('login')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Login')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -80,7 +80,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('logout')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Logout')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -128,8 +128,8 @@
         <v-card-text>{{genericDialogText}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="genericDialogTitle == 'information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
-          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
+          <v-btn v-if="genericDialogTitle == 'Information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('Ok')}}</v-btn>
+          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('Ok')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -139,10 +139,10 @@
           <v-container>
             <v-form @submit.prevent="cancelBooking" ref="cancelForm">
               <v-text-field required :rules="cancelRules" 
-              :label="$getLanguageMsg('bookingReference')"
+              :label="$getLanguageMsg('Booking reference')"
               v-model="bookingReference"/>
               <v-btn type="submit" color="primary">
-                {{$getLanguageMsg('cancelReservation')}}
+                {{$getLanguageMsg('Cancel reservation')}}
               </v-btn>
             </v-form>
           </v-container>
@@ -152,10 +152,10 @@
       <v-dialog v-model="cancelConfirmationDialog" max-width="400">
         <v-card>
           <v-container>
-            <p>{{$getLanguageMsg('reservationCanceled')}}</p>
+            <p>{{$getLanguageMsg('Your reservation has been canceled')}}</p>
             <v-btn type="submit" color="primary" 
             @click="cancelConfirmationDialog = !cancelConfirmationDialog">
-              {{$getLanguageMsg('ok')}}
+              {{$getLanguageMsg('Ok')}}
             </v-btn>
           </v-container>
         </v-card>
@@ -202,7 +202,7 @@ export default {
   data() {
     return {
       genericDialog: false,
-      genericDialogTitle: "information",
+      genericDialogTitle: "Information",
       genericDialogText: "",
       locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
@@ -210,7 +210,7 @@ export default {
       // cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
-        value => !!value || this.$getLanguageMsg('required')
+        value => !!value || this.$getLanguageMsg('Required')
       ],
       bookingReference: '',
       languages: [
