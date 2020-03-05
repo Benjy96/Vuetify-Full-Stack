@@ -63,12 +63,12 @@
             size="130"
             class="elevation-6"
           >
-            <img src="https://demos.creative-tim.com/vue-material-dashboard/img/marc.aba54d65.jpg">
+            <img :src="profileImage">
           </v-avatar>
           <!-- Goes into BaseCard default slot -->
           <div>
-            <h1 class="display-1">Alec Thompson</h1>
-            <p class="pt-4 font-weight-light">Description description description description description description...</p>
+            <h1 class="display-1">{{firstname}} {{surname}}</h1>
+            <p class="pt-4 font-weight-light">{{description}}</p>
           </div>
         </BaseCard>
       </v-col>
@@ -77,8 +77,31 @@
 </template>
 
 <script>
+import BusinessService from '../../services/BusinessService';
+
 export default {
   //
+  created() {
+    BusinessService.getProfileData().then((res) => { 
+      // Profile Image
+      BusinessService.getProfileImageDownloadURL(res.profileImage).then((url) => {
+        this.profileImage = url;
+      });
+
+      this.firstname = res.firstname,
+      this.surname = res.surname,
+      this.description = res.description
+    });
+  },
+  data() {
+    return {
+      firstname: '',
+      surname: '',
+      description: '',
+      profileImage: ''
+    }
+  }
+
 }
 </script>
 

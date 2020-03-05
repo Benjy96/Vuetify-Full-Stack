@@ -43,6 +43,33 @@ class BusinessService {
 
     /* -- Profile Management -- */
 
+    static async getProfileData() {
+        let uid = firebase.auth().currentUser.uid;
+        let profileData = (await db.collection('businesses').doc(uid).get()).data();
+        return profileData;
+    }
+
+    static async getProfileImageDownloadURL(profileImageRef) {
+        var storage = firebase.storage();
+        var gsRef = storage.refFromURL(profileImageRef);
+        let downloadURL = await gsRef.getDownloadURL();
+
+        return downloadURL;
+    }
+
+    static async getProfileImage() {
+        let uid = firebase.auth().currentUser.uid;
+        let business = (await db.collection('businesses').doc(uid).get()).data();
+        
+        if(!business.profileImage) return;
+
+        var storage = firebase.storage();
+        var gsRef = storage.refFromURL(business.profileImage);
+        let downloadURL = await gsRef.getDownloadURL();
+
+        return downloadURL;
+    }
+
     static async getLocale(uid) {
         let doc = await db.collection('/businesses').doc(uid).get();
         if(doc.data().locale) return doc.data().locale;

@@ -78,7 +78,7 @@
 
     <!-- App bar -->
     <v-app-bar app color="primary">
-        <v-btn to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
+        <v-btn dark to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
         <v-menu>
           <template v-slot:activator="{ on }">
             <v-btn class="ml-4" icon v-on="on">
