@@ -14,6 +14,10 @@ const messages =
         'es': "" //TODO
     },
     //Home.vue
+    'Profile': {
+        'en': "Profile",
+        'es': "" //TODO
+    },
     'businesses': {
         'en': "Businesses",
         'es': "Empresas"
@@ -27,13 +31,17 @@ const messages =
         'en': "Cancel reservation",
         'es': "Cancelar reserva"
     },
-    'myCalendar': {
-        'en': "My Calendar",
+    'Calendar': {
+        'en': "Calendar",
         'es': "Mi Calendario"
     },
-    'administration': {
+    'Administration': {
         'en': "Administration",
         'es': "Administración"
+    },
+    'Dashboard': {
+        'en': "Dashboard",
+        'es': "" //TODO
     },
     'registerBusiness': {
         'en': "Register",

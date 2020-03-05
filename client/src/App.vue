@@ -30,7 +30,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('administration')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Dashboard')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -40,7 +40,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Calendar')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -50,7 +50,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>User Profile</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Profile')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
