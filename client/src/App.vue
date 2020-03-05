@@ -14,6 +14,16 @@
       <v-divider v-if="currentUser"></v-divider>
 
       <v-list class="text-left">
+        <v-list-item link v-if="currentUser" to="/">
+          <v-list-item-action>
+            <v-icon>mdi-home</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('home')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
@@ -78,12 +88,13 @@
 
     <!-- App bar -->
     <v-app-bar app dark>
+        <!-- Customer-related actions -->
         <v-btn icon to="/" class="router-button ml-1">
           <v-icon>mdi-home</v-icon>
         </v-btn>
         <v-menu offset-x>
           <template v-slot:activator="{ on }">
-            <v-btn class="ml-4" icon v-on="on">
+            <v-btn class="ml-2" icon v-on="on">
               <v-icon color="white">mdi-earth</v-icon>
             </v-btn>
           </template>
@@ -98,11 +109,13 @@
             </v-list-item>
           </v-list>
         </v-menu>
-    
-      <v-spacer class="navbar"></v-spacer>
-      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="mr-4">
+
+      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="ml-2">
         <v-icon color="white">mdi-cancel</v-icon>
       </v-btn>
+    
+      <!-- Business Related Actions -->
+      <v-spacer class="navbar"></v-spacer>
       <!-- Open hidden drawer -->
       <v-app-bar-nav-icon color="white" @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
