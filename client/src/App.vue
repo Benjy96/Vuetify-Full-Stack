@@ -77,9 +77,11 @@
     </v-navigation-drawer>
 
     <!-- App bar -->
-    <v-app-bar app color="primary">
-        <v-btn dark to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
-        <v-menu>
+    <v-app-bar app dark>
+        <v-btn icon to="/" class="router-button ml-1">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+        <v-menu offset-x>
           <template v-slot:activator="{ on }">
             <v-btn class="ml-4" icon v-on="on">
               <v-icon color="white">mdi-earth</v-icon>
