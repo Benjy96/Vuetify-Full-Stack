@@ -91,29 +91,4 @@ div.container {
   max-width: 800px;
   margin: 0 auto;
 }
-
-p.error {
-  border: 1px solid #ff5b5f;
-  background-color: #ffc5c1;
-  padding: 10px;
-  margin-bottom: 15px;
-}
-
-div.business {
-  /* relative is offset from itself */
-  /* absolute is offset from its container */
-  position: relative;
-  /* border: 1px solid #5bd658;
-  background-color: #bcffb8; */
-  padding: 10px 10px 30px 10px;
-  margin-bottom: 15px;
-}
-
-div.created-at {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 5px 15px 5px 15px;
-  background-color: darkgreen;
-}
 </style>
