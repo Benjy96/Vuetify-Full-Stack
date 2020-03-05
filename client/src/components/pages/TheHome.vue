@@ -9,7 +9,7 @@
 
           <v-hover v-slot:default="{ hover }">
             <BaseCard 
-              :class="hover ? 'elevation-12' : ''"
+              :class="hover ? 'elevation-6' : ''"
               class="clickable"
               @click="goTo({ name: 'business', params: { id: business.id } })"
             >
