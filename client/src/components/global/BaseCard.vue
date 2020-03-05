@@ -5,7 +5,7 @@
             <v-card 
             v-if="title"
             :color="color"
-            :class="`elevation-${elevation}`"
+            :class="`elevation-${headerElevation}`"
             class="text-left pa-3"
             dark
             >
@@ -42,7 +42,7 @@ export default {
             type: String,
             default: 'secondary'
         },
-        elevation: {
+        headerElevation: {
             type: [Number, String],
             default: 10
         },
