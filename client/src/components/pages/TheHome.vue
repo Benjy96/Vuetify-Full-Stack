@@ -9,7 +9,7 @@
 
           <v-hover v-slot:default="{ hover }">
             <ProfileCard
-              @click="goTo({ name: 'business', params: { id: business.id } })"
+              @click.native="goTo({ name: 'business', params: { id: business.id } })"
               :class="hover ? 'elevation-6' : ''" class="clickable"
               :firstname="business.firstname"
               :surname="business.surname"
@@ -76,6 +76,7 @@ export default {
       }
     },
     goTo(to) {
+      window.console.log('hi');
       this.$router.push(to);
     }
   },
