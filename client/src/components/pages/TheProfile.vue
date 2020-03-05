@@ -56,34 +56,26 @@
 
       <!-- Profile Column -->
       <v-col cols="12" md="4">
-        <BaseCard>
-          <!-- Goes into BaseCard offset slot -->
-          <v-avatar
-            slot="offset"
-            size="130"
-            class="elevation-10"
-          >
-            <img v-if="profileImage != ''" :src="profileImage">
-            <v-icon v-else x-large>mdi-account-circle</v-icon>
-          </v-avatar>
-        <!-- Goes into BaseCard default slot -->
-          <!-- TODO: Turn this into a component -->
-          <div id="profileDisplay">
-            <h6 class="overline pt-2">{{occupation}}</h6>
-            <h1 class="headline pt-1 pb-3">{{firstname}} {{surname}}</h1>
-            <p class="font-weight-light">{{description}}</p>
-          </div>
-        </BaseCard>
+        <ProfileCard
+          :firstname="firstname"
+          :surname="surname"
+          :occupation="occupation"
+          :description="description"
+          :profileImage="profileImage"
+        />
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import ProfileCard from '../ProfileCard'
 import BusinessService from '../../services/BusinessService';
 
 export default {
-  //
+  components: {
+    ProfileCard
+  },
   created() {
     BusinessService.getProfileData().then((res) => { 
       // Profile Image

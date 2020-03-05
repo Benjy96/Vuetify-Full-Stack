@@ -22,6 +22,6 @@ new Vue({
   render: h => h(App),
   created() {
     this.$setLocale('en');
-  },
+  }
 }).$mount('#app')
 

@@ -8,33 +8,15 @@
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
 
           <v-hover v-slot:default="{ hover }">
-            <BaseCard 
-              :class="hover ? 'elevation-6' : ''"
-              class="clickable"
+            <ProfileCard
               @click="goTo({ name: 'business', params: { id: business.id } })"
-            >
-            
-                <v-avatar
-                  color="warning"
-                  slot="offset"
-                  size="130"
-                  class="elevation-10"
-                >
-                  <v-img v-if="businessImages[business.id] != ''" 
-                        :src="businessImages[business.id]"></v-img>
-
-                  <v-icon v-else x-large>mdi-account-circle</v-icon>
-                </v-avatar>            
-              <div>
-                <!-- Goes into BaseCard default slot -->
-                <div id="profileDisplay">
-                  <h6 class="overline pt-2">{{business.occupation}}</h6>
-                  <h1 class="headline pt-1 pb-3">{{business.firstname}} {{business.surname}}</h1>
-                  <p class="font-weight-light">{{business.description}}</p>
-                </div>
-              </div>
-            
-            </BaseCard>
+              :class="hover ? 'elevation-6' : ''" class="clickable"
+              :firstname="business.firstname"
+              :surname="business.surname"
+              :occupation="business.occupation"
+              :description="business.description"
+              :profileImage="businessImages[business.id]"
+            />
           </v-hover>
         
         </v-col>
@@ -43,10 +25,14 @@
 </template>
 
 <script>
-import BusinessService from '../../services/BusinessService'
+import ProfileCard from '../ProfileCard';
+import BusinessService from '../../services/BusinessService';
 import { db } from '../../firebaseInit';
 
 export default {
+  components: {
+    ProfileCard
+  },
   name: 'home',
   data() {  //component state
     return {
