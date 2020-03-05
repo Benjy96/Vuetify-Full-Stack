@@ -61,7 +61,7 @@
           <v-avatar
             slot="offset"
             size="130"
-            class="elevation-6"
+            class="elevation-10"
           >
             <img v-if="profileImage != ''" :src="profileImage">
             <v-icon v-else x-large>mdi-account-circle</v-icon>

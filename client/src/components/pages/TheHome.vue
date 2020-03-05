@@ -13,11 +13,12 @@
               class="clickable"
               @click="goTo({ name: 'business', params: { id: business.id } })"
             >
-
+            
                 <v-avatar
                   color="warning"
                   slot="offset"
                   size="130"
+                  class="elevation-10"
                 >
                   <v-img v-if="businessImages[business.id] != ''" 
                         :src="businessImages[business.id]"></v-img>
