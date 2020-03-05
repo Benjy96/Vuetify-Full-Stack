@@ -95,7 +95,7 @@ export default {
       surname: '',
       description: '',
       occupation: '',
-      profileImage: ''
+      profileImage: null
     }
   }
 

@@ -7,7 +7,8 @@
             class="elevation-10"
             color="warning"
           >
-            <img v-if="profileImage != ''" :src="profileImage">
+            <v-progress-circular indeterminate v-if="profileImage == null"/>
+            <img v-else-if="profileImage != ''" :src="profileImage">
             <v-icon v-else x-large>mdi-account-circle</v-icon>
           </v-avatar>
         <!-- Goes into BaseCard default slot -->
@@ -24,7 +25,7 @@ export default {
     props: {
         profileImage: {
           type: String,
-          default: ''
+          default: null
         },
         firstname: {
           type: String,
