@@ -1,7 +1,7 @@
 <template>
   <div>
-    <h1>{{$getLanguageMsg('businesses')}}</h1>
-    <v-divider></v-divider>
+    <h1 class="display-1 ma-4">{{$getLanguageMsg('businesses')}}</h1>
+    <v-divider class="mb-3"></v-divider>
       <v-row id="businessesDisplay">
         <v-col cols="12" sm="6" md="4"
           v-for="(business, index) in businesses" 
