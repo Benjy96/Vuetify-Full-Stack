@@ -66,10 +66,11 @@
             <img :src="profileImage">
           </v-avatar>
           <!-- Goes into BaseCard default slot -->
+            <!-- TODO: Turn this into a component -->
           <div id="profileDisplay">
-            <h6 class="overline pt-3">{{occupation}}</h6>
-            <h1 class="display-1 pt-1 pb-3">{{firstname}} {{surname}}</h1>
-            <p class="font-weight-light">{{description}}</p>
+              <h6 class="overline pt-2">{{occupation}}</h6>
+              <h1 class="headline pt-1 pb-3">{{firstname}} {{surname}}</h1>
+              <p class="font-weight-light">{{description}}</p>
           </div>
         </BaseCard>
       </v-col>
