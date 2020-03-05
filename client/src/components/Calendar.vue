@@ -523,16 +523,15 @@ export default {
 
       let data = await CustomerService.getMonthAvailabilityData(this.id, year, month);
 
-      this.unavailableDays[year][month] = data.unavailableDays;
-      if(data.irregularAvailability) {
-        if(this.events[year][month] == null) {
-          this.events[year][month] = [];
+      if(data && data.unavailableDays) {
+        if(!this.unavailableDays[year][month]) this.unavailableDays[year][month] = [];
+        this.unavailableDays[year][month] = data.unavailableDays;
+        if(data.irregularAvailability) {
+          if(this.events[year][month] == null) {
+            this.events[year][month] = [];
+          }
+          this.events[year][month] = data.irregularAvailability;
         }
-        this.events[year][month] = data.irregularAvailability;
-        // this.events[year][month] = [];
-        // data.irregularAvailability.forEach(x => { 
-        //   this.events.push(x);
-        // });
       }
     },
     async getDayBookings(date) {
