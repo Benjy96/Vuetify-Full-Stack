@@ -39,8 +39,8 @@
 </template>
 
 <script>
+import BusinessService from '../../services/BusinessService'
 import { db } from '../../firebaseInit';
-import firebase from 'firebase';
 
 export default {
   name: 'home',
@@ -75,15 +75,11 @@ export default {
   },
   methods: {
     async getBusinessImages() {
-      var storage = firebase.storage();
-
-      for(var i in this.businesses) {
+      for(let i in this.businesses) {
         if(this.businesses[i].profileImage != null) {
-          var gsRef = storage.refFromURL(this.businesses[i].profileImage);
-          let downloadURL = await gsRef.getDownloadURL();
-
-          // https://vuejs.org/v2/guide/list.html#Array-Change-Detection - Vue can't detect array[0] = x;
-          this.$set(this.businessImages, this.businesses[i].id, downloadURL);
+          BusinessService.getProfileImageDownloadURL(this.businesses[i].profileImage).then((downloadURL) => {
+            this.$set(this.businessImages, this.businesses[i].id, downloadURL);
+          });
         } else {
           this.$set(this.businessImages, this.businesses[i].id, '');
         }
