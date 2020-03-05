@@ -66,9 +66,10 @@
             <img :src="profileImage">
           </v-avatar>
           <!-- Goes into BaseCard default slot -->
-          <div>
-            <h1 class="display-1">{{firstname}} {{surname}}</h1>
-            <p class="pt-4 font-weight-light">{{description}}</p>
+          <div id="profileDisplay">
+            <h6 class="overline pt-3">{{occupation}}</h6>
+            <h1 class="display-1 pt-1 pb-3">{{firstname}} {{surname}}</h1>
+            <p class="font-weight-light">{{description}}</p>
           </div>
         </BaseCard>
       </v-col>
@@ -88,9 +89,10 @@ export default {
         this.profileImage = url;
       });
 
-      this.firstname = res.firstname,
-      this.surname = res.surname,
+      this.firstname = res.firstname
+      this.surname = res.surname
       this.description = res.description
+      this.occupation = res.occupation
     });
   },
   data() {
@@ -98,6 +100,7 @@ export default {
       firstname: '',
       surname: '',
       description: '',
+      occupation: '',
       profileImage: ''
     }
   }
