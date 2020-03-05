@@ -10,14 +10,16 @@
           <BaseCard>
 
             <v-avatar
+              color="warning"
               slot="offset"
               size="130"
               class="elevation-6 clickable"
               @click="goTo({ name: 'business', params: { id: business.id } })"
             >
               <v-img v-if="businessImages[business.id] != ''" 
-                    :src="businessImages[business.id]" class="elevation-6"></v-img>
-              <v-icon v-else color="white" class="elevation-6">mdi-account-circle</v-icon>
+                    :src="businessImages[business.id]"></v-img>
+
+              <v-icon v-else x-large>mdi-account-circle</v-icon>
             </v-avatar>
             
             <div>
