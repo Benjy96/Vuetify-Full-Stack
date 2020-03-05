@@ -330,7 +330,7 @@ export default {
       // 1.3 - Check regular availability based upon intervals (I1)
       let dayOfWeek = DateUtils.getWeekdayFromDateString(this.newBookingSlotDate);
 
-      if (this.regular_availability[dayOfWeek] != null) {
+      if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
         for(let range in this.regular_availability[dayOfWeek]) {
           if(this.regular_availability[dayOfWeek][range] != null) {
             let regularRange = this.regular_availability[dayOfWeek][range];
@@ -396,7 +396,7 @@ export default {
       // 3 & 4: Check if times intersect with customer bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
-      if (this.regular_availability[dayOfWeek] != null) {
+      if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
         for (let range in dayOfWeek) {
           if (this.regular_availability[dayOfWeek][range] != null) {
             let potentiallyAvailableIntervals = DateUtils.getIntervalsInRange(
