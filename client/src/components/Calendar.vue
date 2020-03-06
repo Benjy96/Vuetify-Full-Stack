@@ -498,6 +498,7 @@ export default {
         this.regular_availability = res.regularAvailability;
         let bookingDetails = res.bookingDetails;
         if(bookingDetails) {
+          //TODO: Update API setters to follow this format
           if(bookingDetails.title) this.bookingTitle = bookingDetails.title;
           if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
           if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;

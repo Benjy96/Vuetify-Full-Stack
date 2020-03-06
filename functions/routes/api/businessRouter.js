@@ -260,6 +260,7 @@ router.post('/occupation', async (req, res) => {
     return;
   } else {
     db.collection(`businesses`).doc(`${uid}`).set({
+      //TODO: Add to nested bookingDetails object
       occupation: occupation
     }, {merge: true}).then(() => {
       res.status(200).send();
@@ -278,6 +279,7 @@ router.post('/bookingTitle', async (req, res) => {
     return;
   } else {
     db.collection('businesses').doc(uid).set({
+      //TODO: Add to nested bookingDetails object
       bookingTitle: bookingTitle
     }, {merge: true}).then(() => {
       res.status(200).send();
@@ -294,6 +296,7 @@ router.post('/bookingInfo', async (req, res) => {
     return;
   } else {
     db.collection(`businesses`).doc(uid).set({
+      //TODO: Add to nested bookingDetails object
       bookingInfo: bookingInfo
     }, {merge: true}).then(() => {
       res.status(200).send();
@@ -311,6 +314,7 @@ router.post('/bookingDuration', async (req, res) => {
     return;
   } else {
     db.collection(`businesses`).doc(uid).set({
+      //TODO: Add to nested bookingDetails object
       bookingDuration: bookingDuration
     }, {merge: true}).then(() => {
   
@@ -339,6 +343,7 @@ router.post('/bookingPrice', async (req, res) => {
     }
 
     db.collection(`businesses`).doc(uid).set({
+      //TODO: Add to nested bookingDetails object
       bookingPrice: bookingPrice
     }, {merge: true}).then(() => {
       res.status(200).send();
