@@ -31,7 +31,7 @@ import { db } from '../../firebaseInit';
 
 export default {
   components: {
-    ProfileCard
+    ProfileCard,
   },
   name: 'home',
   data() {  //component state

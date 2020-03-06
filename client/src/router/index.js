@@ -7,6 +7,7 @@ import Login from '../components/pages/TheLogin.vue'
 import Register from '../components/pages/TheRegister.vue'
 import Dashboard from '../components/pages/TheDashboard.vue'
 import Profile from '../components/pages/TheProfile.vue'
+import TheTestLab from '../components/pages/TheTestLab'
 
 import firebase from 'firebase'
 
@@ -18,6 +19,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/TheTestLab',
+    name: 'TheTestLab',
+    component: TheTestLab,
   },
   {
     path: '/login',

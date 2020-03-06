@@ -83,6 +83,16 @@
             <v-list-item-title>{{$getLanguageMsg('Logout')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+        <v-list-item link v-if="environment == 'development'" to="/TheTestLab">
+          <v-list-item-action>
+            <v-icon>mdi-beaker-outline</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Test Lab</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -201,6 +211,7 @@ export default {
   },
   data() {
     return {
+      environment: process.env.NODE_ENV,
       genericDialog: false,
       genericDialogTitle: "Information",
       genericDialogText: "",
