@@ -2,20 +2,6 @@
     <v-container>
 
     <!-- DIALOGS -->
-
-    <v-dialog v-model="confirmSavedDialog" max-width="400">
-    <v-card>
-        <v-container>
-        <p>{{$getLanguageMsg('preferenceSaved')}}</p>
-        <v-btn
-            type="submit"
-            color="primary"
-            @click="confirmSavedDialog = !confirmSavedDialog"
-        >{{$getLanguageMsg('thanks')}}</v-btn>
-        </v-container>
-    </v-card>
-    </v-dialog>
-
     <v-dialog v-model="confirmDeleteAdminBookingDialog" max-width="400">
         <v-card>
         <v-container>
@@ -366,47 +352,55 @@ export default {
             this.timeRangeToDelete = null;
         },
         saveProfileInfo() {
+            let saved = false;
+
             if(this.$refs.profileManagementForm.validate()) {
                 if(this.bio != "" && this.bio != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateBio(this.id, this.bio);
                 }
 
                 if(this.occupation != "" && this.occupation != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateOccupation(this.id, this.occupation);
                 }
 
                 if(this.profileImage != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.setProfileImage(this.id, this.profileImage);
                 }
+
+                if(saved) this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
 
                 this.$refs.profileManagementForm.reset();
             }
         },
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
+                let saved = false;
+
                 if(this.bookingTitle != "" && this.bookingTitle != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateBookingTitle(this.id, this.bookingTitle);
                 }
                 //TODO: Preserve newlines?
                 //TODO: Change to markup to allow lists, etc?
                 if(this.bookingInfo != "" && this.bookingInfo != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateBookingInfo(this.id, this.bookingInfo);
                 }
 
                 if(this.bookingDuration != "" && this.bookingDuration != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateBookingDuration(this.id, this.bookingDuration);
                 }
 
                 if(this.bookingPrice != "" && this.bookingPrice != null) {
-                    this.confirmSavedDialog = true;
+                    saved = true;
                     BusinessService.updateBookingPrice(this.id, this.bookingPrice);
                 }
+
+                if(saved) this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
 
                 this.$refs.bookingManagementForm.reset();
             }
