@@ -133,6 +133,10 @@ const messages =
         'en': "First name",
         'es': "Nombre"
     },
+    'First Name': {
+        'en': "First Name",
+        'es': "Nombre"
+    },
     'Register': {
         'en': "Register",
         'es': "Registrar"
@@ -266,7 +270,7 @@ const messages =
         'es': "" //TODO
     },
     'bioFormText': {
-        'en': "Bio - A short summary of who you are (This is shown under your name on the home screen)",
+        'en': "Bio - A short summary of who you are",
         'es': "" //TODO
     },
     'invalidBioFormText': {

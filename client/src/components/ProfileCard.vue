@@ -23,10 +23,7 @@
 <script>
 export default {
     props: {
-        profileImage: {
-          type: String,
-          default: null
-        },
+        profileImage: null,
         firstname: {
           type: String,
           default: ''
