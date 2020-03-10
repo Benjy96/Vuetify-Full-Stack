@@ -134,7 +134,7 @@
     <!-- https://vuejs.org/v2/api/#vm-emit -->
     <v-dialog v-model="genericDialog" persistent max-width="400">
       <v-card>
-        <v-card-title class="headline">{{$getLanguageMsg(genericDialogTitle)}}</v-card-title>
+        <v-card-title class="headline">{{genericDialogTitle}}</v-card-title>
         <v-card-text>{{genericDialogText}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>

@@ -290,7 +290,7 @@ export default {
 
       for(let i in bookings) {
         if(DateUtils.rangesIntersect(bookings[i].from, bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-          this.$emit('open-generic-dialog', ["Error", "There is already a customer booking at this time."]);
+          this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "There is already a customer booking at this time."]);
           return;
         }
       }
@@ -315,13 +315,13 @@ export default {
             toTime = adminBooking.toTime;
           }
           else {
-            this.$emit('open-generic-dialog', ["Error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
 
           // If interval is not in an admin booking
           if(DateUtils.rangesIntersect(this.newBookingSlotStart, this.newBookingSlotEnd, fromTime, toTime)) {
-            this.$emit('open-generic-dialog', ["Error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
         } // for each admin booking
@@ -340,7 +340,7 @@ export default {
 
               if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
                 //TODO: Overwrite functionality to split a regular hour?
-                this.$emit('open-generic-dialog', ["Information", "You are already available for a portion of this time."]);
+                this.$emit('open-generic-dialog', [this.$getLanguageMsg("Information"), "You are already available for a portion of this time."]);
                 return;
               }
             }
