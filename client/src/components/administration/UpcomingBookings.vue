@@ -48,8 +48,8 @@
 
 
 <script>
-import {DateUtils} from '../DateUtils';
-import BusinessService from '../services/BusinessService'
+import {DateUtils} from '@/DateUtils';
+import BusinessService from '@/services/BusinessService'
 
 export default {
     props: ["id"],

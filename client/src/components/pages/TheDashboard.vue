@@ -47,6 +47,7 @@
         </v-row>
 
         <!-- Working Hours Box -->
+        
         <v-row>
             <v-col cols="6" md="12">
                 <BaseCard :title="$getLanguageMsg('workingHours')">
@@ -91,7 +92,16 @@
         </v-row>
 
         <v-row>
-            <!-- TODO: Turn into a v-dialog? -->
+            <v-col>
+                <WorkingHours></WorkingHours>
+            </v-col>
+        </v-row>
+
+                        <!-- TODO: Turn into a v-dialog? -->
+                        <!-- TODO: UI Overhaul - How to format list nicely -->
+
+        <!-- <v-row>
+            
             <v-col cols="6" md="12">
                 <BaseCard :title="$getLanguageMsg('Unavailable')">
                     <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
@@ -99,7 +109,7 @@
             </v-col>
 
             <v-col cols="6" md="12">
-                <!-- TODO: UI Overhaul - How to format list nicely -->
+
                 <v-row v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
                     <v-col cols="8">
                         {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
@@ -120,10 +130,10 @@
                     </v-list-item-action>
                 </v-row>
             </v-col>
-        </v-row>
+        </v-row> -->
 
         <!-- Booking Management Box -->
-        <v-row>
+        <!-- <v-row>
             <v-col cols="12">
             <BaseCard :title="$getLanguageMsg('Booking Management')">
                 <v-form @submit.prevent="saveBookingDetails" 
@@ -163,10 +173,10 @@
                 </v-form>
             </BaseCard>
             </v-col>
-        </v-row>
+        </v-row> -->
 
         <!-- Profile Management Box -->
-        <v-row>
+        <!-- <v-row>
             <v-col>
                 <BaseCard :title="$getLanguageMsg('Profile Management')">
                     <v-form @submit.prevent="saveProfileInfo" 
@@ -199,7 +209,7 @@
                     </v-form>
                 </BaseCard>
             </v-col>
-        </v-row>
+        </v-row> -->
 
     </v-container>
 </template>
@@ -208,19 +218,23 @@
 import { daysOfWeek } from '../../DateUtils';
 
 import firebase from 'firebase';
-// import Bookings from '../Bookings';
-import UpcomingBookings from '../UpcomingBookings';
-import AdminBookingPicker from '../AdminBookingPicker';
-import RegularAvailabilityPicker from '../RegularAvailabilityPicker';
+// import Bookings from '../administration/Bookings';
+import UpcomingBookings from '../administration/UpcomingBookings';
+// import AdminBookingPicker from '../administration/AdminBookingPicker';
 import BusinessService from '../../services/BusinessService';
+import WorkingHours from '../administration/WorkingHours';
+
+// import RegularAvailabilityPicker from '../administration/RegularAvailabilityPicker';
+
 
 export default {
     name: 'Dashboard',
     components: {
         // Bookings,
         UpcomingBookings,
-        AdminBookingPicker,
-        RegularAvailabilityPicker
+        WorkingHours
+        // AdminBookingPicker,
+        // RegularAvailabilityPicker
     },
     data() {
         return {
