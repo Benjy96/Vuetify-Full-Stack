@@ -49,73 +49,63 @@
         </v-card>
     </v-dialog>
 
+    <!-- /DIALOGS -->
+
         <!-- Bookings Box -->
         <v-row>
-            <v-col>
-                <v-card>
-                <v-card-title>{{$getLanguageMsg('Upcoming bookings')}}</v-card-title>
-                <v-divider></v-divider>
-                <v-row no-gutters class="grey lighten-5">
-                    <v-col>
-                        <v-container>
-                            <!-- <Bookings/> -->
-                            <UpcomingBookings :id="id"/>
-                        </v-container>
-                    </v-col>
-                </v-row>
-                </v-card>
+            <v-col cols="12">
+                <BaseCard :title="$getLanguageMsg('Upcoming bookings')">
+                    <UpcomingBookings :id="id"/>
+                </BaseCard>
             </v-col>
         </v-row>
 
         <!-- Working Hours Box -->
         <v-row>
-            <v-col>
-                <v-card>
-                    <v-card-title>{{$getLanguageMsg('workingHours')}}</v-card-title>
-                    <v-divider></v-divider>
-                    <v-row>
-                        <v-col>
-                            <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
-                        </v-col>
-                        <v-col>
-                                <v-simple-table>
-                                    <template v-slot:default>
-                                    <thead>
-                                        <tr>
-                                            <th class="text-center">{{$getLanguageMsg('day')}}</th>
-                                            <th class="text-center">{{$getLanguageMsg('Hours')}}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-for="day in daysOfWeek" :key="'day' + day">
-                                            <td >{{$getLanguageMsg(day)}}</td>
-                                            <td style="vertical-align: top;">
-                                                <!-- TODO: How to display multiple items? -->
-                                                <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
-                                                    <v-list-item-content>
-                                                        {{range.from + " - " + range.to}}
-                                                    </v-list-item-content>
+            <v-col cols="6" md="12">
+                <BaseCard :title="$getLanguageMsg('workingHours')">
+                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+                </BaseCard>
+            </v-col>
 
-                                                    <v-list-item-action>
-                                                        <v-btn @click="deleteTimeRangeDialog(day, range)">
-                                                            {{$getLanguageMsg('Remove')}}
-                                                            <v-icon right>mdi-delete</v-icon>
-                                                        </v-btn>
-                                                    </v-list-item-action>
-                                                </v-list-item> 
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    </template>
-                                </v-simple-table>
-                        </v-col>
-                    </v-row>
-                </v-card>
+            <v-col cols="6" md="12">
+                <BaseCard>
+                    <v-simple-table>
+                    <template v-slot:default>
+                    <thead>
+                        <tr>
+                            <th class="text-center">{{$getLanguageMsg('day')}}</th>
+                            <th class="text-center">{{$getLanguageMsg('Hours')}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="day in daysOfWeek" :key="'day' + day">
+                            <td >{{$getLanguageMsg(day)}}</td>
+                            <td style="vertical-align: top;">
+                                <!-- TODO: How to display multiple items? -->
+                                <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
+                                    <v-list-item-content>
+                                        {{range.from + " - " + range.to}}
+                                    </v-list-item-content>
+
+                                    <v-list-item-action>
+                                        <v-btn @click="deleteTimeRangeDialog(day, range)">
+                                            {{$getLanguageMsg('Remove')}}
+                                            <v-icon right>mdi-delete</v-icon>
+                                        </v-btn>
+                                    </v-list-item-action>
+                                </v-list-item> 
+                            </td>
+                        </tr>
+                    </tbody>
+                    </template>
+                    </v-simple-table>
+                </BaseCard>
             </v-col>
         </v-row>
 
-
         <v-row>
+            <!-- TODO: Turn into a v-dialog? -->
             <v-col cols="6" md="12">
                 <BaseCard :title="$getLanguageMsg('Unavailable')">
                     <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
@@ -123,122 +113,108 @@
             </v-col>
 
             <v-col cols="6" md="12">
-                <v-list>
-                    <v-list-item v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-                        <v-list-item-content>
+                <!-- TODO: UI Overhaul - How to format list nicely -->
+                <v-row v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
+                    <v-col cols="8">
                         {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
                         {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
-                        </v-list-item-content>
-                        
+                    </v-col>
+                    
+                    <v-col>
                         <v-list-item-action>
-                            <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                                {{$getLanguageMsg('Remove')}}
-                                <v-icon right>mdi-delete</v-icon>
-                            </v-btn>
+                            <v-icon>mdi-delete</v-icon>
                         </v-list-item-action>
-                    </v-list-item>
-                </v-list>
+                    </v-col>
+
+                    <v-list-item-action>
+                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
+                            {{$getLanguageMsg('Remove')}}
+                            <v-icon right>mdi-delete</v-icon>
+                        </v-btn>
+                    </v-list-item-action>
+                </v-row>
             </v-col>
         </v-row>
 
         <!-- Booking Management Box -->
         <v-row>
-            <v-col>
-                <v-card>
-                    <v-card-title>{{$getLanguageMsg('Booking Management')}}</v-card-title>
-                    <v-divider></v-divider>
-                    <v-row no-gutters class="grey lighten-5">
-                        <v-col>
-                            <v-container>
-                                <v-col>
-                                    <v-form @submit.prevent="saveBookingDetails" 
-                                    ref="bookingManagementForm">
+            <v-col cols="12">
+            <BaseCard :title="$getLanguageMsg('Booking Management')">
+                <v-form @submit.prevent="saveBookingDetails" 
+                ref="bookingManagementForm">
 
-                                        <v-text-field v-model="bookingTitle"
-                                        v-bind:rules="bookingTitleRules"
-                                        :label="$getLanguageMsg('bookingTitleFormText')" 
-                                        prepend-icon="mdi-text-short"
-                                        />
+                    <v-text-field v-model="bookingTitle"
+                    v-bind:rules="bookingTitleRules"
+                    :label="$getLanguageMsg('bookingTitleFormText')" 
+                    prepend-icon="mdi-text-short"
+                    />
 
-                                        <v-textarea v-model="bookingInfo"
-                                        v-bind:rules="bookingInfoRules"
-                                        :label="$getLanguageMsg('bookingInfoFormText')" 
-                                        prepend-icon="mdi-text-subject"
-                                        :counter="bookingInfoLimit"
-                                        />
+                    <v-textarea v-model="bookingInfo"
+                    v-bind:rules="bookingInfoRules"
+                    :label="$getLanguageMsg('bookingInfoFormText')" 
+                    prepend-icon="mdi-text-subject"
+                    :counter="bookingInfoLimit"
+                    />
 
-                                        <v-text-field v-model="bookingPrice"
-                                        v-bind:rules="bookingPriceRules"
-                                        :label="$getLanguageMsg('bookingPriceFormText')" 
-                                        prepend-icon="mdi-cash"
-                                        />
+                    <v-text-field v-model="bookingPrice"
+                    v-bind:rules="bookingPriceRules"
+                    :label="$getLanguageMsg('bookingPriceFormText')" 
+                    prepend-icon="mdi-cash"
+                    />
 
-                                        <v-text-field 
-                                        :rules="bookingDurationRules"
-                                        v-model="bookingDuration"
-                                        :label="$getLanguageMsg('bookingDurationFormText')"
-                                        prepend-icon="mdi-alarm"
-                                        ></v-text-field>
+                    <v-text-field 
+                    :rules="bookingDurationRules"
+                    v-model="bookingDuration"
+                    :label="$getLanguageMsg('bookingDurationFormText')"
+                    prepend-icon="mdi-alarm"
+                    ></v-text-field>
 
-                                        <v-btn type="submit" color="primary">
-                                        {{$getLanguageMsg('Save')}}
-                                        <v-icon right>mdi-content-save</v-icon>
-                                        </v-btn>
+                    <v-btn type="submit" color="primary">
+                    {{$getLanguageMsg('Save')}}
+                    <v-icon right>mdi-content-save</v-icon>
+                    </v-btn>
 
-                                    </v-form>
-                                </v-col>   
-                            </v-container>
-                        </v-col>
-                    </v-row>
-                </v-card>
+                </v-form>
+            </BaseCard>
             </v-col>
         </v-row>
 
         <!-- Profile Management Box -->
         <v-row>
             <v-col>
-                <v-card>
-                    <v-card-title>{{$getLanguageMsg('Profile Management')}}</v-card-title>
-                    <v-divider></v-divider>
-                    <v-row no-gutters class="grey lighten-5">
-                        <v-col>
-                            <v-container>
-                                <v-col>
-                                    <v-form @submit.prevent="saveProfileInfo" 
-                                    ref="profileManagementForm">
+                <BaseCard :title="$getLanguageMsg('Profile Management')">
+                    <v-form @submit.prevent="saveProfileInfo" 
+                    ref="profileManagementForm">
 
-                                        <v-text-field v-model="bio"
-                                        v-bind:rules="bioRules"
-                                        :label="$getLanguageMsg('bioFormText')" 
-                                        prepend-icon="mdi-account-details"
-                                        />
+                        <v-text-field v-model="bio"
+                        v-bind:rules="bioRules"
+                        :label="$getLanguageMsg('bioFormText')" 
+                        prepend-icon="mdi-account-details"
+                        />
 
-                                        <v-text-field v-model="occupation"
-                                        :label="$getLanguageMsg('occupation')" 
-                                        prepend-icon="mdi-hammer"
-                                        />
+                        <v-text-field v-model="occupation"
+                        :label="$getLanguageMsg('occupation')" 
+                        prepend-icon="mdi-hammer"
+                        />
 
-                                        <v-file-input v-model="profileImage"
-                                        show-size
-                                        accept=".jpg"
-                                        v-bind:rules="imageRules"
-                                        :label="$getLanguageMsg('profilePicture')"
-                                        prepend-icon="mdi-camera"
-                                        ></v-file-input>
+                        <v-file-input v-model="profileImage"
+                        show-size
+                        accept=".jpg"
+                        v-bind:rules="imageRules"
+                        :label="$getLanguageMsg('profilePicture')"
+                        prepend-icon="mdi-camera"
+                        ></v-file-input>
 
-                                        <v-btn type="submit" color="primary">
-                                        {{$getLanguageMsg('Save')}}
-                                        <v-icon right>mdi-content-save</v-icon>
-                                        </v-btn>
+                        <v-btn type="submit" color="primary">
+                        {{$getLanguageMsg('Save')}}
+                        <v-icon right>mdi-content-save</v-icon>
+                        </v-btn>
 
-                                    </v-form>
-                                </v-col>   
-                            </v-container>
-                        </v-col>
-                    </v-row>
-                </v-card>
+                    </v-form>
+                </BaseCard>
             </v-col>
         </v-row>
+
     </v-container>
 </template>
 

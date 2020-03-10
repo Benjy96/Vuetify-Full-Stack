@@ -3,7 +3,6 @@
       :headers="headers"
       :items="bookings"
       sort-by="from"
-      class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -25,7 +24,6 @@
                 append-icon="mdi-calendar"
                 readonly
                 single-line
-                
                 ></v-text-field>
             </template>
 
