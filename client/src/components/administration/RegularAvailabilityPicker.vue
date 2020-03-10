@@ -75,8 +75,8 @@
 </template>
 
 <script>
-import { daysOfWeek } from '../DateUtils';
-import BusinessService from '../services/BusinessService';
+import { daysOfWeek } from '@/DateUtils';
+import BusinessService from '@/services/BusinessService';
 
 export default {
     props: ['id'],

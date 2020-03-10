@@ -38,62 +38,27 @@
     <!-- /DIALOGS -->
 
         <!-- Bookings Box -->
-        <v-row>
+        <v-row class="mb-6">
             <v-col cols="12">
-                <BaseCard :title="$getLanguageMsg('Upcoming bookings')">
+                <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')">
                     <UpcomingBookings :id="id"/>
                 </BaseCard>
             </v-col>
         </v-row>
 
-        <!-- Working Hours Box -->
-        
-        <v-row>
-            <v-col cols="6" md="12">
-                <BaseCard :title="$getLanguageMsg('workingHours')">
+        <v-row class="mb-6">
+            <!-- Working Hours Box -->
+            <v-col cols="8">
+                <BaseCard headerElevation="6" :title="$getLanguageMsg('workingHours')">
+                    <WorkingHours></WorkingHours>
+                </BaseCard>
+            </v-col>
+
+            <!-- Working Hours Management (Adder) -->
+            <v-col cols="4">
+                <BaseCard headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
                     <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
                 </BaseCard>
-            </v-col>
-
-            <v-col cols="6" md="12">
-                <BaseCard>
-                    <v-simple-table>
-                    <template v-slot:default>
-                    <thead>
-                        <tr>
-                            <th class="text-center">{{$getLanguageMsg('day')}}</th>
-                            <th class="text-center">{{$getLanguageMsg('Hours')}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="day in daysOfWeek" :key="'day' + day">
-                            <td >{{$getLanguageMsg(day)}}</td>
-                            <td style="vertical-align: top;">
-                                <!-- TODO: How to display multiple items? -->
-                                <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
-                                    <v-list-item-content>
-                                        {{range.from + " - " + range.to}}
-                                    </v-list-item-content>
-
-                                    <v-list-item-action>
-                                        <v-btn @click="deleteTimeRangeDialog(day, range)">
-                                            {{$getLanguageMsg('Remove')}}
-                                            <v-icon right>mdi-delete</v-icon>
-                                        </v-btn>
-                                    </v-list-item-action>
-                                </v-list-item> 
-                            </td>
-                        </tr>
-                    </tbody>
-                    </template>
-                    </v-simple-table>
-                </BaseCard>
-            </v-col>
-        </v-row>
-
-        <v-row>
-            <v-col>
-                <WorkingHours></WorkingHours>
             </v-col>
         </v-row>
 
@@ -218,13 +183,13 @@
 import { daysOfWeek } from '../../DateUtils';
 
 import firebase from 'firebase';
-// import Bookings from '../administration/Bookings';
-import UpcomingBookings from '../administration/UpcomingBookings';
-// import AdminBookingPicker from '../administration/AdminBookingPicker';
-import BusinessService from '../../services/BusinessService';
-import WorkingHours from '../administration/WorkingHours';
+// import Bookings from '@/components/administration/Bookings';
+import UpcomingBookings from '@/components/administration/UpcomingBookings';
+// import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
+import BusinessService from '@/services/BusinessService';
+import WorkingHours from '@/components/administration/WorkingHours';
 
-// import RegularAvailabilityPicker from '../administration/RegularAvailabilityPicker';
+import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker';
 
 
 export default {
@@ -232,22 +197,13 @@ export default {
     components: {
         // Bookings,
         UpcomingBookings,
-        WorkingHours
+        WorkingHours,
         // AdminBookingPicker,
-        // RegularAvailabilityPicker
+        RegularAvailabilityPicker
     },
     data() {
         return {
             id: null,
-            ranges: {
-                "Monday": [],
-                "Tuesday": [],
-                "Wednesday": [],
-                "Thursday": [],
-                "Friday": [],
-                "Saturday": [],
-                "Sunday": []
-            },
             adminBookings: [],
             daysOfWeek: daysOfWeek,
             confirmDeleteTimeRangeDialog: false,
@@ -304,39 +260,6 @@ export default {
         this.getAdminBookings();
     },
     methods: {
-        getRanges() {
-            BusinessService.getRegularAvailability(this.id).then(regularAvailability => {
-                if(regularAvailability) {
-                    this.daysOfWeek.forEach(day => {
-                        let weekday = day;
-                        this.ranges[weekday] = [];
-                        if(regularAvailability[weekday]) {
-                            regularAvailability[weekday].forEach(range => {
-                                this.ranges[weekday].push(range);
-                            });
-                        }
-                    });
-                }
-            });
-        },
-        deleteTimeRangeDialog(day, range) {
-            this.timeRangeDayToDelete = day;
-            this.timeRangeRangeToDelete = range;
-            this.confirmDeleteTimeRangeDialog = true;
-        },
-        confirmDeleteTimeRange() {
-            this.confirmDeleteTimeRangeDialog = false;
-
-            let day = this.timeRangeDayToDelete;
-            let range = this.timeRangeRangeToDelete;
-
-            //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
-            //- matched by EXCLUSION
-            let dayArray = this.ranges[day].filter(item => ((item.from !== range.from) || (item.to !== range.to)));
-            this.ranges[day] = dayArray;
-
-            BusinessService.setDayRegularAvailability(this.id, day, dayArray);
-        },
         getAdminBookings() {
             BusinessService.getAdminBookings(this.id).then(res => {
                 if(res) {
@@ -422,12 +345,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-tbody td {
-    vertical-align: top;
-    padding-top: 10px;
-}
-
-</style>

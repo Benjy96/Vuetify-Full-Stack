@@ -358,6 +358,14 @@ const messages =
         'en': "Working Hours",
         'es': "Horas laborables"
     },
+    'addWorkingHours': {
+        'en': "Add Working Hours",
+        'es': "" //TODO
+    },
+    'editWorkingHours': {
+        'en': "Edit Working Hours",
+        'es': "" //TODO
+    },
     'Hours': {
         'en': "Hours",
         'es': "Horas"
