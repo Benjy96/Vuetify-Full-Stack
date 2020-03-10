@@ -186,8 +186,8 @@
 
 <script>
 import firebase from 'firebase'
-import CustomerService from './services/CustomerService';
-import BusinessService from './services/BusinessService';
+import CustomerService from '@/services/CustomerService';
+import BusinessService from '@/services/BusinessService';
 
 export default {
   props: ["cancelDialog"],

@@ -86,7 +86,7 @@
 <script>
 import firebase from 'firebase';
 import { db } from '../../firebaseInit';
-import BusinessService from '../../services/BusinessService';
+import BusinessService from '@/services/BusinessService';
 
 export default {
     name: 'register',

@@ -40,7 +40,7 @@
 <script>
 import firebase from 'firebase';
 
-import BusinessService from '../services/BusinessService';
+import BusinessService from '@/services/BusinessService';
 import { DateUtils } from '@/DateUtils';
 
 export default {

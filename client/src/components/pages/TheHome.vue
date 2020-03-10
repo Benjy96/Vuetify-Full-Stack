@@ -26,7 +26,7 @@
 
 <script>
 import ProfileCard from '../ProfileCard';
-import BusinessService from '../../services/BusinessService';
+import BusinessService from '@/services/BusinessService';
 import { db } from '../../firebaseInit';
 
 export default {

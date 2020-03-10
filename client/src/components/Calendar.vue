@@ -137,8 +137,8 @@
 <script>
 import { DateUtils } from "@/DateUtils";
 import { daysOfWeek } from "@/DateUtils";
-import CustomerService from "../services/CustomerService";
-import BusinessService from '../services/BusinessService';
+import CustomerService from "@/services/CustomerService";
+import BusinessService from '@/services/BusinessService';
 
 export default {
   props: ["id"],
