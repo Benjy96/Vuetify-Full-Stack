@@ -55,6 +55,7 @@
             </v-col>
 
             <!-- Working Hours Management (Adder) -->
+            <!-- TODO: Make this a modal? -->
             <v-col cols="4">
                 <BaseCard headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
                     <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
@@ -180,7 +181,7 @@
 </template>
 
 <script>
-import { daysOfWeek } from '../../DateUtils';
+import { daysOfWeek } from '@/DateUtils';
 
 import firebase from 'firebase';
 // import Bookings from '@/components/administration/Bookings';

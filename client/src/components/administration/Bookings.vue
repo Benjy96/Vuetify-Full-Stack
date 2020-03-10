@@ -41,7 +41,7 @@
 import firebase from 'firebase';
 
 import BusinessService from '../services/BusinessService';
-import { DateUtils } from '../DateUtils';
+import { DateUtils } from '@/DateUtils';
 
 export default {
     name: 'Bookings',

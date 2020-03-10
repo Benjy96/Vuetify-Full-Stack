@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
-import { DateUtils } from '../DateUtils';
+import { DateUtils } from '@/DateUtils';
 
 // HTTP Utils
 import axios from "axios";

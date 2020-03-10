@@ -135,8 +135,8 @@
 </template>
 
 <script>
-import { DateUtils } from "../DateUtils";
-import { daysOfWeek } from "../DateUtils";
+import { DateUtils } from "@/DateUtils";
+import { daysOfWeek } from "@/DateUtils";
 import CustomerService from "../services/CustomerService";
 import BusinessService from '../services/BusinessService';
 
