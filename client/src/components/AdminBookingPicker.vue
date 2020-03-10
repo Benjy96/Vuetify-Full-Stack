@@ -121,7 +121,7 @@
 
     <v-row>
         <v-col>
-            <v-btn @click="add">{{$getLanguageMsg('Add')}}</v-btn>
+            <v-btn color="primary" @click="add">{{$getLanguageMsg('Add')}}</v-btn>
         </v-col>
     </v-row>
 

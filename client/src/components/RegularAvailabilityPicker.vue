@@ -1,5 +1,5 @@
 <template>
-    <div>
+
     <v-form>
         <v-row>
             <v-col>
@@ -71,7 +71,7 @@
             </v-col>
         </v-row>
     </v-form>
-    </div>
+
 </template>
 
 <script>

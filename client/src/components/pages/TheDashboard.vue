@@ -73,14 +73,11 @@
                 <v-card>
                     <v-card-title>{{$getLanguageMsg('workingHours')}}</v-card-title>
                     <v-divider></v-divider>
-                    <v-row no-gutters class="grey lighten-5">
+                    <v-row>
                         <v-col>
-                            <v-container>
-                                <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
-                            </v-container>
+                            <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
                         </v-col>
                         <v-col>
-                            <v-card>
                                 <v-simple-table>
                                     <template v-slot:default>
                                     <thead>
@@ -91,8 +88,9 @@
                                     </thead>
                                     <tbody>
                                         <tr v-for="day in daysOfWeek" :key="'day' + day">
-                                            <td>{{$getLanguageMsg(day)}}</td>
-                                            <td>
+                                            <td >{{$getLanguageMsg(day)}}</td>
+                                            <td style="vertical-align: top;">
+                                                <!-- TODO: How to display multiple items? -->
                                                 <v-list-item v-for="range in ranges[day]" :key="'dayRange' + day + range.from + range.to">
                                                     <v-list-item-content>
                                                         {{range.from + " - " + range.to}}
@@ -110,55 +108,36 @@
                                     </tbody>
                                     </template>
                                 </v-simple-table>
-                            </v-card>
                         </v-col>
                     </v-row>
                 </v-card>
             </v-col>
         </v-row>
 
-        <!-- Exceptional Availability Box -->
-        <v-row>
-            <v-col>
-                <v-card>
-                    <v-card-title>{{$getLanguageMsg('Unavailable')}}</v-card-title>
-                    <v-divider></v-divider>
-                    <v-row no-gutters class="grey lighten-5">
-                        <v-col>
-                            <v-container>
-                                <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
-                            </v-container>
-                        </v-col>
-                        <v-col>
-                            <v-container>
-                                <v-simple-table>
-                                    <template v-slot:default>
 
-                                    <tbody>
-                                        <tr v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-                                            <td>
-                                                <v-list-item>
-                                                    <v-list-item-content>
-                                                    {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
-                                                    {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
-                                                    </v-list-item-content>
-                                                    
-                                                    <v-list-item-action>
-                                                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                                                            {{$getLanguageMsg('Remove')}}
-                                                            <v-icon right>mdi-delete</v-icon>
-                                                        </v-btn>
-                                                    </v-list-item-action>
-                                                </v-list-item>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                    </template>
-                                </v-simple-table>
-                            </v-container> 
-                        </v-col>
-                    </v-row>
-                </v-card>
+        <v-row>
+            <v-col cols="6" md="12">
+                <BaseCard :title="$getLanguageMsg('Unavailable')">
+                    <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
+                </BaseCard>
+            </v-col>
+
+            <v-col cols="6" md="12">
+                <v-list>
+                    <v-list-item v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
+                        <v-list-item-content>
+                        {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
+                        {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+                        </v-list-item-content>
+                        
+                        <v-list-item-action>
+                            <v-btn @click="deleteAdminBookingDialog(adminBooking)">
+                                {{$getLanguageMsg('Remove')}}
+                                <v-icon right>mdi-delete</v-icon>
+                            </v-btn>
+                        </v-list-item-action>
+                    </v-list-item>
+                </v-list>
             </v-col>
         </v-row>
 
@@ -201,7 +180,7 @@
                                         prepend-icon="mdi-alarm"
                                         ></v-text-field>
 
-                                        <v-btn type="submit">
+                                        <v-btn type="submit" color="primary">
                                         {{$getLanguageMsg('Save')}}
                                         <v-icon right>mdi-content-save</v-icon>
                                         </v-btn>
@@ -247,7 +226,7 @@
                                         prepend-icon="mdi-camera"
                                         ></v-file-input>
 
-                                        <v-btn type="submit">
+                                        <v-btn type="submit" color="primary">
                                         {{$getLanguageMsg('Save')}}
                                         <v-icon right>mdi-content-save</v-icon>
                                         </v-btn>
@@ -459,3 +438,12 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+tbody td {
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+</style>
