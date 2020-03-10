@@ -34,6 +34,9 @@
 </template>
 
 <script>
+
+//TODO: How would you map labels to times (values)?
+//Like, how would you have a value halfway between two labels?
 export default {
   data: () => ({
     labels: [
