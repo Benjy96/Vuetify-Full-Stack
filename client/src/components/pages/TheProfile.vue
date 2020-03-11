@@ -18,39 +18,22 @@
       </v-row>
 
     <!-- Holiday Management -->
-    <v-row>
-      <v-col cols="8" md="8">
-          <!-- TODO: Turn into a data table -->
-          <v-row v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-              <v-col cols="8">
-                  {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
-                  {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
-              </v-col>
-              
-              <v-col>
-                  <v-list-item-action>
-                      <v-icon>mdi-delete</v-icon>
-                  </v-list-item-action>
-              </v-col>
-
-              <v-list-item-action>
-                  <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                      {{$getLanguageMsg('Remove')}}
-                      <v-icon right>mdi-delete</v-icon>
-                  </v-btn>
-              </v-list-item-action>
-          </v-row>
+    <v-row class="mb-6">
+      <v-col cols="12" md="8">
+          <BaseCard title="Holiday Bookings">
+            <AdminBookings/>
+          </BaseCard>
       </v-col>
 
-      <v-col cols="4" md="12">
-          <BaseCard :title="$getLanguageMsg('Unavailable')">
+      <v-col cols="12" md="4">
+          <BaseCard title="Add a holiday">
               <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
           </BaseCard>
       </v-col>
     </v-row>
 
     <!-- Edit Profile Box -->
-    <v-row>
+    <v-row class="mb-6">
       <!-- Fill screen on smallest, otherwise allow 4 spaces for other column -->
       <v-col cols="12" md="8">
         <BaseCard title="Edit Profile" subtitle="Complete your profile">
@@ -129,6 +112,8 @@
 <script>
 import WorkingHours from '@/components/administration/WorkingHours';
 import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker';
+
+import AdminBookings from '@/components/administration/AdminBookings';
 import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
 
 import BusinessService from '@/services/BusinessService';
@@ -139,8 +124,9 @@ export default {
   components: {
     ProfileCard,
     WorkingHours,
-    RegularAvailabilityPicker,
-    AdminBookingPicker
+    RegularAvailabilityPicker,  //TODO: Change to modal & put in WorkingHours components
+    AdminBookings,
+    AdminBookingPicker  //TODO: Change to modal & put in AdminBookigns components
   },
   created() {
     BusinessService.getProfileData().then((res) => { 
@@ -177,6 +163,10 @@ export default {
     }
   },
   methods: {
+    createAdminBooking(adminBooking) {
+      this.adminBookings.push(adminBooking);
+      BusinessService.createAdminBooking(this.id, adminBooking);
+    },
     saveProfileInfo() {
       let saved = false;
 

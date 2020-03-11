@@ -112,13 +112,7 @@ export default {
     data() {
         return {
             id: null,
-            adminBookings: [],
             daysOfWeek: daysOfWeek,
-            confirmDeleteTimeRangeDialog: false,
-            confirmDeleteAdminBookingDialog: false,
-            adminBookingToDelete: null,
-            timeRangeDayToDelete: null,
-            timeRangeRangeToDelete: null,
             // Booking Management Form
             bookingDuration: "",
             bookingDurationRules: [
@@ -149,36 +143,11 @@ export default {
     },
     created() {
         this.id = firebase.auth().currentUser.uid;
-        this.getAdminBookings();
     },
     methods: {
-        getAdminBookings() {
-            BusinessService.getAdminBookings(this.id).then(res => {
-                if(res) {
-                    this.adminBookings = res;
-                }
-            });
-        },
         createAdminBooking(adminBooking) {
             this.adminBookings.push(adminBooking);
             BusinessService.createAdminBooking(this.id, adminBooking);
-        },
-        deleteAdminBookingDialog(adminBooking) {
-            this.adminBookingToDelete = adminBooking;
-            this.confirmDeleteAdminBookingDialog = true;
-        },
-        confirmDeleteAdminBooking() {
-            this.confirmDeleteAdminBookingDialog = false;
-
-            BusinessService.deleteAdminBooking(this.id, this.adminBookingToDelete).then(res => {
-                this.adminBookings = res;
-            });
-        },
-        cancelDelete() {
-            this.confirmDeleteTimeRangeDialog = false;
-            this.confirmDeleteAdminBookingDialog = false;
-            this.adminBookingToDelete = null;
-            this.timeRangeToDelete = null;
         },
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
