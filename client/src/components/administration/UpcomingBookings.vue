@@ -41,7 +41,7 @@
       </template>
 
       <template v-slot:no-data>
-        <p>{{$getLanguageMsg('noBookings')}}</p>
+        <p class="ma-1">{{$getLanguageMsg('noBookings')}}</p>
       </template>
     </v-data-table>
 </template>
