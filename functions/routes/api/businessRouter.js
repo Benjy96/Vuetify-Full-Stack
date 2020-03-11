@@ -298,7 +298,7 @@ router.post('/bookingDetails', async(req, res) => {
     }
 
     if(req.body.bookingAddress) bookingDetails.address = req.body.bookingAddress;
-    if(req.body.bookingTitle) bookingDetails.duration = req.body.bookingTitle;
+    if(req.body.bookingTitle) bookingDetails.title = req.body.bookingTitle;
     if(req.body.bookingInfo) bookingDetails.info = req.body.bookingInfo;
     if(req.body.bookingType) bookingDetails.type = req.body.bookingType;
 
