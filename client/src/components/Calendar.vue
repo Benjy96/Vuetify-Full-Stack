@@ -41,7 +41,7 @@
       </v-dialog>
 
       <v-dialog v-model="addBookingDialog" max-width="500">
-        <AddBookingDialog v-on:add-booking-complete="loadAndViewDay($event)" v-on:add-booking-validated="closeAddBookingDialog"
+        <AddBookingForm v-on:add-booking-complete="loadAndViewDay($event)" v-on:add-booking-validated="closeAddBookingDialog"
         :id="id"
         :addBookingDateObject="addBookingDateObject"
         :bookingTitle="bookingTitle"
@@ -120,11 +120,11 @@ import { daysOfWeek } from "@/DateUtils";
 import CustomerService from "@/services/CustomerService";
 import BusinessService from '@/services/BusinessService';
 
-import AddBookingDialog from '@/components/AddBookingDialog';
+import AddBookingForm from '@/components/AddBookingForm';
 
 export default {
   components: {
-    AddBookingDialog
+    AddBookingForm
   },
   props: ["id"],
   data: () => ({

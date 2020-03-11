@@ -57,7 +57,7 @@
 
             <v-col>
                 <BaseCard headerElevation="6" color="info" title="Preview" subtitle="What customers see when booking you">
-                    <AddBookingDialog></AddBookingDialog>
+                    <AddBookingForm></AddBookingForm>
                 </BaseCard>
                 
             </v-col>
@@ -73,12 +73,12 @@ import firebase from 'firebase';
 import UpcomingBookings from '@/components/administration/UpcomingBookings';
 import BusinessService from '@/services/BusinessService';
 
-import AddBookingDialog from '@/components/AddBookingDialog';
+import AddBookingForm from '@/components/AddBookingForm';
 
 export default {
     name: 'Dashboard',
     components: {
-        AddBookingDialog,
+        AddBookingForm,
         UpcomingBookings,
     },
     data() {
