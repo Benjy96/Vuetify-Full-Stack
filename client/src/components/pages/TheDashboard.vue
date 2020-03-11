@@ -15,7 +15,7 @@
 
         <!-- Booking Management Box -->
         <v-row>
-            <v-col cols="12">
+            <v-col cols="8">
             <BaseCard :title="$getLanguageMsg('Booking Management')">
                 <v-form @submit.prevent="saveBookingDetails" 
                 ref="bookingManagementForm">
@@ -54,6 +54,13 @@
                 </v-form>
             </BaseCard>
             </v-col>
+
+            <v-col>
+                <BaseCard headerElevation="6" color="info" title="Preview" subtitle="What customers see when booking you">
+                    <AddBookingDialog></AddBookingDialog>
+                </BaseCard>
+                
+            </v-col>
         </v-row>
 
     </v-container>
@@ -63,14 +70,15 @@
 import { daysOfWeek } from '@/DateUtils';
 
 import firebase from 'firebase';
-// import Bookings from '@/components/administration/Bookings';
 import UpcomingBookings from '@/components/administration/UpcomingBookings';
 import BusinessService from '@/services/BusinessService';
+
+import AddBookingDialog from '@/components/AddBookingDialog';
 
 export default {
     name: 'Dashboard',
     components: {
-        // Bookings,
+        AddBookingDialog,
         UpcomingBookings,
     },
     data() {

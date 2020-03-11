@@ -40,35 +40,15 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="dialog" max-width="500">
-        <v-card>
-          <v-container>
-            <v-form @submit.prevent="addBooking" ref="addBookingForm">
-              <p v-if="bookingTitle != ''" class="display-1">{{bookingTitle}}</p>
-              <p v-else class="display-1">{{$getLanguageMsg('Book an appointment')}}</p>
-              <p v-if="bookingInfo != ''">{{bookingInfo}}</p>
-              <v-text-field
-                v-model="bookerName"
-                required
-                v-bind:rules="nameRules"
-                :label="$getLanguageMsg('Name')"
-                prepend-icon="mdi-account-circle"
-              />
-              <v-text-field
-                v-model="email"
-                required
-                v-bind:rules="emailRules"
-                label="email"
-                prepend-icon="mdi-at"
-              />
-              <p v-if="address">{{$getLanguageMsg('Location')}}: {{address}}</p>
-              <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
-              <p v-else>{{$getLanguageMsg(bookingType)}}</p>
-              <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
-              <v-btn type="submit" color="primary">{{$getLanguageMsg('Book')}}</v-btn>
-            </v-form>
-          </v-container>
-        </v-card>
+      <v-dialog v-model="addBookingDialog" max-width="500">
+        <AddBookingDialog v-on:add-booking-complete="loadAndViewDay($event)" v-on:add-booking-validated="closeAddBookingDialog"
+        :id="id"
+        :addBookingDateObject="addBookingDateObject"
+        :bookingTitle="bookingTitle"
+        :bookingInfo="bookingInfo"
+        :address="address"
+        :bookingType="bookingType"
+        :bookingPrice="bookingPrice"/>
       </v-dialog>
 
       <v-dialog v-model="bookingCreatedDialog" max-width="400">
@@ -114,7 +94,7 @@
           color="primary"
           :now="today"
           :type="type"
-          @click:event="openDialog"
+          @click:event="openAddBookingDialog"
           @click:more="loadAndViewDay"
           @click:date="loadAndViewDay"
           @click:day="loadAndViewDay"
@@ -140,7 +120,12 @@ import { daysOfWeek } from "@/DateUtils";
 import CustomerService from "@/services/CustomerService";
 import BusinessService from '@/services/BusinessService';
 
+import AddBookingDialog from '@/components/AddBookingDialog';
+
 export default {
+  components: {
+    AddBookingDialog
+  },
   props: ["id"],
   data: () => ({
     isUser: false,
@@ -152,31 +137,31 @@ export default {
     typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
-    // NEW BOOKING >
+    // NEW BOOKING SLOT >
     newBookingSlotDialog: false,
     newBookingSlotDate: null,
     newBookingSlotStart: null,
     newBookingSlotEnd: null,
-    // NEW BOOKING <
-    dialog: false,
-    dialogDate: false,
-    addBookingDateObject: null,
+    // Availability >
     unavailableDays: {},
     currentMonthUnavailableDays: null,
-    address: null,
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
+    // Add Booking >
+    addBookingDialog: false,
+    addBookingDateObject: null,
     bookingTitle: "",
     bookingInfo: "",
     bookingDuration: 60,
     bookingPrice: "POA",
     bookingType: "online",
-    email: "",
-    bookerName: "",
+    address: "",
     bookingCreatedDialog: false,
+    // Booking Slots >
     visibleEvents: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}],
-    events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
+    events: {}
+    // Booking Slots <
   }),
   created() {
     // Check if own calendar
@@ -373,8 +358,7 @@ export default {
     },
     // Clears events for the day, keeping user added "Irregular Availability" and the default event for Vue reactivity
     unhideEvents(year, month) {
-      this.visibleEvents = this.events[year][month];//.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
-      // this.events = this.hiddenEvents.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
+      this.visibleEvents = this.events[year][month];
     },
     // Renders available booking slots
     setAvailableTimes(date) { //TODO: take specific availability into account - specific takes priority
@@ -548,36 +532,6 @@ export default {
 
       this.isFetchingDayData = false;
     },
-    async addBooking() {
-      if (this.$refs.addBookingForm.validate()) {
-        this.dialog = false;
-        this.bookingCreatedDialog = true;
-
-        let date = this.addBookingDateObject.day.date;
-        let year = DateUtils.getYearFromDate(date);
-        let month = DateUtils.getMonthFromDate(date);
-        let day = DateUtils.getDayFromDate(date);
-
-        let from = this.addBookingDateObject.event.start.split(" ")[1];
-        let to = this.addBookingDateObject.event.end.split(" ")[1];
-
-        //RE "Huge Server Async Request Learning: in notes" - FUCK, it was awaiting axios/server, not the db
-        //That's why it was returning 5 bookings instead of 6 when I'd just added a booking
-        //the booking hadn't been added to the db, and my code was running simply when the server responded
-        await CustomerService.createBooking(
-          this.id,
-          this.bookerName,
-          this.email,
-          year,
-          month,
-          day,
-          from,
-          to
-        );
-
-        this.loadAndViewDay(date);
-      }
-    },
     dayAvailable(dateObject) {
       if (dateObject.date < DateUtils.getCurrentDateString()) {
         return false;
@@ -622,18 +576,13 @@ export default {
 
       return false;
     },
-    switchType() {
-      if(this.type == 'month') {
-        this.typeToSwitchTo = this.type;
-        this.type = 'day';
-      } else if (this.type == 'day') {
-        this.typeToSwitchTo = this.type;
-        this.type = 'month';
-      }
-    },
-    openDialog(eventObject) {
-      this.dialog = true;
+    openAddBookingDialog(eventObject) {
+      this.addBookingDialog = true;
       this.addBookingDateObject = eventObject;
+    },
+    closeAddBookingDialog() {
+      this.addBookingDialog = false
+      this.bookingCreatedDialog = true
     },
     async loadAndViewDay(date) {
       date = date.date != undefined ? date.date : date;
