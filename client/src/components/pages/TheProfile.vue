@@ -2,17 +2,9 @@
   <v-container>
       <!-- Working Hours Box -->
       <v-row class="mb-6">
-        <v-col cols="8">
+        <v-col cols="12">
             <BaseCard headerElevation="6" :title="$getLanguageMsg('workingHours')">
                 <WorkingHours></WorkingHours>
-            </BaseCard>
-        </v-col>
-
-        <!-- Working Hours Management (Adder) -->
-        <!-- TODO: Make this a modal? -->
-        <v-col cols="4">
-            <BaseCard headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
-                <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
             </BaseCard>
         </v-col>
       </v-row>
@@ -111,7 +103,6 @@
 
 <script>
 import WorkingHours from '@/components/administration/WorkingHours';
-import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker';
 
 import AdminBookings from '@/components/administration/AdminBookings';
 import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
@@ -124,7 +115,6 @@ export default {
   components: {
     ProfileCard,
     WorkingHours,
-    RegularAvailabilityPicker,  //TODO: Change to modal & put in WorkingHours components
     AdminBookings,
     AdminBookingPicker  //TODO: Change to modal & put in AdminBookigns components
   },

@@ -7,16 +7,14 @@
     <template v-slot:top>
         <v-toolbar flat>
             <v-dialog v-model="adder" max-width="500px">
+
                 <template v-slot:activator="{ on }">
                     <v-btn v-on="on" color="primary">{{$getLanguageMsg('Add')}}</v-btn>
                 </template>
 
-                <BaseTable headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
+                <BaseCard>
                     <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
-                    <template v-slot:header-right>
-                        <p>wat</p>
-                    </template>
-                </BaseTable>
+                </BaseCard>
 
             </v-dialog>
         </v-toolbar>
