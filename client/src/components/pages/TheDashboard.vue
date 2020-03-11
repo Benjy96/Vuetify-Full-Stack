@@ -1,42 +1,6 @@
 <template>
     <v-container>
 
-    <!-- DIALOGS -->
-    <v-dialog v-model="confirmDeleteAdminBookingDialog" max-width="400">
-        <v-card>
-        <v-container>
-            <p>{{$getLanguageMsg('confirmRemove')}}</p>
-            <v-btn color="error" 
-            @click="confirmDeleteAdminBooking">
-            {{$getLanguageMsg('Yes')}}
-            </v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" 
-            @click="cancelDelete">
-            {{$getLanguageMsg('Cancel')}}
-            </v-btn>
-        </v-container>
-        </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="confirmDeleteTimeRangeDialog" max-width="400">
-        <v-card>
-        <v-container>
-            <p>{{$getLanguageMsg('confirmRemove')}}</p>
-            <v-btn color="error" class="mr-4"
-            @click="confirmDeleteTimeRange">
-            {{$getLanguageMsg('Yes')}}
-            </v-btn>
-            <v-btn color="primary" 
-            @click="cancelDelete">
-            {{$getLanguageMsg('Cancel')}}
-            </v-btn>
-        </v-container>
-        </v-card>
-    </v-dialog>
-
-    <!-- /DIALOGS -->
-
         <!-- Bookings Box -->
         <v-row class="mb-6">
             <v-col cols="12">
@@ -50,7 +14,7 @@
         <!-- TODO: UI Overhaul - How to format list nicely -->
 
         <!-- Booking Management Box -->
-        <!-- <v-row>
+        <v-row>
             <v-col cols="12">
             <BaseCard :title="$getLanguageMsg('Booking Management')">
                 <v-form @submit.prevent="saveBookingDetails" 
@@ -90,7 +54,7 @@
                 </v-form>
             </BaseCard>
             </v-col>
-        </v-row> -->
+        </v-row>
 
     </v-container>
 </template>
@@ -145,10 +109,6 @@ export default {
         this.id = firebase.auth().currentUser.uid;
     },
     methods: {
-        createAdminBooking(adminBooking) {
-            this.adminBookings.push(adminBooking);
-            BusinessService.createAdminBooking(this.id, adminBooking);
-        },
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
                 let saved = false;

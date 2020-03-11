@@ -4,6 +4,24 @@
     :items="bookings"
     >
 
+    <template v-slot:top>
+        <v-toolbar flat>
+            <v-dialog v-model="adder" max-width="500px">
+                <template v-slot:activator="{ on }">
+                    <v-btn v-on="on" color="primary">{{$getLanguageMsg('Add')}}</v-btn>
+                </template>
+
+                <BaseTable headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
+                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+                    <template v-slot:header-right>
+                        <p>wat</p>
+                    </template>
+                </BaseTable>
+
+            </v-dialog>
+        </v-toolbar>
+    </template>
+
     <template v-slot:item.action="{ item }">
         <v-icon right color="red" @click="removeRange(item)">
             mdi-close
@@ -18,7 +36,12 @@ import { daysOfWeek } from '@/DateUtils';
 import firebase from 'firebase';
 import BusinessService from '@/services/BusinessService'
 
+import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker'
+
 export default {
+    components: {
+        RegularAvailabilityPicker
+    },
     data() {
         return {
             id: null,
@@ -28,7 +51,8 @@ export default {
                 { text: 'To', value: 'to' },
                 { text: 'Actions', value: 'action', sortable: false }, //Linked with v-slot:item.action
             ],
-            bookings: []
+            bookings: [],
+            adder: false
         }
     },
     created() {
