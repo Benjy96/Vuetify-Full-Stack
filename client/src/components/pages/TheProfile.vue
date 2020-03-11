@@ -11,15 +11,9 @@
 
     <!-- Holiday Management -->
     <v-row class="mb-6">
-      <v-col cols="12" md="8">
-          <BaseCard title="Holiday Bookings">
+      <v-col cols="12">
+          <BaseCard headerElevation="6" title="Holiday Bookings">
             <AdminBookings/>
-          </BaseCard>
-      </v-col>
-
-      <v-col cols="12" md="4">
-          <BaseCard title="Add a holiday">
-              <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
           </BaseCard>
       </v-col>
     </v-row>
@@ -105,7 +99,6 @@
 import WorkingHours from '@/components/administration/WorkingHours';
 
 import AdminBookings from '@/components/administration/AdminBookings';
-import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
 
 import BusinessService from '@/services/BusinessService';
 
@@ -115,8 +108,7 @@ export default {
   components: {
     ProfileCard,
     WorkingHours,
-    AdminBookings,
-    AdminBookingPicker  //TODO: Change to modal & put in AdminBookigns components
+    AdminBookings
   },
   created() {
     BusinessService.getProfileData().then((res) => { 
@@ -153,10 +145,6 @@ export default {
     }
   },
   methods: {
-    createAdminBooking(adminBooking) {
-      this.adminBookings.push(adminBooking);
-      BusinessService.createAdminBooking(this.id, adminBooking);
-    },
     saveProfileInfo() {
       let saved = false;
 
