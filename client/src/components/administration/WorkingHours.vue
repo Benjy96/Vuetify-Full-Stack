@@ -13,7 +13,7 @@
                 </template>
 
                 <BaseCard>
-                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id" class="pt-8 px-4"/>
                 </BaseCard>
 
             </v-dialog>

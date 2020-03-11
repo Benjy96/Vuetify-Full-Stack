@@ -13,7 +13,7 @@
                 </template>
 
                 <BaseCard>
-                    <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
+                    <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)" class="pt-8 px-4"/>
                 </BaseCard>
 
             </v-dialog>
