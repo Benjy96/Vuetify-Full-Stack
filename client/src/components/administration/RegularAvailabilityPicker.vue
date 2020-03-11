@@ -67,7 +67,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <v-btn @click="validate">{{$getLanguageMsg('Add')}}</v-btn>
+                <v-btn color="primary" @click="validate">{{$getLanguageMsg('Add')}}</v-btn>
             </v-col>
         </v-row>
     </v-form>

@@ -46,57 +46,8 @@
             </v-col>
         </v-row>
 
-        <v-row class="mb-6">
-            <!-- Working Hours Box -->
-            <v-col cols="8">
-                <BaseCard headerElevation="6" :title="$getLanguageMsg('workingHours')">
-                    <WorkingHours></WorkingHours>
-                </BaseCard>
-            </v-col>
-
-            <!-- Working Hours Management (Adder) -->
-            <!-- TODO: Make this a modal? -->
-            <v-col cols="4">
-                <BaseCard headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
-                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
-                </BaseCard>
-            </v-col>
-        </v-row>
-
-                        <!-- TODO: Turn into a v-dialog? -->
-                        <!-- TODO: UI Overhaul - How to format list nicely -->
-
-        <!-- <v-row>
-            
-            <v-col cols="6" md="12">
-                <BaseCard :title="$getLanguageMsg('Unavailable')">
-                    <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
-                </BaseCard>
-            </v-col>
-
-            <v-col cols="6" md="12">
-
-                <v-row v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
-                    <v-col cols="8">
-                        {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
-                        {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
-                    </v-col>
-                    
-                    <v-col>
-                        <v-list-item-action>
-                            <v-icon>mdi-delete</v-icon>
-                        </v-list-item-action>
-                    </v-col>
-
-                    <v-list-item-action>
-                        <v-btn @click="deleteAdminBookingDialog(adminBooking)">
-                            {{$getLanguageMsg('Remove')}}
-                            <v-icon right>mdi-delete</v-icon>
-                        </v-btn>
-                    </v-list-item-action>
-                </v-row>
-            </v-col>
-        </v-row> -->
+        <!-- TODO: Turn into a v-dialog? -->
+        <!-- TODO: UI Overhaul - How to format list nicely -->
 
         <!-- Booking Management Box -->
         <!-- <v-row>
@@ -141,42 +92,6 @@
             </v-col>
         </v-row> -->
 
-        <!-- Profile Management Box -->
-        <!-- <v-row>
-            <v-col>
-                <BaseCard :title="$getLanguageMsg('Profile Management')">
-                    <v-form @submit.prevent="saveProfileInfo" 
-                    ref="profileManagementForm">
-
-                        <v-text-field v-model="bio"
-                        v-bind:rules="bioRules"
-                        :label="$getLanguageMsg('bioFormText')" 
-                        prepend-icon="mdi-account-details"
-                        />
-
-                        <v-text-field v-model="occupation"
-                        :label="$getLanguageMsg('occupation')" 
-                        prepend-icon="mdi-hammer"
-                        />
-
-                        <v-file-input v-model="profileImage"
-                        show-size
-                        accept=".jpg"
-                        v-bind:rules="imageRules"
-                        :label="$getLanguageMsg('profilePicture')"
-                        prepend-icon="mdi-camera"
-                        ></v-file-input>
-
-                        <v-btn type="submit" color="primary">
-                        {{$getLanguageMsg('Save')}}
-                        <v-icon right>mdi-content-save</v-icon>
-                        </v-btn>
-
-                    </v-form>
-                </BaseCard>
-            </v-col>
-        </v-row> -->
-
     </v-container>
 </template>
 
@@ -186,21 +101,13 @@ import { daysOfWeek } from '@/DateUtils';
 import firebase from 'firebase';
 // import Bookings from '@/components/administration/Bookings';
 import UpcomingBookings from '@/components/administration/UpcomingBookings';
-// import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
 import BusinessService from '@/services/BusinessService';
-import WorkingHours from '@/components/administration/WorkingHours';
-
-import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker';
-
 
 export default {
     name: 'Dashboard',
     components: {
         // Bookings,
         UpcomingBookings,
-        WorkingHours,
-        // AdminBookingPicker,
-        RegularAvailabilityPicker
     },
     data() {
         return {
@@ -238,26 +145,10 @@ export default {
                 val => val.length < this.bookingTitleLimit || this.$getLanguageMsg('invalidBookingInfoFormText')
             ],
             bookingTitleLimit: 100,
-            bio: "",
-            bioRules: [
-                val => val.length < this.bioLimit || this.$getLanguageMsg('invalidBioFormText')
-            ],
-            bioLimit: 150,
-            occupation: "",
-            occupationRules: [
-                val => val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
-            ],
-            occupationLimit: 25,
-            profileImage: null,
-            imageRules: [
-                value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')
-            ],
-            confirmSavedDialog: false
         }
     },
     created() {
         this.id = firebase.auth().currentUser.uid;
-        this.getRanges();
         this.getAdminBookings();
     },
     methods: {
@@ -288,30 +179,6 @@ export default {
             this.confirmDeleteAdminBookingDialog = false;
             this.adminBookingToDelete = null;
             this.timeRangeToDelete = null;
-        },
-        saveProfileInfo() {
-            let saved = false;
-
-            if(this.$refs.profileManagementForm.validate()) {
-                if(this.bio != "" && this.bio != null) {
-                    saved = true;
-                    BusinessService.updateBio(this.id, this.bio);
-                }
-
-                if(this.occupation != "" && this.occupation != null) {
-                    saved = true;
-                    BusinessService.updateOccupation(this.id, this.occupation);
-                }
-
-                if(this.profileImage != null) {
-                    saved = true;
-                    BusinessService.setProfileImage(this.id, this.profileImage);
-                }
-
-                if(saved) this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
-
-                this.$refs.profileManagementForm.reset();
-            }
         },
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {

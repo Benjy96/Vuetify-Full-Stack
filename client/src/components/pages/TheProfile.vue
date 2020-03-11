@@ -1,5 +1,55 @@
 <template>
   <v-container>
+      <!-- Working Hours Box -->
+      <v-row class="mb-6">
+        <v-col cols="8">
+            <BaseCard headerElevation="6" :title="$getLanguageMsg('workingHours')">
+                <WorkingHours></WorkingHours>
+            </BaseCard>
+        </v-col>
+
+        <!-- Working Hours Management (Adder) -->
+        <!-- TODO: Make this a modal? -->
+        <v-col cols="4">
+            <BaseCard headerElevation="6" :title="$getLanguageMsg('addWorkingHours')">
+                <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id"/>
+            </BaseCard>
+        </v-col>
+      </v-row>
+
+    <!-- Holiday Management -->
+    <v-row>
+      <v-col cols="8" md="8">
+          <!-- TODO: Turn into a data table -->
+          <v-row v-for="(adminBooking, index) in adminBookings" :key="'adminBooking' + index">
+              <v-col cols="8">
+                  {{$getLanguageMsg('From')}} {{ adminBooking.fromDate }} {{adminBooking.fromTime }}
+                  {{$getLanguageMsg('to')}} {{ adminBooking.toDate }} {{ adminBooking.toTime }}
+              </v-col>
+              
+              <v-col>
+                  <v-list-item-action>
+                      <v-icon>mdi-delete</v-icon>
+                  </v-list-item-action>
+              </v-col>
+
+              <v-list-item-action>
+                  <v-btn @click="deleteAdminBookingDialog(adminBooking)">
+                      {{$getLanguageMsg('Remove')}}
+                      <v-icon right>mdi-delete</v-icon>
+                  </v-btn>
+              </v-list-item-action>
+          </v-row>
+      </v-col>
+
+      <v-col cols="4" md="12">
+          <BaseCard :title="$getLanguageMsg('Unavailable')">
+              <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)"/>
+          </BaseCard>
+      </v-col>
+    </v-row>
+
+    <!-- Edit Profile Box -->
     <v-row>
       <!-- Fill screen on smallest, otherwise allow 4 spaces for other column -->
       <v-col cols="12" md="8">
@@ -45,7 +95,7 @@
                     :label="$getLanguageMsg('bioFormText')"
                     prepend-icon="mdi-account-details"
                     v-model="description"
-                    v-bind:rules="bioRules"
+                    v-bind:rules="descriptionRules"
                   />
                 </v-col>
                 <v-col cols="12" class="text-xs-right">
@@ -77,12 +127,20 @@
 </template>
 
 <script>
-import ProfileCard from '../ProfileCard'
+import WorkingHours from '@/components/administration/WorkingHours';
+import RegularAvailabilityPicker from '@/components/administration/RegularAvailabilityPicker';
+import AdminBookingPicker from '@/components/administration/AdminBookingPicker';
+
 import BusinessService from '@/services/BusinessService';
+
+import ProfileCard from '@/components/ProfileCard'
 
 export default {
   components: {
-    ProfileCard
+    ProfileCard,
+    WorkingHours,
+    RegularAvailabilityPicker,
+    AdminBookingPicker
   },
   created() {
     BusinessService.getProfileData().then((res) => { 
@@ -102,7 +160,15 @@ export default {
       firstname: '',
       surname: '',
       description: '',
+      descriptionRules: [
+        val => val.length < this.descriptionLimit || this.$getLanguageMsg('invalidBioFormText')
+      ],
+      descriptionLimit: 150,
       occupation: '',
+      occupationRules: [
+        val => val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
+      ],
+      occupationLimit: 25,
       profileImage: null,
       formProfileImage: null,
       imageRules: [
@@ -112,21 +178,25 @@ export default {
   },
   methods: {
     saveProfileInfo() {
+      let saved = false;
+
       if(this.$refs.profileManagementForm.validate()) {
-          if(this.bio != "" && this.bio != null) {
-              this.confirmSavedDialog = true; //TODO: Convert to generic modal I implemented?
-              BusinessService.updateBio(this.id, this.bio);
+          if(this.description != "" && this.description != null) {
+              saved = true; //TODO: Convert to generic modal I implemented?
+              BusinessService.updateBio(this.id, this.description);
           }
 
           if(this.occupation != "" && this.occupation != null) {
-              this.confirmSavedDialog = true;
+              saved = true;
               BusinessService.updateOccupation(this.id, this.occupation);
           }
 
-          if(this.profileImage != null) {
-              this.confirmSavedDialog = true;
+          if(this.formProfileImage != null) {
+              saved = true;
               BusinessService.setProfileImage(this.id, this.profileImage);
           }
+
+          if(saved) this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
 
           this.$refs.profileManagementForm.reset();
       }
