@@ -24,23 +24,14 @@
           </v-list-item-content>
         </v-list-item>
 
+
         <v-list-item link v-if="currentUser" to="/dashboard">
           <v-list-item-action>
             <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('Dashboard')}}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-
-        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
-          <v-list-item-action>
-            <v-icon>mdi-calendar</v-icon>
-          </v-list-item-action>
-
-          <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('Calendar')}}</v-list-item-title>
+            <v-list-item-title>Bookings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -51,6 +42,16 @@
 
           <v-list-item-content>
             <v-list-item-title>{{$getLanguageMsg('Profile')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" :to="'/businesses/' + currentUser.uid">
+          <v-list-item-action>
+            <v-icon>mdi-calendar</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('Calendar')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 

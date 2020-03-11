@@ -321,6 +321,10 @@ const messages =
         'en': "Booking duration must a number greater than 0",
         'es': ""
     },
+    'Edit Booking Form': {
+        'en': "Edit Booking Form",
+        'es': "" //TODO
+    },
     'Booking Management': {
         'en': "Booking Management",
         'es': "" //TODO

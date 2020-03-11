@@ -14,7 +14,7 @@
         <!-- TODO add cols to the form -->
         <v-row class="mb-6">
             <v-col cols="8">
-            <BaseCard :title="$getLanguageMsg('Booking Management')">
+            <BaseCard :title="$getLanguageMsg('Edit Booking Form')">
                 <v-form @submit.prevent="saveBookingDetails" 
                 ref="bookingManagementForm">
 
