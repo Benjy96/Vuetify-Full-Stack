@@ -120,20 +120,8 @@ class BusinessService {
 
     //TODO: Combine update methods - in Dashboard check all then call one function
         //In back-end, retrieve what's needed in nested ifs
-    static async updateBookingTitle(uid, bookingTitle) {
-        axios.post(`${apiURL}/bookingTitle`, {uid, bookingTitle});
-    }
-
-    static async updateBookingInfo(uid, bookingInfo) {
-        axios.post(`${apiURL}/bookingInfo`, {uid, bookingInfo});
-    }
-
-    static async updateBookingDuration(uid, bookingDuration) {
-        axios.post(`${apiURL}/bookingDuration`, {uid, bookingDuration});
-    }
-
-    static async updateBookingPrice(uid, bookingPrice) {
-        axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
+    static async updateBookingDetails(uid, bookingTitle, bookingInfo, bookingDuration, bookingPrice, bookingType) {
+        axios.post(`${apiURL}/bookingDetails`, {uid, bookingTitle, bookingInfo, bookingDuration, bookingPrice, bookingType});
     }
 
     /**

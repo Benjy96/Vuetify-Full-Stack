@@ -269,82 +269,41 @@ router.post('/occupation', async (req, res) => {
 });
 
 /* -- Booking management -- */
-
-router.post('/bookingTitle', async (req, res) => {
+router.post('/bookingDetails', async(req, res) => {
   let uid = req.body.uid;
-  let bookingTitle = req.body.bookingTitle;
-
-  if(!uid || !bookingTitle) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+  if(!uid) {
+    res.status(400).send('Invalid request');
     return;
   } else {
-    db.collection('businesses').doc(uid).set({
-      //TODO: Add to nested bookingDetails object
-      bookingTitle: bookingTitle
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
+    let bookingDetails = {};
 
-router.post('/bookingInfo', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingInfo = req.body.bookingInfo;
+    if(req.body.bookingDuration) {
+      bookingDetails.duration = req.body.bookingDuration;
 
-  if(!uid || !bookingInfo) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(uid).set({
-      //TODO: Add to nested bookingDetails object
-      bookingInfo: bookingInfo
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
-
-//TODO: RATE LIMIT!!!
-router.post('/bookingDuration', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingDuration = parseInt(req.body.bookingDuration);
-
-  if(!uid || !bookingDuration) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(uid).set({
-      //TODO: Add to nested bookingDetails object
-      bookingDuration: bookingDuration
-    }, {merge: true}).then(() => {
-  
       let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
       //TODO: We need to check as far ahead as there may be admin/customer bookings
+      //TODO: Is MetaDataHelper checking this nested bookingDetails obj or root bookingDuration?
       MetaDataHelper.updateMetaData(uid, 
         DateUtils.getCurrentDateString(), 
         bookingDurationSetUntil
       );
-  
-      res.status(202).send({setTo: bookingDurationSetUntil});
-    });
-  }
-});
-
-router.post('/bookingPrice', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingPrice = req.body.bookingPrice;
-
-  if(!uid || !bookingPrice || !parseFloat(bookingPrice)) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    if(!bookingPrice.includes(".")) {
-      bookingPrice = bookingPrice.concat(".00");
     }
 
-    db.collection(`businesses`).doc(uid).set({
-      //TODO: Add to nested bookingDetails object
-      bookingPrice: bookingPrice
+    if(req.body.bookingPrice && parseFloat(req.body.bookingPrice)) {
+      if(!req.body.bookingPrice.includes(".")) {
+        bookingDetails.price = req.body.bookingPrice.concat(".00");
+      } else {
+        bookingDetails.price = req.body.bookingPrice;
+      }
+    }
+
+    if(req.body.bookingAddress) bookingDetails.address = req.body.bookingAddress;
+    if(req.body.bookingTitle) bookingDetails.duration = req.body.bookingTitle;
+    if(req.body.bookingInfo) bookingDetails.info = req.body.bookingInfo;
+    if(req.body.bookingType) bookingDetails.type = req.body.bookingType;
+
+    db.collection('businesses').doc(uid).set({
+      bookingDetails: bookingDetails
     }, {merge: true}).then(() => {
       res.status(200).send();
     });
