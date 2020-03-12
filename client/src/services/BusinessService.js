@@ -125,13 +125,6 @@ class BusinessService {
     }
 
     /**
-     * Merges a range into the regular availability array
-     */
-    static async addRegularAvailabilityRange(uid, day, from, to) {
-        axios.post(`${apiURL}/regularAvailability`, {uid, day, from, to});
-    }
-
-    /**
      * Replaces the current regular availability array
      */
     //TODO: Do we need to do this server-side or can we do client side?
