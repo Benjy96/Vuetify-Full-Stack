@@ -19,6 +19,14 @@ const messages =
         'es': "" //TODO
     },
     //Home.vue
+    'Search': {
+        'en': "Search",
+        'es': "" //TODO
+    },
+    'searchBarString': {
+        'en': "I'm searching for . . .",
+        'es': "" //TODO
+    },
     'Profile': {
         'en': "Profile",
         'es': "" //TODO

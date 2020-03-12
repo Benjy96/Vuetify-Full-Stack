@@ -1,7 +1,21 @@
 <template>
   <div>
-    <h1 class="display-1 ma-4">{{$getLanguageMsg('businesses')}}</h1>
-    <v-divider class="mb-7"></v-divider>
+    <v-row>
+      <v-col align="center">
+        <v-text-field
+        :label="$getLanguageMsg('searchBarString')"
+        class="ma-6"
+        style="max-width: 20%;"
+        hide-details>
+          <template v-slot:append>
+              <v-icon>mdi-magnify</v-icon>
+          </template>
+        </v-text-field>
+      </v-col>
+    </v-row>
+
+    <v-divider class="mb-12"></v-divider>
+
       <v-row id="businessesDisplay">
         <v-col cols="12" sm="6" md="4"
           v-for="(business, index) in businesses" 

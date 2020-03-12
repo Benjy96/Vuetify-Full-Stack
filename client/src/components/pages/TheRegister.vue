@@ -136,6 +136,7 @@ export default {
                                 email: this.email
                         });
 
+                        //TODO: Move to a service
                         db.collection('businesses').doc(userCredential.user.uid).set({
                             profileData: {
                                 firstname: this.firstname,
