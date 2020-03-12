@@ -13,7 +13,7 @@
                 </template>
 
                 <BaseCard>
-                    <AdminBookingPicker v-on:saved-admin-booking="createAdminBooking($event)" class="pt-8 px-4"/>
+                    <AdminBookingPicker v-on:saved-admin-booking="onSavedAdminBooking($event)" class="pt-8 px-4"/>
                 </BaseCard>
 
             </v-dialog>
@@ -60,6 +60,10 @@ export default {
     methods: {
         initialize() {
             this.getAdminBookings();
+        },
+        onSavedAdminBooking(adminBooking) {
+            this.adder = false;
+            this.createAdminBooking(adminBooking);
         },
         createAdminBooking(adminBooking) {
             this.adminBookings.push(adminBooking);

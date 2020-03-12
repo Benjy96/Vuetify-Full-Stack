@@ -13,7 +13,7 @@
                 </template>
 
                 <BaseCard>
-                    <RegularAvailabilityPicker v-on:saved-time-range="getRanges($event)" :id="id" class="pt-8 px-4"/>
+                    <RegularAvailabilityPicker v-on:saved-time-range="onSavedTimeRange" :id="id" class="pt-8 px-4"/>
                 </BaseCard>
 
             </v-dialog>
@@ -61,9 +61,15 @@ export default {
         initialize() {
             this.getRanges();
         },
+        onSavedTimeRange() {
+            this.adder = false;
+            this.getRanges();
+        },
         getRanges() {
             BusinessService.getRegularAvailability(this.id).then(regularAvailability => {
                 if(regularAvailability) {
+                    this.bookings = [];
+
                     daysOfWeek.forEach(day => {
                         let weekday = day;
 
