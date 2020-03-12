@@ -145,10 +145,9 @@ router.put('/regularAvailability', async(req, res) => {
   }
 
   let docRef = db.collection('businesses').doc(uid);
+  //TODO: FUCK THIS IS UGLY
   await docRef.update({
-      "regularAvailability": {
-          [day]: ranges
-      }
+      ["regularAvailability." + [day]]: ranges
   }, {merge: true});
 
   res.status(200).send();

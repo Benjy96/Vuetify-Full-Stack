@@ -59,6 +59,7 @@ export default {
     },
     methods: {
         initialize() {
+            this.bookings = [];
             this.getRanges();
         },
         onSavedTimeRange(savedTimeRange) {
@@ -84,7 +85,8 @@ export default {
                                 this.bookings.push({
                                     englishDay: weekday,
                                     day: this.$getLanguageMsg(weekday),
-                                    ...range
+                                    from: range.from,
+                                    to: range.to
                                 })
                             });
                         }
@@ -106,17 +108,20 @@ export default {
                 //if same day:
                     //if not same from / to
                 let dayArray = this.bookings.filter(function(element) {
-                    if(element.englishDay == rangeToRemove.day) {
-                        if(element.from == rangeToRemove.from && element.to == rangeToRemove.to) {
-                            return false;
-                        }
+                    if(element.englishDay != rangeToRemove.day) {
+                        window.console.log('1 removing ' + JSON.stringify(element));
+                        return false;
                     }
+
+                    if(element.englishDay == rangeToRemove.day && (element.from == rangeToRemove.from && element.to == rangeToRemove.to)) {
+                        window.console.log('2 removing ' + JSON.stringify(element));
+                        return false;
+                    }
+
                     return true;
                 });
 
-                this.bookings = dayArray;
-
-                BusinessService.setDayRegularAvailability(this.id, day, dayArray);
+                BusinessService.setDayRegularAvailability(this.id, day, dayArray).then(this.initialize());
             }
         }
     }
