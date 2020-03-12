@@ -51,6 +51,12 @@
                     :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
                     ></v-select>
 
+                    <v-text-field v-if="bookingType == 'customerTravels'" 
+                    v-model="address"
+                    required v-bind:rules="nameRules"
+                    :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
+                    />
+
                     <v-btn type="submit" color="primary">
                     {{$getLanguageMsg('Save')}}
                     <v-icon right>mdi-content-save</v-icon>
@@ -132,6 +138,7 @@ export default {
                 {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
                 {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
             ],
+            address: ''
         }
     },
     created() {
@@ -157,7 +164,7 @@ export default {
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
                 BusinessService.updateBookingDetails(this.id, this.bookingTitle, this.bookingInfo,
-                this.bookingDuration, this.bookingPrice, this.bookingType);
+                this.bookingDuration, this.bookingPrice, this.bookingType, this.address);
 
                 this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
             }

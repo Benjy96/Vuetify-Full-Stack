@@ -268,6 +268,7 @@ router.post('/bookingDetails', async(req, res) => {
     if(req.body.bookingTitle) bookingDetails.title = req.body.bookingTitle;
     if(req.body.bookingInfo) bookingDetails.info = req.body.bookingInfo;
     if(req.body.bookingType) bookingDetails.type = req.body.bookingType;
+    if(req.body.address) bookingDetails.address = req.body.address;
 
     db.collection('businesses').doc(uid).set({
       bookingDetails: bookingDetails
