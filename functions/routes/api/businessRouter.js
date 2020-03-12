@@ -172,38 +172,6 @@ router.put('/regularAvailability', async(req, res) => {
 });
 
 // Post adds to something and changes its state - Push a range to a reg availability day
-router.post('/regularAvailability', async(req, res) => {
-  let uid = req.body.uid;
-  let day = req.body.day;
-  let from = req.body.from;
-  let to = req.body.to;
-
-  if(!uid || !day || !from || !to) {
-    res.status(400).send();
-    return;
-  }
-
-  await db.collection('businesses').doc(uid)
-  .set({
-      "regularAvailability": {
-          [day]: admin.firestore.FieldValue.arrayUnion({
-              from: from,
-              to: to
-          })
-      }
-  }, {merge: true});
-
-  res.status(200).send();
-
-  let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-  //TODO: We need to check as far ahead as there may be admin/customer bookings
-  MetaDataHelper.updateMetaData(uid, 
-    DateUtils.getCurrentDateString(), 
-    bookingDurationSetUntil
-  );
-});
-
-// Post adds to something and changes its state - Push a range to a reg availability day
 router.post('/irregularAvailability', async(req, res) => {
   let uid = req.body.uid;
   let date = req.body.date;
