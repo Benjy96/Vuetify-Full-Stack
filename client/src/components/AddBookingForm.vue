@@ -20,12 +20,16 @@
             prepend-icon="mdi-at"
             />
             <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
-            <p v-else style="display: inline;">{{$getLanguageMsg(bookingType)}} </p>
-
-            <p v-if="bookingType != 'online' && address"><span class="font-weight-bold">{{$getLanguageMsg('Location')}}:</span> {{address}}</p>
+            <p v-else>{{$getLanguageMsg(bookingType)}} </p>
+            <p v-if="bookingType == 'customerTravels' && address"><span class="font-weight-bold">{{$getLanguageMsg('Location')}}:</span> {{address}}</p>
             
-            
-            <p class="subtitle-2">{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
+            <p class="subtitle-2" v-if="bookingDuration > 0">
+                {{$getLanguageMsg('Duration')}}: {{bookingDuration}}
+                <span v-if="bookingDuration == 1">{{$getLanguageMsg('minute')}}</span>
+                <span v-else-if="bookingDuration > 1">{{$getLanguageMsg('minutes')}}</span>
+                <br>
+                {{$getLanguageMsg('Price')}}: {{bookingPrice}}
+            </p>
             <v-btn type="submit" color="primary">{{$getLanguageMsg('Book')}}</v-btn>
         </v-form>
         </v-container>
@@ -59,6 +63,9 @@ export default {
         },
         bookingPrice: {
             default: "POA"
+        },
+        bookingDuration: {
+            default: 60
         },
         addBookingDateObject: {
             default: null

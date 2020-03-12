@@ -293,7 +293,19 @@ const messages =
         'en': "Address",
         'es': "" //TODO
     },
-    'price': {
+    'Duration': {
+        'en': "Duration",
+        'es': "" //TODO
+    },
+    'minutes': {
+        'en': "minutes",
+        'es': "" //TODO
+    },
+    'minute': {
+        'en': "minute",
+        'es': "" //TODO
+    },
+    'Price': {
         'en': "Price",
         'es': "" //TODO
     },
