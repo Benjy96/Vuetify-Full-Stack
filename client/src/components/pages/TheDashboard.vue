@@ -117,7 +117,7 @@ export default {
             ],
             bookingPrice: "",
             bookingPriceRules: [
-                val => ((val == "" || val == undefined) || parseFloat(val) > 0) || this.$getLanguageMsg('invalidBookingPriceFormText')
+                val => (val.length > 0 || val == undefined) || this.$getLanguageMsg('Required')
             ],
             bookingInfo: "",
             bookingInfoRules: [
