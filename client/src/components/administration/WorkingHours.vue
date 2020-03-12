@@ -99,22 +99,15 @@ export default {
                 let day = range.englishDay;
                 let rangeToRemove = { day: range.englishDay, from: range.from, to: range.to };
 
-                //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
-                //- matched by EXCLUSION)
-
-                //it's returning no mondays
-                // filter returns elements that pass the test
-
+                // will put elements into the array that return true
                 //if same day:
                     //if not same from / to
                 let dayArray = this.bookings.filter(function(element) {
                     if(element.englishDay != rangeToRemove.day) {
-                        window.console.log('1 removing ' + JSON.stringify(element));
                         return false;
                     }
 
                     if(element.englishDay == rangeToRemove.day && (element.from == rangeToRemove.from && element.to == rangeToRemove.to)) {
-                        window.console.log('2 removing ' + JSON.stringify(element));
                         return false;
                     }
 
