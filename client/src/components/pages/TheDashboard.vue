@@ -13,55 +13,72 @@
         <!-- Booking Management Box -->
         <!-- TODO add cols to the form -->
         <v-row class="mb-6">
-            <v-col cols="8">
+            <v-col cols="12" md="8">
             <BaseCard :title="$getLanguageMsg('Edit Booking Form')">
                 <v-form @submit.prevent="saveBookingDetails" 
                 ref="bookingManagementForm">
+                    <v-container>
+                        <v-row class="mx-5">
+                            <v-col cols="9">
+                                <v-text-field v-model="bookingTitle"
+                                v-bind:rules="bookingTitleRules"
+                                :label="$getLanguageMsg('bookingTitleFormText')" 
+                                prepend-icon="mdi-text-short"
+                                />
+                            </v-col>
 
-                    <v-text-field v-model="bookingTitle"
-                    v-bind:rules="bookingTitleRules"
-                    :label="$getLanguageMsg('bookingTitleFormText')" 
-                    prepend-icon="mdi-text-short"
-                    />
+                            <v-col cols="12">
+                                <v-textarea v-model="bookingInfo"
+                                v-bind:rules="bookingInfoRules"
+                                :label="$getLanguageMsg('bookingInfoFormText')" 
+                                prepend-icon="mdi-text-subject"
+                                :counter="bookingInfoLimit"
+                                />
+                            </v-col>
 
-                    <v-textarea v-model="bookingInfo"
-                    v-bind:rules="bookingInfoRules"
-                    :label="$getLanguageMsg('bookingInfoFormText')" 
-                    prepend-icon="mdi-text-subject"
-                    :counter="bookingInfoLimit"
-                    />
+                            <v-col cols="12" sm="3">
+                                <v-text-field v-model="bookingPrice"
+                                v-bind:rules="bookingPriceRules"
+                                :label="$getLanguageMsg('bookingPriceFormText')" 
+                                prepend-icon="mdi-cash"
+                                />
+                            </v-col>
 
-                    <v-text-field v-model="bookingPrice"
-                    v-bind:rules="bookingPriceRules"
-                    :label="$getLanguageMsg('bookingPriceFormText')" 
-                    prepend-icon="mdi-cash"
-                    />
+                            <v-col cols="12" sm="3">
+                                <v-text-field 
+                                :rules="bookingDurationRules"
+                                v-model="bookingDuration"
+                                :label="$getLanguageMsg('bookingDurationFormText')"
+                                prepend-icon="mdi-alarm"
+                                ></v-text-field>
+                            </v-col>
 
-                    <v-text-field 
-                    :rules="bookingDurationRules"
-                    v-model="bookingDuration"
-                    :label="$getLanguageMsg('bookingDurationFormText')"
-                    prepend-icon="mdi-alarm"
-                    ></v-text-field>
+                            <v-col>
+                                <v-select
+                                required v-bind:rules="nameRules"
+                                v-model="bookingType"
+                                :items="bookingTravelTypes"
+                                :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
+                                ></v-select>
+                            </v-col>
 
-                    <v-select
-                    required v-bind:rules="nameRules"
-                    v-model="bookingType"
-                    :items="bookingTravelTypes"
-                    :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
-                    ></v-select>
+                            <v-col v-if="bookingType == 'customerTravels'" cols="12">
+                                <v-text-field  
+                                v-model="address"
+                                required v-bind:rules="nameRules"
+                                :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
+                                />
+                            </v-col>
 
-                    <v-text-field v-if="bookingType == 'customerTravels'" 
-                    v-model="address"
-                    required v-bind:rules="nameRules"
-                    :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
-                    />
+                            <v-col cols="12">
+                                <v-btn type="submit" color="primary" class="font-weight-light">
+                                {{$getLanguageMsg('Save')}}
+                                    <v-icon right>mdi-content-save</v-icon>
+                                </v-btn>
+                            </v-col>
 
-                    <v-btn type="submit" color="primary">
-                    {{$getLanguageMsg('Save')}}
-                    <v-icon right>mdi-content-save</v-icon>
-                    </v-btn>
-
+                        </v-row>
+                    </v-container>
                 </v-form>
             </BaseCard>
             </v-col>

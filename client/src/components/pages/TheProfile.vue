@@ -67,7 +67,7 @@
                     v-bind:rules="descriptionRules"
                   />
                 </v-col>
-                <v-col cols="12" class="text-xs-right">
+                <v-col cols="12">
                   <v-btn
                     class="mx-0 font-weight-light"
                     color="success"
@@ -176,8 +176,9 @@ export default {
 
 <style scoped>
 
-.v-text-field {
+/* TODO: */
+/* .v-text-field {
   font-weight: 100;
-}
+} */
 
 </style>
