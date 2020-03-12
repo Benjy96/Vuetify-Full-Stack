@@ -3,6 +3,7 @@
     <v-row>
       <v-col align="center">
         <v-text-field
+        v-model="searchText"
         :label="$getLanguageMsg('searchBarString')"
         class="ma-6"
         style="max-width: 20%;"
@@ -16,9 +17,9 @@
 
     <v-divider class="mb-12"></v-divider>
 
-      <v-row id="businessesDisplay">
-        <v-col cols="12" sm="6" md="4"
-          v-for="(business, index) in businesses" 
+      <v-row id="businessesDisplay" >
+        <v-col cols="12" sm="6" md="4" 
+          v-for="(business, index) in filteredBusinesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
 
           <v-hover v-slot:default="{ hover }">
@@ -48,18 +49,6 @@ export default {
     ProfileCard,
   },
   name: 'home',
-  data() {  //component state
-    return {
-      businesses: [], //will be filled by a request to the back end
-      businessImages: {},
-      //TODO: put in pagination
-      // businessImages: {}, //If you want to use an object, Vue will only be reactive if the key exists
-      // - you would have to do something like v-if="loaded" and only display the businesses once
-      //you've populated the keys
-      err: '',
-      text: ''
-    }
-  },
   created() {
     db.collection('businesses').get().then(querySnapshot => {
       querySnapshot.forEach(doc => {
@@ -77,6 +66,32 @@ export default {
       alert(err.message);
     });
   },
+  data() {  //component state
+    return {
+      businesses: [], //will be filled by a request to the back end
+      businessImages: {},
+      //TODO: put in pagination
+      searchText: ''
+    }
+  },
+  computed: {
+    //TODO: Improve this simple/"exact" search matching
+    filteredBusinesses() {
+      return this.businesses.filter(business => {
+        if(this.searchText == '') return true;
+        let nameString = (business.firstname + ' ' + business.surname).toLowerCase();
+        let searchText = this.searchText.toLowerCase();
+
+        if(nameString.includes(searchText)) {
+          return true;
+        }
+
+        if(business.occupation.toLowerCase().includes(searchText)) {
+          return true;
+        }
+      });
+    }
+  },
   methods: {
     async getBusinessImages() {
       for(let i in this.businesses) {
@@ -90,7 +105,6 @@ export default {
       }
     },
     goTo(to) {
-      window.console.log('hi');
       this.$router.push(to);
     }
   },
