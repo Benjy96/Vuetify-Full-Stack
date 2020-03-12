@@ -137,9 +137,11 @@ export default {
                         });
 
                         db.collection('businesses').doc(userCredential.user.uid).set({
-                            firstname: this.firstname,
-                            surname: this.surname,
-                            occupation: this.occupation,
+                            profileData: {
+                                firstname: this.firstname,
+                                surname: this.surname,
+                                occupation: this.occupation,
+                            },
                             regularAvailability: {
                                 Monday: [{from: "09:00", to: "17:00"}],
                                 Tuesday: [{from: "09:00", to: "17:00"}],
@@ -150,7 +152,7 @@ export default {
                             bookingDetails: {
                                 travelType: this.bookingTravelType,
                                 address: this.address,
-                                onlineContactDetails: this.onlineContactDetails
+                                onlineContactDetails: this.onlineContactDetails,
                             },
                             locale: this.$getLocale()
                         }).then(() => {
