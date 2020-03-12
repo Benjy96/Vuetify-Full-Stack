@@ -55,7 +55,7 @@
 
                             <v-col>
                                 <v-select
-                                required v-bind:rules="nameRules"
+                                required
                                 v-model="bookingType"
                                 :items="bookingTravelTypes"
                                 :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
@@ -65,13 +65,13 @@
                             <v-col v-if="bookingType == 'customerTravels'" cols="12">
                                 <v-text-field  
                                 v-model="address"
-                                required v-bind:rules="nameRules"
+                                required
                                 :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
                                 />
                             </v-col>
 
                             <v-col cols="12">
-                                <v-btn type="submit" color="primary" class="font-weight-light">
+                                <v-btn type="submit" color="primary">
                                 {{$getLanguageMsg('Save')}}
                                     <v-icon right>mdi-content-save</v-icon>
                                 </v-btn>

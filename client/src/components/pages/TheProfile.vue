@@ -69,7 +69,8 @@
                 </v-col>
                 <v-col cols="12">
                   <v-btn
-                    class="mx-0 font-weight-light"
+                    @click="saveProfileInfo"
+                    class="mx-0"
                     color="success"
                   >
                     Update Profile
@@ -111,9 +112,11 @@ export default {
     AdminBookings
   },
   created() {
+    this.id = BusinessService.getUserId();
+
     BusinessService.getProfileData().then((res) => { 
       // Profile Image
-      BusinessService.getProfileImageDownloadURL(res.profileImage).then((url) => {
+      BusinessService.getProfileImageDownloadURL(res.image).then((url) => {
         this.profileImage = url;
       });
 
@@ -125,6 +128,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       firstname: '',
       surname: '',
       description: '',
@@ -146,39 +150,31 @@ export default {
   },
   methods: {
     saveProfileInfo() {
-      let saved = false;
-
+      //TODO: Implement the new fields - use booking forms as reference
       if(this.$refs.profileManagementForm.validate()) {
-          if(this.description != "" && this.description != null) {
-              saved = true; //TODO: Convert to generic modal I implemented?
-              BusinessService.updateBio(this.id, this.description);
-          }
-
-          if(this.occupation != "" && this.occupation != null) {
-              saved = true;
-              BusinessService.updateOccupation(this.id, this.occupation);
-          }
+          BusinessService.updateProfile(this.id, this.firstname, this.surname, this.description, this.occupation);
 
           if(this.formProfileImage != null) {
-              saved = true;
-              BusinessService.setProfileImage(this.id, this.profileImage);
+              BusinessService.setProfileImage(this.id, this.formProfileImage);
           }
 
-          if(saved) this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
-
-          this.$refs.profileManagementForm.reset();
+          this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
       }
     }
+  },
+  watch: {
+    formProfileImage: function(file) {
+      let vueInstance = this;
+      
+      let reader = new FileReader();
+      reader.onload = function(event) {
+        // window.console.log(this);
+        // capturing vueInstance above as in this method, this refers to the FileReader
+        // In an object method, this refers to the "owner" of the method.
+        vueInstance.profileImage = event.target.result;
+      }
+      reader.readAsDataURL(file)
+    }
   }
-
 }
 </script>
-
-<style scoped>
-
-/* TODO: */
-/* .v-text-field {
-  font-weight: 100;
-} */
-
-</style>

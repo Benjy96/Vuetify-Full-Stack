@@ -52,7 +52,7 @@ export default {
         this.businesses.push(
           {
             id: doc.id,
-            ...doc.data()
+            ...doc.data().profileData
           }
         );
       });
@@ -66,8 +66,8 @@ export default {
   methods: {
     async getBusinessImages() {
       for(let i in this.businesses) {
-        if(this.businesses[i].profileImage != null) {
-          BusinessService.getProfileImageDownloadURL(this.businesses[i].profileImage).then((downloadURL) => {
+        if(this.businesses[i].image != null) {
+          BusinessService.getProfileImageDownloadURL(this.businesses[i].image).then((downloadURL) => {
             this.$set(this.businessImages, this.businesses[i].id, downloadURL);
           });
         } else {

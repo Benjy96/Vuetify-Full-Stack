@@ -10,6 +10,10 @@ const apiURL = 'api/business';
 
 class BusinessService {
 
+    static getUserId() {
+        return firebase.auth().currentUser.uid;
+    }
+
     static isCurrentUser(id) {
         if(firebase.auth().currentUser && firebase.auth().currentUser.uid == id){
             return true;
@@ -45,8 +49,8 @@ class BusinessService {
 
     static async getProfileData() {
         let uid = firebase.auth().currentUser.uid;
-        let profileData = (await db.collection('businesses').doc(uid).get()).data();
-        return profileData;
+        let data = (await db.collection('businesses').doc(uid).get()).data();
+        return data.profileData;
     }
 
     static async getProfileImageDownloadURL(profileImageRef) {
@@ -82,12 +86,8 @@ class BusinessService {
         });
     }
 
-    static async updateBio(uid, bio) {
-        axios.post(`${apiURL}/bio`, {uid, bio});
-    }
-
-    static async updateOccupation(uid, occupation) {
-        axios.post(`${apiURL}/occupation`, {uid, occupation});
+    static async updateProfile(uid, firstname, surname, description, occupation) {
+        axios.post(`${apiURL}/updateProfile`, {uid, firstname, surname, description, occupation});
     }
 
     //TODO: Restrict writes to back-end? I cleared my business info...
@@ -102,9 +102,9 @@ class BusinessService {
 
             let profilePicPath = ref.root + ref.fullPath;
 
-            db.collection('businesses').doc(uid).set({
-                profileImage: profilePicPath
-            }, {merge: true});
+            db.collection('businesses').doc(uid).update({
+                "profileData.image": profilePicPath
+            });
         }
     }
 

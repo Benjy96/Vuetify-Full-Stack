@@ -201,34 +201,22 @@ router.post('/irregularAvailability', async(req, res) => {
 });
 
 /* -- Profile management -- */
-
-router.post('/bio', async (req, res) => {
+router.post('/updateProfile', async (req, res) => {
   let uid = req.body.uid;
-  let bio = req.body.bio;
 
-  if(!uid || !bio) {
+  let profileData = {};
+
+  if(!uid) {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   } else {
+    if(req.body.firstname) profileData.firstname = req.body.firstname;
+    if(req.body.surname) profileData.surname = req.body.surname;
+    if(req.body.description) profileData.description = req.body.description;
+    if(req.body.occupation) profileData.occupation = req.body.occupation;
+    
     db.collection(`businesses`).doc(`${uid}`).set({
-      description: bio
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
-
-router.post('/occupation', async (req, res) => {
-  let uid = req.body.uid;
-  let occupation = req.body.occupation;
-
-  if(!uid || !occupation) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(`${uid}`).set({
-      //TODO: Add to nested bookingDetails object
-      occupation: occupation
+      profileData: profileData
     }, {merge: true}).then(() => {
       res.status(200).send();
     });
