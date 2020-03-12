@@ -13,7 +13,7 @@
                 </template>
 
                 <BaseCard>
-                    <RegularAvailabilityPicker v-on:saved-time-range="onSavedTimeRange" :id="id" class="pt-8 px-4"/>
+                    <RegularAvailabilityPicker v-on:saved-time-range="onSavedTimeRange($event)" :id="id" class="pt-8 px-4"/>
                 </BaseCard>
 
             </v-dialog>
@@ -61,15 +61,21 @@ export default {
         initialize() {
             this.getRanges();
         },
-        onSavedTimeRange() {
+        onSavedTimeRange(savedTimeRange) {
             this.adder = false;
-            this.getRanges();
+
+            if(!this.bookings) this.bookings = [];
+
+            this.bookings.push({
+                englishDay: savedTimeRange.weekday,
+                day: this.$getLanguageMsg(savedTimeRange.weekday),
+                from: savedTimeRange.from,
+                to: savedTimeRange.to
+            });
         },
         getRanges() {
             BusinessService.getRegularAvailability(this.id).then(regularAvailability => {
                 if(regularAvailability) {
-                    this.bookings = [];
-
                     daysOfWeek.forEach(day => {
                         let weekday = day;
 
@@ -89,14 +95,28 @@ export default {
         removeRange (range) {
             if(confirm(this.$getLanguageMsg('Remove'))) {
                 let day = range.englishDay;
-                let rangeToRemove = { from: range.from, to: range.to };
+                let rangeToRemove = { day: range.englishDay, from: range.from, to: range.to };
 
                 //Return everything that doesn't have the same to or from - we then set the db WITHOUT the "Matched" values
-                //- matched by EXCLUSION
-                let dayArray = this.ranges[day].filter(item => ((item.from !== rangeToRemove.from) || (item.to !== rangeToRemove.to)));
-                this.ranges[day] = dayArray;
+                //- matched by EXCLUSION)
 
-                BusinessService.setDayRegularAvailability(this.id, day, dayArray).then(this.initialize());
+                //it's returning no mondays
+                // filter returns elements that pass the test
+
+                //if same day:
+                    //if not same from / to
+                let dayArray = this.bookings.filter(function(element) {
+                    if(element.englishDay == rangeToRemove.day) {
+                        if(element.from == rangeToRemove.from && element.to == rangeToRemove.to) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+                this.bookings = dayArray;
+
+                BusinessService.setDayRegularAvailability(this.id, day, dayArray);
             }
         }
     }

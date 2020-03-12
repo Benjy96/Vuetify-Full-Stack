@@ -112,7 +112,7 @@ export default {
         */
         validate() {
             BusinessService.addRegularAvailabilityRange(this.id, this.day, this.fromTime, this.toTime)
-            .then(this.$emit('saved-time-range', this.day));
+            .then(this.$emit('saved-time-range', { weekday: this.day, from: this.fromTime, to: this.toTime }));
         }
     }
 }
