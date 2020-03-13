@@ -400,8 +400,8 @@ export default {
                 continue;
               }
 
-              let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
-              let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
+              let start = `${date} ${potentiallyAvailableIntervals[i].from}`;
+              let end = `${date} ${potentiallyAvailableIntervals[i].to}`;
 
               // 4: Check intervals v admin bookings
               if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
@@ -411,7 +411,7 @@ export default {
                 for(let x = 0; x < this.admin_bookings.length; x++) {
 
                   let adminBooking = this.admin_bookings[x];
-                  if(DateUtils.dateWithin(this.focus, adminBooking.fromDate, adminBooking.toDate)) {
+                  if(DateUtils.dateWithin(date, adminBooking.fromDate, adminBooking.toDate)) {
                     let fromTime, toTime;
 
                     if(adminBooking.fromDate == adminBooking.toDate) {
@@ -495,7 +495,7 @@ export default {
           if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
           if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
           if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
-          if(bookingDetails.type != 'online' && bookingDetails.address) {
+          if(bookingDetails.type != 'onlineBookings' && bookingDetails.address) {
             this.address = bookingDetails.address;
           }
           if(bookingDetails.type) this.bookingType = bookingDetails.type;
