@@ -97,19 +97,6 @@ export default {
         }
     },
     methods: {
-        /* Standard availability algorithm:
-
-            - Store date range
-                1. Save Lunes 09:00 - 17:00
-                2. Add to DB: business/unavailable/days/Lunes/17:00-09:00
-            - Retrieve date range
-                1. Click on Lunes on calendar
-                2. Read from DB: business/unavailable/days/Lunes
-                3. If Lunes collection length > 0:
-                    1. For each Calendar Hour (interval slot) in Calendar Lunes:
-                        1. If Calendar Hour in DB Lunes Range:
-                            1. Do not render clickable booking slot
-        */
         validate() {
             BusinessService.addRegularAvailabilityRange(this.id, this.day, this.fromTime, this.toTime)
             .then(this.$emit('saved-time-range', { weekday: this.day, from: this.fromTime, to: this.toTime }));
