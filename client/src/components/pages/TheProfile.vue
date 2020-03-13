@@ -47,24 +47,13 @@
                     prepend-icon="mdi-hammer"
                   />
                 </v-col>
-                <!-- <v-col cols="12" md="12">
-                  <v-text-field label="Adress"/>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field label="City"/>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field label="Country"/>
-                </v-col>
-                <v-col cols="12" md="4">
-                  <v-text-field label="Postal Code"/>
-                </v-col> -->
                 <v-col cols="12">
                   <v-textarea
                     :label="$getLanguageMsg('bioFormText')"
                     prepend-icon="mdi-account-details"
                     v-model="description"
                     v-bind:rules="descriptionRules"
+                    :counter="descriptionLimit"
                   />
                 </v-col>
                 <v-col cols="12">
@@ -133,12 +122,12 @@ export default {
       surname: '',
       description: '',
       descriptionRules: [
-        val => val.length < this.descriptionLimit || this.$getLanguageMsg('invalidBioFormText')
+        val => !val || val.length < this.descriptionLimit || this.$getLanguageMsg('invalidBioFormText')
       ],
       descriptionLimit: 150,
       occupation: '',
       occupationRules: [
-        val => val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
+        val => !val || val.length <= this.occupationLimit || this.$getLanguageMsg('tooLong')
       ],
       occupationLimit: 25,
       profileImage: null,
