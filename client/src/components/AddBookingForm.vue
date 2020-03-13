@@ -20,16 +20,15 @@
             prepend-icon="mdi-at"
             />
             <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
-            <p v-else>{{$getLanguageMsg(bookingType)}} </p>
+            <p v-else>{{$getLanguageMsg(bookingType)}}</p>
             <p v-if="bookingType == 'customerTravels' && address"><span class="font-weight-bold">{{$getLanguageMsg('Location')}}:</span> {{address}}</p>
             
-            <p class="subtitle-2" v-if="bookingDuration > 0">
-                {{$getLanguageMsg('Duration')}}: {{bookingDuration}}
+            <p class="subtitle-2">
+                <span v-if="bookingDuration.length > 0">{{$getLanguageMsg('Duration')}}: {{bookingDuration}} </span>
                 <span v-if="bookingDuration == 1">{{$getLanguageMsg('minute')}}</span>
                 <span v-else-if="bookingDuration > 1">{{$getLanguageMsg('minutes')}}</span>
-                <br>
-                {{$getLanguageMsg('Price')}}: {{bookingPrice}}
             </p>
+            <p class="subtitle-2" v-if="bookingPrice.length > 0">{{$getLanguageMsg('Price')}}: {{bookingPrice}}</p>
             <v-btn type="submit" color="primary">{{$getLanguageMsg('Book')}}</v-btn>
         </v-form>
         </v-container>
@@ -59,6 +58,7 @@ export default {
             default: ''
         },
         bookingType: {
+            type: String,
             default: 'online'
         },
         bookingPrice: {

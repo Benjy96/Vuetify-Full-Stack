@@ -90,7 +90,7 @@
                     :bookingInfo="bookingInfo"
                     :bookingDuration="bookingDuration"
                     :bookingPrice="bookingPrice"
-                    :bookingType="bookingType"
+                    :bookingType="bookingType.value"
                     :address="address"/>
                 </BaseCard>
                 
@@ -103,7 +103,6 @@
 <script>
 import { daysOfWeek } from '@/DateUtils';
 
-import firebase from 'firebase';
 import UpcomingBookings from '@/components/administration/UpcomingBookings';
 
 import BusinessService from '@/services/BusinessService';
@@ -147,7 +146,8 @@ export default {
             ],
             bookingTitleLimit: 100,
             bookingType: {
-                default: 'online'
+                text: this.$getLanguageMsg('onlineBookings'),
+                value: 'online'
             },
             //TODO: Avoid DRY violations? Need a constant/enum for this ? Also used in Register
             bookingTravelTypes: [
@@ -159,7 +159,7 @@ export default {
         }
     },
     created() {
-        this.id = firebase.auth().currentUser.uid;
+        this.id = BusinessService.getUserId();
 
         // Violating DRY by calling this here & in Calendar, because I don't want the db calls to be made across 2 layers
         // i.e., the calendar would still need the regularAvailability from this db call
@@ -173,6 +173,8 @@ export default {
                 if(bookingDetails.type != 'online' && bookingDetails.address) {
                     this.address = bookingDetails.address;
                 }
+                alert(bookingDetails.type);
+                alert(JSON.stringify(bookingDetails));
                 if(bookingDetails.type) this.bookingType = bookingDetails.type;
             }
         });

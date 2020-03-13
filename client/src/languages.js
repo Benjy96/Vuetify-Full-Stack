@@ -260,6 +260,10 @@ const messages =
         'en': "Online",
         'es': ""//TODO
     },
+    'online': {
+        'en': "Online",
+        'es': "" //TODO
+    },
     'bookingsOnline': {
         'en': "Bookings are online. You will be emailed contact details.",
         'es': "" //TODO
