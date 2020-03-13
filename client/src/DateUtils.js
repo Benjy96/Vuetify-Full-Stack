@@ -885,6 +885,7 @@ export class DateUtils {
      * @returns {[array]} An array of "from" - "to" objects
      */
     static getIntervalsInRange(range, intervalDuration) {
+        intervalDuration = parseInt(intervalDuration);
         let intervals = [];
         let fromHourInMins = parseInt(range.from.split(":")[0]);
         let fromMinuteInMins = parseInt(range.from.split(":")[1]);

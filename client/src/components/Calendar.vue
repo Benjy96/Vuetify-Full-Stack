@@ -324,7 +324,6 @@ export default {
               let interval = regIntervals[i];
 
               if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-                //TODO: Overwrite functionality to split a regular hour?
                 this.$emit('open-generic-dialog', [this.$getLanguageMsg("Information"), "You are already available for a portion of this time."]);
                 return;
               }
@@ -354,10 +353,12 @@ export default {
     },
     // Clears the Calendar events array so that the events aren't displayed on the month view
     hideEvents() {
+      window.console.log(JSON.stringify(this.events));
       this.visibleEvents = [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}];
     },
     // Clears events for the day, keeping user added "Irregular Availability" and the default event for Vue reactivity
     unhideEvents(year, month) {
+      window.console.log(JSON.stringify(this.events[year][month]));
       this.visibleEvents = this.events[year][month];
     },
     // Renders available booking slots
@@ -377,16 +378,22 @@ export default {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
+      if(!this.events[year][month]) this.events[year][month] = [];
+
       // 3 & 4: Check if times intersect with customer bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
       if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
         for (let range in dayOfWeek) {
           if (this.regular_availability[dayOfWeek][range] != null) {
+            window.console.log('booking duration: ' + this.regular_availability[dayOfWeek][range]);
+            window.console.log('booking duration: ' + JSON.stringify(this.bookingDuration));
             let potentiallyAvailableIntervals = DateUtils.getIntervalsInRange(
               this.regular_availability[dayOfWeek][range],
               this.bookingDuration
             );
+
+            window.console.log('potentially available intervals ' + potentiallyAvailableIntervals);
 
             for (let i in potentiallyAvailableIntervals) {
               let intervalAvailable = true;
@@ -421,6 +428,7 @@ export default {
                     // If interval is not in an admin booking
                     if(DateUtils.rangesIntersect(potentiallyAvailableIntervals[i].from, potentiallyAvailableIntervals[i].to,
                     fromTime, toTime)) {
+                      window.console.log('fail 1');
                       intervalAvailable = false;
                       break;
                     }
@@ -442,6 +450,7 @@ export default {
                     if(DateUtils.rangesIntersect(potentiallyAvailableIntervals[i].from, potentiallyAvailableIntervals[i].to,
                     this.customer_bookings[x].from, this.customer_bookings[x].to)) 
                     {
+                      window.console.log('fail 2');
                       intervalAvailable = false;
                       break;
                     } 
@@ -451,10 +460,9 @@ export default {
 
               // No admin booking or customer booking
               if(intervalAvailable == true) {
+                window.console.log('no fail');
                 if(this.events[year][month]) {
                   this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
-                } else {
-                  this.events[year][month] = [];
                 }
                 
                 this.events[year][month].push({
@@ -462,10 +470,12 @@ export default {
                   start: start,
                   end: end
                 });
+              } else {
+                window.console.log('fail 3');
               }
-            } // for each interval
+            } // for each potential interval
           }
-        }
+        } // for each day of week
       }
     },
     //TODO can call this a bit more lazily than reg availability? as already have meta-data and only need
@@ -482,7 +492,6 @@ export default {
         this.regular_availability = res.regularAvailability;
         let bookingDetails = res.bookingDetails;
         if(bookingDetails) {
-          //TODO: Update API setters to follow this format
           if(bookingDetails.title) this.bookingTitle = bookingDetails.title;
           if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
           if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
@@ -603,7 +612,7 @@ export default {
 
       if (this.focus >= DateUtils.getCurrentDateString()) {
         if (this.type == "day") {
-          this.loadAndViewDay(this.focus); //TODO: gonna be repeating this.focus = ?
+          this.loadAndViewDay(this.focus);
         }
 
         if (this.type == "month") {
