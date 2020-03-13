@@ -1,6 +1,6 @@
 <template>
     <v-card width="600px" class="mx-auto mt-5">
-        <v-card-title><h1>{{$getLanguageMsg('register')}}</h1></v-card-title>
+        <v-card-title><h1>{{$getLanguageMsg('Register')}}</h1></v-card-title>
 
         <v-card-text>
             <v-form @submit.prevent="register" ref="form">
@@ -65,7 +65,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="register">{{$getLanguageMsg('register')}}</v-btn>
+            <v-btn color="success" @click="register">{{$getLanguageMsg('Register')}}</v-btn>
         </v-card-actions>
 
         <v-dialog v-model="errorModalDialog" max-width="400">
