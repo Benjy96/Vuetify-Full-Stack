@@ -48,6 +48,7 @@
         :bookingInfo="bookingInfo"
         :address="address"
         :bookingType="bookingType"
+        :bookingDuration="bookingDuration"
         :bookingPrice="bookingPrice"/>
       </v-dialog>
 

@@ -151,7 +151,7 @@ export default {
                                 Friday: [{from: "09:00", to: "17:00"}]
                             },
                             bookingDetails: {
-                                travelType: this.bookingTravelType,
+                                type: this.bookingTravelType.value,
                                 address: this.address,
                                 onlineContactDetails: this.onlineContactDetails,
                             },

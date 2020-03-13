@@ -181,7 +181,7 @@ export default {
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
                 BusinessService.updateBookingDetails(this.id, this.bookingTitle, this.bookingInfo,
-                this.bookingDuration, this.bookingPrice, this.bookingType, this.address);
+                this.bookingDuration, this.bookingPrice, this.bookingType.value, this.address);
 
                 this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
             }
