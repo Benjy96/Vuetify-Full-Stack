@@ -173,8 +173,6 @@ export default {
                 if(bookingDetails.type != 'online' && bookingDetails.address) {
                     this.address = bookingDetails.address;
                 }
-                alert(bookingDetails.type);
-                alert(JSON.stringify(bookingDetails));
                 if(bookingDetails.type) this.bookingType = bookingDetails.type;
             }
         });
