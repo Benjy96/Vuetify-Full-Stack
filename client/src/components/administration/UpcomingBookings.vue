@@ -17,14 +17,18 @@
         >
             <!-- Activator: Text field activates the menu -->
             <template v-slot:activator="{ on }">
+              <v-row>
+                <v-col cols="12" lg="2">
+                  <v-text-field v-on="on"
+                  v-model="date"
+                  label="Viewing bookings on:"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  single-line
+                  ></v-text-field>
+                </v-col>
+              </v-row>
                 
-                <v-text-field v-on="on"
-                v-model="date"
-                label="Viewing bookings on:"
-                append-icon="mdi-calendar"
-                readonly
-                single-line
-                ></v-text-field>
             </template>
 
             <!-- Menu: Date Picker takes the default menu slot - it is the "menu" -->
