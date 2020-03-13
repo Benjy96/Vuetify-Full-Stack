@@ -11,7 +11,7 @@
             >
                 <div v-text="title" class="display-1 font-weight-light"/>
                 <p v-if="subtitle" v-text="subtitle"
-                class="subtitle font-weight-light"/>
+                class="subtitle font-weight-light pt-2"/>
             </v-card>
 
             <!-- Slot for any content you want offset if not using default title -->
