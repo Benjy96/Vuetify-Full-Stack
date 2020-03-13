@@ -2,7 +2,7 @@
     <v-container>
 
         <!-- Bookings Box -->
-        <v-row class="mb-6">
+        <v-row class="mb-6 mt-4">
             <v-col cols="12">
                 <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')" subtitle="Today's bookings are shown by default. Click the calendar input below to view bookings for a different day.">
                     <UpcomingBookings :id="id"/>

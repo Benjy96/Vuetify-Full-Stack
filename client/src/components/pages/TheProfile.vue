@@ -1,7 +1,7 @@
 <template>
   <v-container>
       <!-- Working Hours Box -->
-      <v-row class="mb-6">
+      <v-row class="mb-6 mt-4">
         <v-col cols="12">
             <BaseCard headerElevation="6" :title="$getLanguageMsg('workingHours')">
                 <WorkingHours></WorkingHours>
