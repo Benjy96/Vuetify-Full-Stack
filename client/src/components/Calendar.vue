@@ -377,6 +377,10 @@ export default {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
+      //TODO: Could we filter instead of clearing?
+      if(!this.events[year]) this.events[year] = {};
+      this.events[year][month] = [];
+
       // 3, 4 & 5: Check if time passed or times intersect with bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
@@ -596,8 +600,14 @@ export default {
       this.viewDay(date);
     },
     viewDay(date) {
-      this.focus = date;
-      this.type = "day";
+      if(date == this.focus && this.type =='day') {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        this.unhideEvents(year, month);
+      } else {
+        this.focus = date;
+        this.type = "day";
+      }
     },
     setToday() {
       this.focus = this.today;
