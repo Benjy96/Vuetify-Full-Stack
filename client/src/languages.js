@@ -114,7 +114,7 @@ const messages =
         'es': "" //TODO
     },
     'onlineBookings': {
-        'en': "My bookings will be online.",
+        'en': "Bookings are online.",
         'es': "" //TODO
     },
     'address': {

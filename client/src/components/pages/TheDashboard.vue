@@ -85,12 +85,12 @@
 
             <v-col>
                 <BaseCard headerElevation="6" color="info" title="Preview" subtitle="What customers see when booking you">
-                    <AddBookingForm :id="id"
+                    <AddBookingForm
                     :bookingTitle="bookingTitle"
                     :bookingInfo="bookingInfo"
                     :bookingDuration="bookingDuration"
                     :bookingPrice="bookingPrice"
-                    :bookingType="bookingType.value"
+                    :bookingType="bookingType"
                     :address="address"/>
                 </BaseCard>
                 
@@ -121,7 +121,7 @@ export default {
             id: null,
             daysOfWeek: daysOfWeek,
             // Booking Management Form
-            bookingDuration: "",
+            bookingDuration: "60",
             bookingDurationRules: [ //Return first thing that's true (i.e., if tests fail, the "error" string is returned)
                 // The right side can always be converted to true so will return if the other fails
                 // val is optional - if == "", it will return true first, exiting from the rules
@@ -131,7 +131,7 @@ export default {
                 // If both false, return outer
                 val => ((val == "" || val == undefined) || !val.includes(".")) || this.$getLanguageMsg('invalidBookingDurationMinutes')
             ],
-            bookingPrice: "",
+            bookingPrice: "POA",
             bookingPriceRules: [
                 val => (val.length > 0 || val == undefined) || this.$getLanguageMsg('Required')
             ],
@@ -145,15 +145,12 @@ export default {
                 val => val.length < this.bookingTitleLimit || this.$getLanguageMsg('invalidBookingInfoFormText')
             ],
             bookingTitleLimit: 100,
-            bookingType: {
-                text: this.$getLanguageMsg('onlineBookings'),
-                value: 'online'
-            },
+            bookingType: 'onlineBookings',
             //TODO: Avoid DRY violations? Need a constant/enum for this ? Also used in Register
             bookingTravelTypes: [
                 {text: this.$getLanguageMsg('businessTravels'), value: 'businessTravels' },
                 {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
-                {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
+                {text: this.$getLanguageMsg('onlineBookings'), value: 'onlineBookings' }
             ],
             address: ''
         }
@@ -170,7 +167,7 @@ export default {
                 if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
                 if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
                 if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
-                if(bookingDetails.type != 'online' && bookingDetails.address) {
+                if(bookingDetails.type != 'onlineBookings' && bookingDetails.address) {
                     this.address = bookingDetails.address;
                 }
                 if(bookingDetails.type) this.bookingType = bookingDetails.type;
@@ -181,7 +178,7 @@ export default {
         saveBookingDetails() {
             if(this.$refs.bookingManagementForm.validate()) {
                 BusinessService.updateBookingDetails(this.id, this.bookingTitle, this.bookingInfo,
-                this.bookingDuration, this.bookingPrice, this.bookingType.value, this.address);
+                this.bookingDuration, this.bookingPrice, this.bookingType, this.address);
 
                 this.$emit("open-generic-dialog", [this.$getLanguageMsg("Information"), this.$getLanguageMsg('preferenceSaved')])
             }

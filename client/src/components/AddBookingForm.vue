@@ -19,7 +19,7 @@
             label="email"
             prepend-icon="mdi-at"
             />
-            <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
+            <p v-if="bookingType == 'onlineBookings'">{{$getLanguageMsg('bookingsOnline')}}</p>
             <p v-else>{{$getLanguageMsg(bookingType)}}</p>
             <p v-if="bookingType == 'customerTravels' && address"><span class="font-weight-bold">{{$getLanguageMsg('Location')}}:</span> {{address}}</p>
             
@@ -58,14 +58,13 @@ export default {
             default: ''
         },
         bookingType: {
-            type: String,
-            default: 'online'
+            default: 'onlineBookings'
         },
         bookingPrice: {
             default: "POA"
         },
         bookingDuration: {
-            default: 60
+            default: '60'
         },
         addBookingDateObject: {
             default: null

@@ -154,7 +154,7 @@ export default {
     addBookingDateObject: null,
     bookingTitle: "",
     bookingInfo: "",
-    bookingDuration: 60,
+    bookingDuration: "60",
     bookingPrice: "POA",
     bookingType: "online",
     address: "",

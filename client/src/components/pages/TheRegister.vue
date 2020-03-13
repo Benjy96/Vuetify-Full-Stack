@@ -26,17 +26,17 @@
                 />
                 <v-select
                 required v-bind:rules="nameRules"
-                v-model="bookingTravelType"
+                v-model="bookingType"
                 :items="bookingTravelTypes"
                 :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
                 ></v-select>
-                <v-text-field v-if="bookingTravelType == 'businessTravels' || bookingTravelType == 'customerTravels'" 
+                <v-text-field v-if="bookingType == 'businessTravels' || bookingType == 'customerTravels'" 
                 v-model="address"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
                 />
                 <v-text-field
-                v-else-if="bookingTravelType == 'online'"
+                v-else-if="bookingType == 'onlineBookings'"
                 v-model="onlineContactDetails"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('onlineContactDetails')" prepend-icon="mdi-headset"
@@ -98,11 +98,11 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
-            bookingTravelType: '',
+            bookingType: '',
             bookingTravelTypes: [
                 {text: this.$getLanguageMsg('businessTravels'), value: 'businessTravels' },
                 {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
-                {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
+                {text: this.$getLanguageMsg('onlineBookings'), value: 'onlineBookings' }
             ],
             address: null,
             onlineContactDetails: null,
@@ -123,6 +123,8 @@ export default {
     },
     methods: {
         register() {
+            window.console.log(this.bookingType);
+
             if(!this.$refs.form.validate()) return;
 
             try {
@@ -151,7 +153,7 @@ export default {
                                 Friday: [{from: "09:00", to: "17:00"}]
                             },
                             bookingDetails: {
-                                type: this.bookingTravelType.value,
+                                type: this.bookingType,
                                 address: this.address,
                                 onlineContactDetails: this.onlineContactDetails,
                             },
