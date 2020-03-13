@@ -4,7 +4,7 @@
         <!-- Bookings Box -->
         <v-row class="mb-6">
             <v-col cols="12">
-                <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')">
+                <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')" subtitle="Default display is set to today">
                     <UpcomingBookings :id="id"/>
                 </BaseCard>
             </v-col>
