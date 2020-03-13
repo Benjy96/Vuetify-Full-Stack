@@ -18,6 +18,14 @@ const messages =
         'en': "Information",
         'es': "" //TODO
     },
+    'Bookings': {
+        'en': "Bookings",
+        'es': "" //TODO
+    },
+    'Booking Management': {
+        'en': "Booking Management",
+        'es': "" //TODO
+    },
     //Home.vue
     'Search': {
         'en': "Search",
@@ -46,6 +54,10 @@ const messages =
     },
     'Calendar': {
         'en': "Calendar",
+        'es': "Mi Calendario"
+    },
+    'My Calendar': {
+        'en': "My Calendar",
         'es': "Mi Calendario"
     },
     'Administration': {
@@ -281,6 +293,10 @@ const messages =
         'en': "Profile Management",
         'es': "" //TODO
     },
+    'Profile Settings': {
+        'en': "Profile Settings",
+        'es': "" //TODO
+    },
     'bioFormText': {
         'en': "Bio - A short summary of who you are",
         'es': "" //TODO
@@ -345,12 +361,12 @@ const messages =
         'en': "Booking duration must a number greater than 0",
         'es': ""
     },
-    'Edit Booking Form': {
-        'en': "Edit Booking Form",
+    'Booking Form': {
+        'en': "Booking Form",
         'es': "" //TODO
     },
-    'Booking Management': {
-        'en': "Booking Management",
+    'Edit Booking Form': {
+        'en': "Edit Booking Form",
         'es': "" //TODO
     },
     'preferenceSaved': {

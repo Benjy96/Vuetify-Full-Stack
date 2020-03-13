@@ -9,20 +9,11 @@
         </v-col>
       </v-row>
 
-    <!-- Holiday Management -->
-    <v-row class="mb-6">
-      <v-col cols="12">
-          <BaseCard headerElevation="6" title="Holiday Bookings">
-            <AdminBookings/>
-          </BaseCard>
-      </v-col>
-    </v-row>
-
     <!-- Edit Profile Box -->
     <v-row class="mb-6">
       <!-- Fill screen on smallest, otherwise allow 4 spaces for other column -->
       <v-col cols="12" md="8">
-        <BaseCard title="Edit Profile" subtitle="Complete your profile">
+        <BaseCard title="Edit Profile Card" subtitle="Change what customers see when searching for you on the home page.">
           <v-form ref="profileManagementForm">
             <v-container>
               <v-row class="mx-5">
@@ -88,8 +79,6 @@
 <script>
 import WorkingHours from '@/components/administration/WorkingHours';
 
-import AdminBookings from '@/components/administration/AdminBookings';
-
 import BusinessService from '@/services/BusinessService';
 
 import ProfileCard from '@/components/ProfileCard'
@@ -97,8 +86,7 @@ import ProfileCard from '@/components/ProfileCard'
 export default {
   components: {
     ProfileCard,
-    WorkingHours,
-    AdminBookings
+    WorkingHours
   },
   created() {
     this.id = BusinessService.getUserId();

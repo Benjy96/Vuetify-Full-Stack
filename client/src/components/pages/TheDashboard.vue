@@ -4,17 +4,26 @@
         <!-- Bookings Box -->
         <v-row class="mb-6">
             <v-col cols="12">
-                <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')" subtitle="Default display is set to today">
+                <BaseCard headerElevation="6" :title="$getLanguageMsg('Upcoming bookings')" subtitle="Today's bookings are shown by default. Click the calendar input below to view bookings for a different day.">
                     <UpcomingBookings :id="id"/>
                 </BaseCard>
             </v-col>
+        </v-row>
+
+        <!-- Holiday Management -->
+        <v-row class="mb-6">
+        <v-col cols="12">
+            <BaseCard headerElevation="6" title="Holiday Bookings">
+                <AdminBookings/>
+            </BaseCard>
+        </v-col>
         </v-row>
 
         <!-- Booking Management Box -->
         <!-- TODO add cols to the form -->
         <v-row class="mb-6">
             <v-col cols="12" md="8">
-            <BaseCard :title="$getLanguageMsg('Edit Booking Form')">
+            <BaseCard :title="$getLanguageMsg('Edit Booking Form')" subtitle="Change what customers see when they try to book you.">
                 <v-form @submit.prevent="saveBookingDetails" 
                 ref="bookingManagementForm">
                     <v-container>
@@ -84,7 +93,7 @@
             </v-col>
 
             <v-col>
-                <BaseCard headerElevation="6" color="info" title="Preview" subtitle="What customers see when booking you">
+                <BaseCard headerElevation="6" color="info" title="Booking Form Preview">
                     <AddBookingForm
                     :bookingTitle="bookingTitle"
                     :bookingInfo="bookingInfo"
@@ -103,6 +112,7 @@
 <script>
 import { daysOfWeek } from '@/DateUtils';
 
+import AdminBookings from '@/components/administration/AdminBookings';
 import UpcomingBookings from '@/components/administration/UpcomingBookings';
 
 import BusinessService from '@/services/BusinessService';
@@ -113,6 +123,7 @@ import AddBookingForm from '@/components/AddBookingForm';
 export default {
     name: 'Dashboard',
     components: {
+        AdminBookings,
         AddBookingForm,
         UpcomingBookings,
     },
