@@ -27,10 +27,10 @@
             <v-container>
               <v-row class="mx-5">
                 <v-col cols="12" md="6">
-                  <v-text-field :label="$getLanguageMsg('First Name')" v-model="firstname"/>
+                  <v-text-field :label="$getLanguageMsg('First Name')" v-model="firstname" prepend-icon="mdi-account-details"/>
                 </v-col>
                 <v-col cols="12" md="6">
-                  <v-text-field :label="$getLanguageMsg('Surname')" v-model="surname"/>
+                  <v-text-field :label="$getLanguageMsg('Surname')" v-model="surname" prepend-icon="mdi-account-details"/>
                 </v-col>
                 <v-col cols="12" md="5">
                   <v-file-input v-model="formProfileImage"
@@ -50,7 +50,7 @@
                 <v-col cols="12">
                   <v-textarea
                     :label="$getLanguageMsg('bioFormText')"
-                    prepend-icon="mdi-account-details"
+                    prepend-icon="mdi-card-text"
                     v-model="description"
                     v-bind:rules="descriptionRules"
                     :counter="descriptionLimit"
