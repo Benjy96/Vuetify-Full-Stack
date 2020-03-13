@@ -376,9 +376,7 @@ export default {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
-      if(!this.events[year][month]) this.events[year][month] = [];
-
-      // 3 & 4: Check if times intersect with customer bookings
+      // 3, 4 & 5: Check if time passed or times intersect with bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
       if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
@@ -392,10 +390,15 @@ export default {
             for (let i in potentiallyAvailableIntervals) {
               let intervalAvailable = true;
 
+              // 3: Check if passed time
+              if(DateUtils.getCurrentDateString() == date && DateUtils.getCurrentTimeString() > potentiallyAvailableIntervals[i].from) {
+                continue;
+              }
+
               let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
               let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
 
-              // 3: Check intervals v admin bookings
+              // 4: Check intervals v admin bookings
               if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
 
                 //TODO: Can we make the specific availability functionality transferrable to admin dashboard? Reuse?
@@ -429,7 +432,7 @@ export default {
                 }
               }
 
-              // 4: Check intervals v customer bookings
+              // 5: Check intervals v customer bookings
               if (this.customer_bookings != null) {
                 if(intervalAvailable != false) { 
                   for (let x = 0; x < this.customer_bookings.length; x++) {
@@ -454,6 +457,8 @@ export default {
               if(intervalAvailable == true) {
                 if(this.events[year][month]) {
                   this.events[year][month] = this.events[year][month].filter(event => (event.start != start) && (event.end != end));
+                } else {
+                  this.events[year][month] = [];
                 }
                 
                 this.events[year][month].push({
