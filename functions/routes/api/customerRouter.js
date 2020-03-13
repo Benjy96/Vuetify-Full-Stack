@@ -121,7 +121,7 @@ router.post('/booking', async (req, res) => {
 /** TODO: template?  https://nodejs.org/dist/latest-v6.x/docs/api/fs.html#fs_fs_readfile_file_options_callback */
 async function sendBookingEmails(recipientEmail, customerName, businessId, bookingDate, from, to) {
     // Get business details
-    let businessDetails = (await db.collection(`/businesses`).doc(`${businessId}`).get()).data();
+    let businessDetails = (await db.collection(`/businesses`).doc(`${businessId}`).get()).data().profileData;
     let businessName = businessDetails.firstname + " " + businessDetails.surname;
     let businessEmail = (await db.collection(`/businesses_private`).doc(`${businessId}`).get()).data().email;
 
