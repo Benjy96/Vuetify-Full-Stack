@@ -1,12 +1,11 @@
 <template>
   <div>
-    <v-row>
-      <v-col align="center">
+    <v-row justify="center">
+      <v-col cols="12" sm="8" md="6">
         <v-text-field
         v-model="searchText"
         :label="$getLanguageMsg('searchBarString')"
         class="ma-6"
-        style="max-width: 20%;"
         hide-details>
           <template v-slot:append>
               <v-icon>mdi-magnify</v-icon>
@@ -17,7 +16,7 @@
 
     <v-divider class="mb-12"></v-divider>
 
-      <v-row id="businessesDisplay" >
+      <v-row id="businessesDisplay">
         <v-col cols="12" sm="6" md="4" 
           v-for="(business, index) in filteredBusinesses" 
           v-bind:item="business" v-bind:index="index" v-bind:key="business.id">
@@ -75,7 +74,7 @@ export default {
     }
   },
   computed: {
-    //TODO: Improve this simple/"exact" search matching
+    //TODO: Improve this simple/"exact" search matching - add back-end searching
     filteredBusinesses() {
       return this.businesses.filter(business => {
         if(this.searchText == '') return true;
