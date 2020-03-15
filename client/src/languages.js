@@ -7,7 +7,7 @@ const messages =
 {
     //App.vue
     'title': {
-        'en': "Booking Calendar",
+        'en': "Booker",
         'es': "Calendario de Reservas"
     },
     'Error': {
@@ -40,7 +40,7 @@ const messages =
         'es': "Perfil" //TODO
     },
     'businesses': {
-        'en': "Businesses",
+        'en': "Book a Business",
         'es': "Empresas"
     },
     //App.vue - root page
