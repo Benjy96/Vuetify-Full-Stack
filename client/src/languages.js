@@ -37,7 +37,7 @@ const messages =
     },
     'Profile': {
         'en': "Profile",
-        'es': "" //TODO
+        'es': "Perfil" //TODO
     },
     'businesses': {
         'en': "Businesses",
@@ -291,11 +291,11 @@ const messages =
     },
     'Profile Management': {
         'en': "Profile Management",
-        'es': "" //TODO
+        'es': "Perfil" //TODO
     },
     'Profile Settings': {
         'en': "Profile Settings",
-        'es': "" //TODO
+        'es': "Perfil" //TODO
     },
     'bioFormText': {
         'en': "Bio - A short summary of who you are",
