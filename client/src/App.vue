@@ -2,7 +2,7 @@
   <v-app :key="locale">
 
     <!-- Hidden Nav Drawer -->
-    <v-navigation-drawer v-model="drawerRight" app right>
+    <v-navigation-drawer v-model="drawerRight" app right dark>
       <template v-slot:prepend v-if="currentUser">
           <v-list-item>
             <v-list-item-content>
@@ -13,14 +13,14 @@
 
       <v-divider v-if="currentUser"></v-divider>
 
-      <v-list>
-        <v-list-item link v-if="currentUser" to="/dashboard">
+      <v-list class="text-left">
+        <v-list-item link v-if="currentUser" to="/">
           <v-list-item-action>
-            <v-icon>mdi-view-dashboard</v-icon>
+            <v-icon>mdi-home</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('administration')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('home')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -30,7 +30,27 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('myCalendar')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Calendar')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" to="/dashboard">
+          <v-list-item-action>
+            <v-icon>mdi-view-dashboard</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('Booking Management')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="currentUser" to="/profile">
+          <v-list-item-action>
+            <v-icon>mdi-account</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>{{$getLanguageMsg('Profile Settings')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -40,7 +60,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('registerBusiness')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Register')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -50,7 +70,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('login')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Login')}}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
 
@@ -60,18 +80,31 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{$getLanguageMsg('logout')}}</v-list-item-title>
+            <v-list-item-title>{{$getLanguageMsg('Logout')}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item link v-if="environment == 'development'" to="/TheTestLab">
+          <v-list-item-action>
+            <v-icon>mdi-beaker-outline</v-icon>
+          </v-list-item-action>
+
+          <v-list-item-content>
+            <v-list-item-title>Test Lab</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <!-- App bar -->
-    <v-app-bar app color="primary">
-        <v-btn to="/" class="router-button ml-1 mr-1">{{$getLanguageMsg('home')}}</v-btn>
-        <v-menu>
+    <v-app-bar app dark>
+        <!-- Customer-related actions -->
+        <v-btn icon to="/" class="router-button ml-1">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
+        <v-menu offset-x>
           <template v-slot:activator="{ on }">
-            <v-btn class="ml-4" icon v-on="on">
+            <v-btn class="ml-2" icon v-on="on">
               <v-icon color="white">mdi-earth</v-icon>
             </v-btn>
           </template>
@@ -86,11 +119,13 @@
             </v-list-item>
           </v-list>
         </v-menu>
-    
-      <v-spacer class="navbar"></v-spacer>
-      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="mr-4">
+
+      <v-btn v-if="!currentUser" @click="cancelDialog = !cancelDialog" icon class="ml-2">
         <v-icon color="white">mdi-cancel</v-icon>
       </v-btn>
+    
+      <!-- Business Related Actions -->
+      <v-spacer class="navbar"></v-spacer>
       <!-- Open hidden drawer -->
       <v-app-bar-nav-icon color="white" @click.stop="drawerRight = !drawerRight" class="mr-1"/>
     </v-app-bar>
@@ -99,12 +134,12 @@
     <!-- https://vuejs.org/v2/api/#vm-emit -->
     <v-dialog v-model="genericDialog" persistent max-width="400">
       <v-card>
-        <v-card-title class="headline">{{$getLanguageMsg(genericDialogTitle)}}</v-card-title>
+        <v-card-title class="headline">{{genericDialogTitle}}</v-card-title>
         <v-card-text>{{genericDialogText}}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn v-if="genericDialogTitle == 'information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
-          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('ok')}}</v-btn>
+          <v-btn v-if="genericDialogTitle == 'Information'" color="primary" @click="genericDialog = false">{{$getLanguageMsg('Ok')}}</v-btn>
+          <v-btn v-else color="error darken-1" @click="genericDialog = false">{{$getLanguageMsg('Ok')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -114,10 +149,10 @@
           <v-container>
             <v-form @submit.prevent="cancelBooking" ref="cancelForm">
               <v-text-field required :rules="cancelRules" 
-              :label="$getLanguageMsg('bookingReference')"
+              :label="$getLanguageMsg('Booking reference')"
               v-model="bookingReference"/>
               <v-btn type="submit" color="primary">
-                {{$getLanguageMsg('cancelReservation')}}
+                {{$getLanguageMsg('Cancel reservation')}}
               </v-btn>
             </v-form>
           </v-container>
@@ -127,19 +162,23 @@
       <v-dialog v-model="cancelConfirmationDialog" max-width="400">
         <v-card>
           <v-container>
-            <p>{{$getLanguageMsg('reservationCanceled')}}</p>
+            <p>{{$getLanguageMsg('Your reservation has been canceled')}}</p>
             <v-btn type="submit" color="primary" 
             @click="cancelConfirmationDialog = !cancelConfirmationDialog">
-              {{$getLanguageMsg('ok')}}
+              {{$getLanguageMsg('Ok')}}
             </v-btn>
           </v-container>
         </v-card>
       </v-dialog>
 
+    <!-- Main content -->
+    <!-- https://vuetifyjs.com/en/components/grids -->
     <v-content>
-      <v-container> <!-- https://vuetifyjs.com/en/components/grids -->
-        <router-view v-on:open-generic-dialog="openGenericDialog($event)"/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
-      </v-container>
+        <v-container>
+          <v-fade-transition mode="out-in">
+          <router-view v-on:open-generic-dialog="openGenericDialog($event)"/> <!-- Render the matched component for this path (paths in src/router/index.js) --> 
+          </v-fade-transition>
+        </v-container>
     </v-content>
     
   </v-app>
@@ -147,8 +186,8 @@
 
 <script>
 import firebase from 'firebase'
-import CustomerService from './services/CustomerService';
-import BusinessService from './services/BusinessService';
+import CustomerService from '@/services/CustomerService';
+import BusinessService from '@/services/BusinessService';
 
 export default {
   props: ["cancelDialog"],
@@ -172,8 +211,9 @@ export default {
   },
   data() {
     return {
+      environment: process.env.NODE_ENV,
       genericDialog: false,
-      genericDialogTitle: "information",
+      genericDialogTitle: "Information",
       genericDialogText: "",
       locale: this.$getLocale(), // Gets global, 'en', by default
       drawerRight: false,
@@ -181,7 +221,7 @@ export default {
       // cancelDialog: false,
       cancelConfirmationDialog: false,
       cancelRules: [
-        value => !!value || this.$getLanguageMsg('required')
+        value => !!value || this.$getLanguageMsg('Required')
       ],
       bookingReference: '',
       languages: [

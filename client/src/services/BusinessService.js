@@ -1,6 +1,6 @@
 import firebase from 'firebase';
 import { db } from '../firebaseInit';
-import { DateUtils } from '../DateUtils';
+import { DateUtils } from '@/DateUtils';
 
 // HTTP Utils
 import axios from "axios";
@@ -9,6 +9,10 @@ import axios from "axios";
 const apiURL = 'api/business';
 
 class BusinessService {
+
+    static getUserId() {
+        return firebase.auth().currentUser.uid;
+    }
 
     static isCurrentUser(id) {
         if(firebase.auth().currentUser && firebase.auth().currentUser.uid == id){
@@ -43,6 +47,33 @@ class BusinessService {
 
     /* -- Profile Management -- */
 
+    static async getProfileData() {
+        let uid = firebase.auth().currentUser.uid;
+        let data = (await db.collection('businesses').doc(uid).get()).data();
+        return data.profileData;
+    }
+
+    static async getProfileImageDownloadURL(profileImageRef) {
+        var storage = firebase.storage();
+        var gsRef = storage.refFromURL(profileImageRef);
+        let downloadURL = await gsRef.getDownloadURL();
+
+        return downloadURL;
+    }
+
+    static async getProfileImage() {
+        let uid = firebase.auth().currentUser.uid;
+        let business = (await db.collection('businesses').doc(uid).get()).data();
+        
+        if(!business.profileImage) return;
+
+        var storage = firebase.storage();
+        var gsRef = storage.refFromURL(business.profileImage);
+        let downloadURL = await gsRef.getDownloadURL();
+
+        return downloadURL;
+    }
+
     static async getLocale(uid) {
         let doc = await db.collection('/businesses').doc(uid).get();
         if(doc.data().locale) return doc.data().locale;
@@ -55,12 +86,8 @@ class BusinessService {
         });
     }
 
-    static async updateBio(uid, bio) {
-        axios.post(`${apiURL}/bio`, {uid, bio});
-    }
-
-    static async updateOccupation(uid, occupation) {
-        axios.post(`${apiURL}/occupation`, {uid, occupation});
+    static async updateProfile(uid, firstname, surname, description, occupation) {
+        axios.post(`${apiURL}/updateProfile`, {uid, firstname, surname, description, occupation});
     }
 
     //TODO: Restrict writes to back-end? I cleared my business info...
@@ -75,9 +102,9 @@ class BusinessService {
 
             let profilePicPath = ref.root + ref.fullPath;
 
-            db.collection('businesses').doc(uid).set({
-                profileImage: profilePicPath
-            }, {merge: true});
+            db.collection('businesses').doc(uid).update({
+                "profileData.image": profilePicPath
+            });
         }
     }
 
@@ -93,20 +120,8 @@ class BusinessService {
 
     //TODO: Combine update methods - in Dashboard check all then call one function
         //In back-end, retrieve what's needed in nested ifs
-    static async updateBookingTitle(uid, bookingTitle) {
-        axios.post(`${apiURL}/bookingTitle`, {uid, bookingTitle});
-    }
-
-    static async updateBookingInfo(uid, bookingInfo) {
-        axios.post(`${apiURL}/bookingInfo`, {uid, bookingInfo});
-    }
-
-    static async updateBookingDuration(uid, bookingDuration) {
-        axios.post(`${apiURL}/bookingDuration`, {uid, bookingDuration});
-    }
-
-    static async updateBookingPrice(uid, bookingPrice) {
-        axios.post(`${apiURL}/bookingPrice`, {uid, bookingPrice});
+    static async updateBookingDetails(uid, bookingTitle, bookingInfo, bookingDuration, bookingPrice, bookingType, address) {
+        axios.post(`${apiURL}/bookingDetails`, {uid, bookingTitle, bookingInfo, bookingDuration, bookingPrice, bookingType, address});
     }
 
     /**
@@ -119,7 +134,6 @@ class BusinessService {
     /**
      * Replaces the current regular availability array
      */
-    //TODO: Do we need to do this server-side or can we do client side?
     static async setDayRegularAvailability(uid, day, ranges) {
         axios.put(`${apiURL}/regularAvailability`, {uid, day, ranges});
     }

@@ -223,6 +223,12 @@ export class DateUtils {
         return `${this.getCurrentYearString()}-${this.getCurrentMonthString()}-${this.getCurrentDayString()}`;
     }
 
+    //TODO: timezone? use UTC for all other date gets in this file?
+    static getCurrentTimeString() {
+        let d = new Date();
+        return `${d.getUTCHours()}:${d.getUTCMinutes()}`
+    }
+
     static formatMinuteToMM(minute) {
         if(typeof minute == 'number'){
             if(minute < 10){
@@ -885,6 +891,7 @@ export class DateUtils {
      * @returns {[array]} An array of "from" - "to" objects
      */
     static getIntervalsInRange(range, intervalDuration) {
+        intervalDuration = parseInt(intervalDuration);
         let intervals = [];
         let fromHourInMins = parseInt(range.from.split(":")[0]);
         let fromMinuteInMins = parseInt(range.from.split(":")[1]);

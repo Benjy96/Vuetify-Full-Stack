@@ -3,7 +3,7 @@
     <v-col>
       <v-sheet height="64">
         <v-toolbar flat color="grey lighten-3">
-          <v-btn outlined class="mr-4" @click="setToday">{{$getLanguageMsg('today')}}</v-btn>
+          <v-btn outlined class="mr-4" @click="setToday">{{$getLanguageMsg('Today')}}</v-btn>
           <v-btn fab text small @click="prev">
             <v-icon small>mdi-chevron-left</v-icon>
           </v-btn>
@@ -26,9 +26,9 @@
             <!-- .stop is shorthand for Event.stopPropagation()
             events normally go back up nested HTML elements, calling attached event listeners - this stops that-->
             <v-form @submit.prevent="addBookingSlot" ref="addBookingSlotForm">
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('date')" />
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('fromTime')" />
-              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('toTime')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotDate" type="date" :label="$getLanguageMsg('Date')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotStart" type="time" :label="$getLanguageMsg('From time')" />
+              <v-text-field :rules="requiredRule" v-model="newBookingSlotEnd" type="time" :label="$getLanguageMsg('To time')" />
 
               <v-btn
                 type="submit"
@@ -40,35 +40,16 @@
         </v-card>
       </v-dialog>
 
-      <v-dialog v-model="dialog" max-width="500">
-        <v-card>
-          <v-container>
-            <v-form @submit.prevent="addBooking" ref="addBookingForm">
-              <p v-if="bookingTitle != ''" class="display-1">{{bookingTitle}}</p>
-              <p v-else class="display-1">{{$getLanguageMsg('bookAppointment')}}</p>
-              <p v-if="bookingInfo != ''">{{bookingInfo}}</p>
-              <v-text-field
-                v-model="bookerName"
-                required
-                v-bind:rules="nameRules"
-                :label="$getLanguageMsg('name')"
-                prepend-icon="mdi-account-circle"
-              />
-              <v-text-field
-                v-model="email"
-                required
-                v-bind:rules="emailRules"
-                label="email"
-                prepend-icon="mdi-at"
-              />
-              <p v-if="address">{{$getLanguageMsg('location')}}: {{address}}</p>
-              <p v-if="bookingType == 'online'">{{$getLanguageMsg('bookingsOnline')}}</p>
-              <p v-else>{{$getLanguageMsg(bookingType)}}</p>
-              <p>{{$getLanguageMsg('price')}}: {{bookingPrice}}</p>
-              <v-btn type="submit" color="primary">{{$getLanguageMsg('book')}}</v-btn>
-            </v-form>
-          </v-container>
-        </v-card>
+      <v-dialog v-model="addBookingDialog" max-width="500">
+        <AddBookingForm v-on:add-booking-complete="loadAndViewDay($event)" v-on:add-booking-validated="closeAddBookingDialog"
+        :id="id"
+        :addBookingDateObject="addBookingDateObject"
+        :bookingTitle="bookingTitle"
+        :bookingInfo="bookingInfo"
+        :address="address"
+        :bookingType="bookingType"
+        :bookingDuration="bookingDuration"
+        :bookingPrice="bookingPrice"/>
       </v-dialog>
 
       <v-dialog v-model="bookingCreatedDialog" max-width="400">
@@ -114,7 +95,7 @@
           color="primary"
           :now="today"
           :type="type"
-          @click:event="openDialog"
+          @click:event="openAddBookingDialog"
           @click:more="loadAndViewDay"
           @click:date="loadAndViewDay"
           @click:day="loadAndViewDay"
@@ -135,12 +116,17 @@
 </template>
 
 <script>
-import { DateUtils } from "../DateUtils";
-import { daysOfWeek } from "../DateUtils";
-import CustomerService from "../services/CustomerService";
-import BusinessService from '../services/BusinessService';
+import { DateUtils } from "@/DateUtils";
+import { daysOfWeek } from "@/DateUtils";
+import CustomerService from "@/services/CustomerService";
+import BusinessService from '@/services/BusinessService';
+
+import AddBookingForm from '@/components/AddBookingForm';
 
 export default {
+  components: {
+    AddBookingForm
+  },
   props: ["id"],
   data: () => ({
     isUser: false,
@@ -152,31 +138,31 @@ export default {
     typeToSwitchTo: "day",
     start: null, // The vuetify calendar component populates this
     end: null,
-    // NEW BOOKING >
+    // NEW BOOKING SLOT >
     newBookingSlotDialog: false,
     newBookingSlotDate: null,
     newBookingSlotStart: null,
     newBookingSlotEnd: null,
-    // NEW BOOKING <
-    dialog: false,
-    dialogDate: false,
-    addBookingDateObject: null,
+    // Availability >
     unavailableDays: {},
     currentMonthUnavailableDays: null,
-    address: null,
     customer_bookings: null,
     admin_bookings: null,
     regular_availability: null,
+    // Add Booking >
+    addBookingDialog: false,
+    addBookingDateObject: null,
     bookingTitle: "",
     bookingInfo: "",
-    bookingDuration: 60,
+    bookingDuration: "60",
     bookingPrice: "POA",
     bookingType: "online",
-    email: "",
-    bookerName: "",
+    address: "",
     bookingCreatedDialog: false,
+    // Booking Slots >
     visibleEvents: [{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}],
-    events: {}//[{start:"2019-01-01 00:00",end:"2019-01-01 00:00", name:""}]
+    events: {}
+    // Booking Slots <
   }),
   created() {
     // Check if own calendar
@@ -197,12 +183,12 @@ export default {
   },
   computed: {
     requiredRule() {
-      return [v => !!v || this.$getLanguageMsg("required")]
+      return [v => !!v || this.$getLanguageMsg("Required")]
     },
     emailRules() {
       const rules = [];
 
-      const requiredRule = v => !!v || this.$getLanguageMsg("required");
+      const requiredRule = v => !!v || this.$getLanguageMsg("Required");
       const invalidRule = v =>
         /.+@.+/.test(v) || this.$getLanguageMsg("emailNotValid");
 
@@ -213,7 +199,7 @@ export default {
     nameRules() {
       const rules = [];
 
-      const requiredRule = v => !!v || this.$getLanguageMsg("required");
+      const requiredRule = v => !!v || this.$getLanguageMsg("Required");
       //const fullNameRule = v => (v || '').indexOf(' ') > -1 || this.$getLanguageMsg('fullNameRequired');
 
       rules.push(requiredRule);
@@ -224,7 +210,7 @@ export default {
       return this.$getLanguageMsg("emailNotValid");
     },
     required() {
-      return this.$getLanguageMsg("required");
+      return this.$getLanguageMsg("Required");
     },
     locale() {
       return this.$getLocale();
@@ -290,7 +276,7 @@ export default {
 
       for(let i in bookings) {
         if(DateUtils.rangesIntersect(bookings[i].from, bookings[i].to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-          this.$emit('open-generic-dialog', ["error", "There is already a customer booking at this time."]);
+          this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "There is already a customer booking at this time."]);
           return;
         }
       }
@@ -315,13 +301,13 @@ export default {
             toTime = adminBooking.toTime;
           }
           else {
-            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
 
           // If interval is not in an admin booking
           if(DateUtils.rangesIntersect(this.newBookingSlotStart, this.newBookingSlotEnd, fromTime, toTime)) {
-            this.$emit('open-generic-dialog', ["error", "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
+            this.$emit('open-generic-dialog', [this.$getLanguageMsg("Error"), "You have already marked this time as unavailable. Please check your Dashboard's 'Unavailable Dates' section."]);
             return;
           }
         } // for each admin booking
@@ -330,7 +316,7 @@ export default {
       // 1.3 - Check regular availability based upon intervals (I1)
       let dayOfWeek = DateUtils.getWeekdayFromDateString(this.newBookingSlotDate);
 
-      if (this.regular_availability[dayOfWeek] != null) {
+      if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
         for(let range in this.regular_availability[dayOfWeek]) {
           if(this.regular_availability[dayOfWeek][range] != null) {
             let regularRange = this.regular_availability[dayOfWeek][range];
@@ -339,8 +325,7 @@ export default {
               let interval = regIntervals[i];
 
               if(DateUtils.rangesIntersect(interval.from, interval.to, this.newBookingSlotStart, this.newBookingSlotEnd)) {
-                //TODO: Overwrite functionality to split a regular hour?
-                this.$emit('open-generic-dialog', ["information", "You are already available for a portion of this time."]);
+                this.$emit('open-generic-dialog', [this.$getLanguageMsg("Information"), "You are already available for a portion of this time."]);
                 return;
               }
             }
@@ -373,8 +358,7 @@ export default {
     },
     // Clears events for the day, keeping user added "Irregular Availability" and the default event for Vue reactivity
     unhideEvents(year, month) {
-      this.visibleEvents = this.events[year][month];//.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
-      // this.events = this.hiddenEvents.filter(x => x.name == " " || x.start == "2019-01-01 00:00");
+      this.visibleEvents = this.events[year][month];
     },
     // Renders available booking slots
     setAvailableTimes(date) { //TODO: take specific availability into account - specific takes priority
@@ -393,10 +377,14 @@ export default {
       let year = DateUtils.getYearFromDate(date);
       let month = DateUtils.getMonthFromDate(date);
 
-      // 3 & 4: Check if times intersect with customer bookings
+      //TODO: Could we filter instead of clearing?
+      if(!this.events[year]) this.events[year] = {};
+      this.events[year][month] = [];
+
+      // 3, 4 & 5: Check if time passed or times intersect with bookings
       let dayOfWeek = DateUtils.getWeekdayFromDateString(date);
 
-      if (this.regular_availability[dayOfWeek] != null) {
+      if (this.regular_availability && this.regular_availability[dayOfWeek] != null) {
         for (let range in dayOfWeek) {
           if (this.regular_availability[dayOfWeek][range] != null) {
             let potentiallyAvailableIntervals = DateUtils.getIntervalsInRange(
@@ -407,10 +395,15 @@ export default {
             for (let i in potentiallyAvailableIntervals) {
               let intervalAvailable = true;
 
-              let start = `${this.focus} ${potentiallyAvailableIntervals[i].from}`;
-              let end = `${this.focus} ${potentiallyAvailableIntervals[i].to}`;
+              // 3: Check if passed time
+              if(DateUtils.getCurrentDateString() == date && DateUtils.getCurrentTimeString() > potentiallyAvailableIntervals[i].from) {
+                continue;
+              }
 
-              // 3: Check intervals v admin bookings
+              let start = `${date} ${potentiallyAvailableIntervals[i].from}`;
+              let end = `${date} ${potentiallyAvailableIntervals[i].to}`;
+
+              // 4: Check intervals v admin bookings
               if(this.admin_bookings != null) { //TODO: How are we sure we have it? Check customerbookings for ref
 
                 //TODO: Can we make the specific availability functionality transferrable to admin dashboard? Reuse?
@@ -418,7 +411,7 @@ export default {
                 for(let x = 0; x < this.admin_bookings.length; x++) {
 
                   let adminBooking = this.admin_bookings[x];
-                  if(DateUtils.dateWithin(this.focus, adminBooking.fromDate, adminBooking.toDate)) {
+                  if(DateUtils.dateWithin(date, adminBooking.fromDate, adminBooking.toDate)) {
                     let fromTime, toTime;
 
                     if(adminBooking.fromDate == adminBooking.toDate) {
@@ -444,7 +437,7 @@ export default {
                 }
               }
 
-              // 4: Check intervals v customer bookings
+              // 5: Check intervals v customer bookings
               if (this.customer_bookings != null) {
                 if(intervalAvailable != false) { 
                   for (let x = 0; x < this.customer_bookings.length; x++) {
@@ -479,9 +472,9 @@ export default {
                   end: end
                 });
               }
-            } // for each interval
+            } // for each potential interval
           }
-        }
+        } // for each day of week
       }
     },
     //TODO can call this a bit more lazily than reg availability? as already have meta-data and only need
@@ -502,7 +495,7 @@ export default {
           if(bookingDetails.info) this.bookingInfo = bookingDetails.info;
           if(bookingDetails.duration) this.bookingDuration = bookingDetails.duration;
           if(bookingDetails.price) this.bookingPrice = bookingDetails.price;
-          if(bookingDetails.type != 'online' && bookingDetails.address) {
+          if(bookingDetails.type != 'onlineBookings' && bookingDetails.address) {
             this.address = bookingDetails.address;
           }
           if(bookingDetails.type) this.bookingType = bookingDetails.type;
@@ -524,6 +517,7 @@ export default {
       let data = await CustomerService.getMonthAvailabilityData(this.id, year, month);
 
       if(data && data.unavailableDays) {
+        if(!this.unavailableDays[year][month]) this.unavailableDays[year][month] = [];
         this.unavailableDays[year][month] = data.unavailableDays;
         if(data.irregularAvailability) {
           if(this.events[year][month] == null) {
@@ -545,36 +539,6 @@ export default {
       );
 
       this.isFetchingDayData = false;
-    },
-    async addBooking() {
-      if (this.$refs.addBookingForm.validate()) {
-        this.dialog = false;
-        this.bookingCreatedDialog = true;
-
-        let date = this.addBookingDateObject.day.date;
-        let year = DateUtils.getYearFromDate(date);
-        let month = DateUtils.getMonthFromDate(date);
-        let day = DateUtils.getDayFromDate(date);
-
-        let from = this.addBookingDateObject.event.start.split(" ")[1];
-        let to = this.addBookingDateObject.event.end.split(" ")[1];
-
-        //RE "Huge Server Async Request Learning: in notes" - FUCK, it was awaiting axios/server, not the db
-        //That's why it was returning 5 bookings instead of 6 when I'd just added a booking
-        //the booking hadn't been added to the db, and my code was running simply when the server responded
-        await CustomerService.createBooking(
-          this.id,
-          this.bookerName,
-          this.email,
-          year,
-          month,
-          day,
-          from,
-          to
-        );
-
-        this.loadAndViewDay(date);
-      }
     },
     dayAvailable(dateObject) {
       if (dateObject.date < DateUtils.getCurrentDateString()) {
@@ -620,18 +584,13 @@ export default {
 
       return false;
     },
-    switchType() {
-      if(this.type == 'month') {
-        this.typeToSwitchTo = this.type;
-        this.type = 'day';
-      } else if (this.type == 'day') {
-        this.typeToSwitchTo = this.type;
-        this.type = 'month';
-      }
-    },
-    openDialog(eventObject) {
-      this.dialog = true;
+    openAddBookingDialog(eventObject) {
+      this.addBookingDialog = true;
       this.addBookingDateObject = eventObject;
+    },
+    closeAddBookingDialog() {
+      this.addBookingDialog = false
+      this.bookingCreatedDialog = true
     },
     async loadAndViewDay(date) {
       date = date.date != undefined ? date.date : date;
@@ -641,8 +600,14 @@ export default {
       this.viewDay(date);
     },
     viewDay(date) {
-      this.focus = date;
-      this.type = "day";
+      if(date == this.focus && this.type =='day') {
+        let year = DateUtils.getYearFromDate(date);
+        let month = DateUtils.getMonthFromDate(date);
+        this.unhideEvents(year, month);
+      } else {
+        this.focus = date;
+        this.type = "day";
+      }
     },
     setToday() {
       this.focus = this.today;
@@ -652,7 +617,7 @@ export default {
 
       if (this.focus >= DateUtils.getCurrentDateString()) {
         if (this.type == "day") {
-          this.loadAndViewDay(this.focus); //TODO: gonna be repeating this.focus = ?
+          this.loadAndViewDay(this.focus);
         }
 
         if (this.type == "month") {

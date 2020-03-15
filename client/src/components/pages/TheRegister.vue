@@ -1,23 +1,23 @@
 <template>
     <v-card width="600px" class="mx-auto mt-5">
-        <v-card-title><h1>{{$getLanguageMsg('register')}}</h1></v-card-title>
+        <v-card-title><h1>{{$getLanguageMsg('Register')}}</h1></v-card-title>
 
         <v-card-text>
             <v-form @submit.prevent="register" ref="form">
                 <v-text-field v-model="firstname"
                 required
                 v-bind:rules="nameRules"
-                :label="$getLanguageMsg('firstname')" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('First name')" prepend-icon="mdi-account-circle"
                 />
                 <v-text-field v-model="surname"
                 required
                 v-bind:rules="nameRules"
-                :label="$getLanguageMsg('surname')" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('Surname')" prepend-icon="mdi-account-circle"
                 />
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                :label="$getLanguageMsg('email')" prepend-icon="mdi-at"
+                :label="$getLanguageMsg('e-mail')" prepend-icon="mdi-at"
                 />
                 <v-text-field v-model="occupation"
                 required
@@ -26,17 +26,17 @@
                 />
                 <v-select
                 required v-bind:rules="nameRules"
-                v-model="bookingTravelType"
+                v-model="bookingType"
                 :items="bookingTravelTypes"
                 :label="$getLanguageMsg('bookingTravelType')" prepend-icon="mdi-train-car"
                 ></v-select>
-                <v-text-field v-if="bookingTravelType == 'businessTravels' || bookingTravelType == 'customerTravels'" 
+                <v-text-field v-if="bookingType == 'businessTravels' || bookingType == 'customerTravels'" 
                 v-model="address"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('address')" prepend-icon="mdi-city"
                 />
                 <v-text-field
-                v-else-if="bookingTravelType == 'online'"
+                v-else-if="bookingType == 'onlineBookings'"
                 v-model="onlineContactDetails"
                 required v-bind:rules="nameRules"
                 :label="$getLanguageMsg('onlineContactDetails')" prepend-icon="mdi-headset"
@@ -54,7 +54,7 @@
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
+                :label="$getLanguageMsg('Password')" prepend-icon="mdi-lock" 
                 />
 
                 <input type="submit" hidden/>
@@ -65,7 +65,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="register">{{$getLanguageMsg('register')}}</v-btn>
+            <v-btn color="success" @click="register">{{$getLanguageMsg('Register')}}</v-btn>
         </v-card-actions>
 
         <v-dialog v-model="errorModalDialog" max-width="400">
@@ -74,7 +74,7 @@
                 <p>{{ errorModalText }}</p>
                 <v-btn type="submit" color="error" 
                 @click="errorModalDialog = !errorModalDialog">
-                {{$getLanguageMsg('ok')}}
+                {{$getLanguageMsg('Ok')}}
                 </v-btn>
             </v-container>
             </v-card>
@@ -85,8 +85,8 @@
 
 <script>
 import firebase from 'firebase';
-import { db } from '../firebaseInit';
-import BusinessService from '../services/BusinessService';
+import { db } from '../../firebaseInit';
+import BusinessService from '@/services/BusinessService';
 
 export default {
     name: 'register',
@@ -98,11 +98,11 @@ export default {
             firstname: '',
             surname: '',
             occupation: '',
-            bookingTravelType: '',
+            bookingType: '',
             bookingTravelTypes: [
                 {text: this.$getLanguageMsg('businessTravels'), value: 'businessTravels' },
                 {text: this.$getLanguageMsg('customerTravels'), value: 'customerTravels' },
-                {text: this.$getLanguageMsg('onlineBookings'), value: 'online' }
+                {text: this.$getLanguageMsg('onlineBookings'), value: 'onlineBookings' }
             ],
             address: null,
             onlineContactDetails: null,
@@ -110,11 +110,11 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                v => !!v || this.$getLanguageMsg('required'),
+                v => !!v || this.$getLanguageMsg('Required'),
                 v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ],
             nameRules: [
-                v => !!v || this.$getLanguageMsg('required')
+                v => !!v || this.$getLanguageMsg('Required')
             ],
             imageRules: [
                 value => !value || value.size < 1000000 || this.$getLanguageMsg('picTooLarge')
@@ -123,6 +123,8 @@ export default {
     },
     methods: {
         register() {
+            window.console.log(this.bookingType);
+
             if(!this.$refs.form.validate()) return;
 
             try {
@@ -136,10 +138,13 @@ export default {
                                 email: this.email
                         });
 
+                        //TODO: Move to a service
                         db.collection('businesses').doc(userCredential.user.uid).set({
-                            firstname: this.firstname,
-                            surname: this.surname,
-                            occupation: this.occupation,
+                            profileData: {
+                                firstname: this.firstname,
+                                surname: this.surname,
+                                occupation: this.occupation,
+                            },
                             regularAvailability: {
                                 Monday: [{from: "09:00", to: "17:00"}],
                                 Tuesday: [{from: "09:00", to: "17:00"}],
@@ -148,9 +153,9 @@ export default {
                                 Friday: [{from: "09:00", to: "17:00"}]
                             },
                             bookingDetails: {
-                                travelType: this.bookingTravelType,
+                                type: this.bookingType,
                                 address: this.address,
-                                onlineContactDetails: this.onlineContactDetails
+                                onlineContactDetails: this.onlineContactDetails,
                             },
                             locale: this.$getLocale()
                         }).then(() => {

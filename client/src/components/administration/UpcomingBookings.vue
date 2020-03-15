@@ -3,7 +3,6 @@
       :headers="headers"
       :items="bookings"
       sort-by="from"
-      class="elevation-1"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
@@ -18,15 +17,18 @@
         >
             <!-- Activator: Text field activates the menu -->
             <template v-slot:activator="{ on }">
+              <v-row>
+                <v-col cols="12" lg="2">
+                  <v-text-field v-on="on"
+                  v-model="date"
+                  label="Viewing bookings on:"
+                  prepend-icon="mdi-calendar"
+                  readonly
+                  single-line
+                  ></v-text-field>
+                </v-col>
+              </v-row>
                 
-                <v-text-field v-on="on"
-                v-model="date"
-                label="Viewing bookings on:"
-                append-icon="mdi-calendar"
-                readonly
-                single-line
-                
-                ></v-text-field>
             </template>
 
             <!-- Menu: Date Picker takes the default menu slot - it is the "menu" -->
@@ -43,15 +45,15 @@
       </template>
 
       <template v-slot:no-data>
-        <p>{{$getLanguageMsg('noBookings')}}</p>
+        <p class="ma-1">{{$getLanguageMsg('noBookings')}}</p>
       </template>
     </v-data-table>
 </template>
 
 
 <script>
-import {DateUtils} from '../DateUtils';
-import BusinessService from '../services/BusinessService'
+import {DateUtils} from '@/DateUtils';
+import BusinessService from '@/services/BusinessService'
 
 export default {
     props: ["id"],

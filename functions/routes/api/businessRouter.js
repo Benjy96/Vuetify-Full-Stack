@@ -133,6 +133,37 @@ router.post('/adminBooking', async(req, res) => {
   MetaDataHelper.updateMetaData(uid, adminBooking.fromDate, adminBooking.toDate);
 });
 
+// Post adds to something and changes its state - Push a range to a reg availability day
+router.post('/regularAvailability', async(req, res) => {
+  let uid = req.body.uid;
+  let day = req.body.day;
+  let from = req.body.from;
+  let to = req.body.to;
+
+  if(!uid || !day || !from || !to) {
+    res.status(400).send();
+    return;
+  }
+
+  await db.collection('businesses').doc(uid)
+  .update({
+    ["regularAvailability." + [day]]: admin.firestore.FieldValue.arrayUnion({
+        from: from,
+        to: to
+      })
+  }, {merge: true});
+
+  res.status(200).send();
+
+  //TODO: We only need to check as far ahead as there may be admin/customer bookings
+  let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 6);
+  
+  MetaDataHelper.updateMetaData(uid, 
+    DateUtils.getCurrentDateString(), 
+    bookingDurationSetUntil
+  );
+});
+
 // Put creates or replaces something - calling it multiple times would have the same effect - replace a reg availability day
 router.put('/regularAvailability', async(req, res) => {
   let uid = req.body.uid;
@@ -145,10 +176,9 @@ router.put('/regularAvailability', async(req, res) => {
   }
 
   let docRef = db.collection('businesses').doc(uid);
+  //TODO: FUCK THIS IS UGLY
   await docRef.update({
-      "regularAvailability": {
-          [day]: ranges
-      }
+      ["regularAvailability." + [day]]: ranges
   }, {merge: true});
 
   res.status(200).send();
@@ -166,38 +196,6 @@ router.put('/regularAvailability', async(req, res) => {
    * it is distended, and standard checks won't work. Therefore, we need to update meta-data as far as the data is "non-standard".
    * 
    */
-  MetaDataHelper.updateMetaData(uid, 
-    DateUtils.getCurrentDateString(), 
-    bookingDurationSetUntil
-  );
-});
-
-// Post adds to something and changes its state - Push a range to a reg availability day
-router.post('/regularAvailability', async(req, res) => {
-  let uid = req.body.uid;
-  let day = req.body.day;
-  let from = req.body.from;
-  let to = req.body.to;
-
-  if(!uid || !day || !from || !to) {
-    res.status(400).send();
-    return;
-  }
-
-  await db.collection('businesses').doc(uid)
-  .set({
-      "regularAvailability": {
-          [day]: admin.firestore.FieldValue.arrayUnion({
-              from: from,
-              to: to
-          })
-      }
-  }, {merge: true});
-
-  res.status(200).send();
-
-  let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
-  //TODO: We need to check as far ahead as there may be admin/customer bookings
   MetaDataHelper.updateMetaData(uid, 
     DateUtils.getCurrentDateString(), 
     bookingDurationSetUntil
@@ -234,33 +232,22 @@ router.post('/irregularAvailability', async(req, res) => {
 });
 
 /* -- Profile management -- */
-
-router.post('/bio', async (req, res) => {
+router.post('/updateProfile', async (req, res) => {
   let uid = req.body.uid;
-  let bio = req.body.bio;
 
-  if(!uid || !bio) {
+  let profileData = {};
+
+  if(!uid) {
     res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
     return;
   } else {
+    if(req.body.firstname) profileData.firstname = req.body.firstname;
+    if(req.body.surname) profileData.surname = req.body.surname;
+    if(req.body.description) profileData.description = req.body.description;
+    if(req.body.occupation) profileData.occupation = req.body.occupation;
+    
     db.collection(`businesses`).doc(`${uid}`).set({
-      description: bio
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
-
-router.post('/occupation', async (req, res) => {
-  let uid = req.body.uid;
-  let occupation = req.body.occupation;
-
-  if(!uid || !occupation) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(`${uid}`).set({
-      occupation: occupation
+      profileData: profileData
     }, {merge: true}).then(() => {
       res.status(200).send();
     });
@@ -268,78 +255,35 @@ router.post('/occupation', async (req, res) => {
 });
 
 /* -- Booking management -- */
-
-router.post('/bookingTitle', async (req, res) => {
+router.post('/bookingDetails', async(req, res) => {
   let uid = req.body.uid;
-  let bookingTitle = req.body.bookingTitle;
-
-  if(!uid || !bookingTitle) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
+  if(!uid) {
+    res.status(400).send('Invalid request');
     return;
   } else {
-    db.collection('businesses').doc(uid).set({
-      bookingTitle: bookingTitle
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
+    let bookingDetails = {};
 
-router.post('/bookingInfo', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingInfo = req.body.bookingInfo;
+    if(req.body.bookingDuration) {
+      bookingDetails.duration = req.body.bookingDuration;
 
-  if(!uid || !bookingInfo) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(uid).set({
-      bookingInfo: bookingInfo
-    }, {merge: true}).then(() => {
-      res.status(200).send();
-    });
-  }
-});
-
-//TODO: RATE LIMIT!!!
-router.post('/bookingDuration', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingDuration = parseInt(req.body.bookingDuration);
-
-  if(!uid || !bookingDuration) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    db.collection(`businesses`).doc(uid).set({
-      bookingDuration: bookingDuration
-    }, {merge: true}).then(() => {
-  
-      let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 12);
+      let bookingDurationSetUntil = DateUtils.incrementMonthOfDate(DateUtils.getCurrentDateString(), 6);
       //TODO: We need to check as far ahead as there may be admin/customer bookings
+      //TODO: Is MetaDataHelper checking this nested bookingDetails obj or root bookingDuration?
       MetaDataHelper.updateMetaData(uid, 
         DateUtils.getCurrentDateString(), 
         bookingDurationSetUntil
       );
-  
-      res.status(202).send({setTo: bookingDurationSetUntil});
-    });
-  }
-});
-
-router.post('/bookingPrice', async (req, res) => {
-  let uid = req.body.uid;
-  let bookingPrice = req.body.bookingPrice;
-
-  if(!uid || !bookingPrice || !parseFloat(bookingPrice)) {
-    res.status(400).send(`Invalid request to ${req.baseUrl}${req.url}`);
-    return;
-  } else {
-    if(!bookingPrice.includes(".")) {
-      bookingPrice = bookingPrice.concat(".00");
     }
 
-    db.collection(`businesses`).doc(uid).set({
-      bookingPrice: bookingPrice
+    if(req.body.bookingPrice) bookingDetails.price = req.body.bookingPrice;
+    if(req.body.bookingAddress) bookingDetails.address = req.body.bookingAddress;
+    if(req.body.bookingTitle) bookingDetails.title = req.body.bookingTitle;
+    if(req.body.bookingInfo) bookingDetails.info = req.body.bookingInfo;
+    if(req.body.bookingType) bookingDetails.type = req.body.bookingType;
+    if(req.body.address) bookingDetails.address = req.body.address;
+
+    db.collection('businesses').doc(uid).set({
+      bookingDetails: bookingDetails
     }, {merge: true}).then(() => {
       res.status(200).send();
     });

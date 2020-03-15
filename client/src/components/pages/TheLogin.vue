@@ -1,19 +1,19 @@
 <template>
     <v-card width="400px" class="mx-auto mt-5">
-        <v-card-title><h1>{{$getLanguageMsg('login')}}</h1></v-card-title>
+        <v-card-title><h1>{{$getLanguageMsg('Login')}}</h1></v-card-title>
 
         <v-card-text>
             <v-form ref="form" @submit.prevent="login">
                 <v-text-field v-model="email"
                 required
                 v-bind:rules="emailRules"
-                :label="$getLanguageMsg('email')" prepend-icon="mdi-account-circle"
+                :label="$getLanguageMsg('e-mail')" prepend-icon="mdi-account-circle"
                 />
                 <v-text-field v-model="password"
                 @click:append="showPassword = !showPassword"
                 v-bind:append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                 v-bind:type="showPassword ? 'text' : 'password'"
-                :label="$getLanguageMsg('password')" prepend-icon="mdi-lock" 
+                :label="$getLanguageMsg('Password')" prepend-icon="mdi-lock" 
                 />
 
                 <input type="submit" hidden/>
@@ -24,7 +24,7 @@
 
         <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="success" @click="login">{{$getLanguageMsg('login')}}</v-btn>
+            <v-btn color="success" @click="login">{{$getLanguageMsg('Login')}}</v-btn>
         </v-card-actions>
 
     </v-card>
@@ -41,7 +41,7 @@ export default {
             email: '',
             password: '',
             emailRules: [
-                v => !!v || this.$getLanguageMsg('required'),
+                v => !!v || this.$getLanguageMsg('Required'),
                 v => /.+@.+/.test(v) || this.$getLanguageMsg('emailNotValid'),
             ]
         }
@@ -49,8 +49,11 @@ export default {
     methods: {
         login() {  //event is a MouseEvent - passed in by Javascript
             if(!this.$refs.form.validate()) return;
-
-            firebase.auth().signInWithEmailAndPassword(this.email, this.password);
+            
+            let vueInstance = this;
+            firebase.auth().signInWithEmailAndPassword(this.email, this.password).catch(function(error) {
+                vueInstance.$emit("open-generic-dialog", [vueInstance.$getLanguageMsg("Error"), error.message]);
+            });
         }
     }
 }

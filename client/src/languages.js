@@ -1,3 +1,8 @@
+/**
+ * If you want an exact string match, start with uppercase,
+ * otherwise use camelCase for a "variable"-type string.
+ */
+
 const messages = 
 {
     //App.vue
@@ -5,15 +10,35 @@ const messages =
         'en': "Booker",
         'es': "Calendario de Reservas"
     },
-    'error': {
+    'Error': {
         'en': "Error",
         'es': "" //TODO
     },
-    'information': {
+    'Information': {
         'en': "Information",
         'es': "" //TODO
     },
+    'Bookings': {
+        'en': "Bookings",
+        'es': "" //TODO
+    },
+    'Booking Management': {
+        'en': "Booking Management",
+        'es': "" //TODO
+    },
     //Home.vue
+    'Search': {
+        'en': "Search",
+        'es': "" //TODO
+    },
+    'searchBarString': {
+        'en': "I'm searching for . . .",
+        'es': "" //TODO
+    },
+    'Profile': {
+        'en': "Profile",
+        'es': "Perfil" //TODO
+    },
     'businesses': {
         'en': "Book a Business",
         'es': "Empresas"
@@ -23,43 +48,51 @@ const messages =
         'en': "Home",
         'es': "Inicio"
     },
-    'cancelReservation': {
+    'Cancel reservation': {
         'en': "Cancel reservation",
         'es': "Cancelar reserva"
     },
-    'myCalendar': {
+    'Calendar': {
+        'en': "Calendar",
+        'es': "Mi Calendario"
+    },
+    'My Calendar': {
         'en': "My Calendar",
         'es': "Mi Calendario"
     },
-    'administration': {
+    'Administration': {
         'en': "Administration",
         'es': "Administración"
+    },
+    'Dashboard': {
+        'en': "Dashboard",
+        'es': "" //TODO
     },
     'registerBusiness': {
         'en': "Register",
         'es': "Registrar como empresa"
     },
-    'login': {
+    'Login': {
         'en': "Login",
         'es': "Iniciar Sesión"
     },
-    'logout': {
+    'Logout': {
         'en': "Logout",
         'es': "Salir"
     },
-    'reservationCanceled': {
+    'Your reservation has been canceled': {
         'en': "Your reservation has been canceled",
         'es': "Tu reserva ha sido cancelada"
     },
-    'bookingReference': {
+    'Booking reference': {
         'en': "Booking reference",
         'es': "Referencia de reserva"
     },
-    'ok': {
+    'Ok': {
         'en': "Ok",
         'es': "Vale"
     },
-    'required': {
+    'Required': {
         'en': "Required",
         'es': "Requerido"
     },
@@ -72,11 +105,11 @@ const messages =
         'en': "E-mail must be valid",
         'es': "E-mail tiene que ser válido"
     },
-    'password': {
+    'Password': {
         'en': "Password",
         'es': "Contraseña"
     },
-    'email': {
+    'e-mail': {
         'en': "e-mail",
         'es': "e-mail"
     },
@@ -93,7 +126,7 @@ const messages =
         'es': "" //TODO
     },
     'onlineBookings': {
-        'en': "My bookings will be online.",
+        'en': "Bookings are online.",
         'es': "" //TODO
     },
     'address': {
@@ -108,19 +141,23 @@ const messages =
         'en': "Occupation (For example: hairdresser)",
         'es': "Ocupación (Por ejemplo: peluquera)"
     },
-    'name': {
+    'Name': {
         'en': "Name",
         'es': "Nombre"
     },
-    'surname': {
+    'Surname': {
         'en': "Surname",
         'es': "Apellido"
     },
-    'firstname': {
+    'First name': {
         'en': "First name",
         'es': "Nombre"
     },
-    'register': {
+    'First Name': {
+        'en': "First Name",
+        'es': "Nombre"
+    },
+    'Register': {
         'en': "Register",
         'es': "Registrar"
     },
@@ -129,27 +166,27 @@ const messages =
         'es': "Foto de perfil"
     },
     //adminBookingPicker
-    'add': {
+    'Add': {
         'en': "Add",
         'es': "Añadir"
     },
-    'toTime': {
+    'To time': {
         'en': "To time",
         'es': "Hasta la hora"
     },
-    'toDate': {
+    'To date': {
         'en': "To date",
         'es': "Hasta la fecha"
     },
-    'fromTime': {
+    'From time': {
         'en': "From time",
         'es': "Desde la hora"
     },
-    'fromDate': {
+    'From date': {
         'en': "From date",
         'es': "Desde la fecha"
     },
-    'cancel': {
+    'Cancel': {
         'en': "Cancel",
         'es': "Cancelar"
     },
@@ -166,18 +203,30 @@ const messages =
         'en': "Are you sure you wish to remove this booking?",
         'es': "¿Estás seguro/a de que quieres cancelar la reserca?"
     },
-    //Calendar.vue
-    'date': {
+    //Calendar.vue - duplicates (day/month) are for v-calendar variables
+    'Date': {
         'en': "Date",
         'es': "Fecha"
+    },
+    'Day': {
+        'en': "Day",
+        'es': "Dia"
     },
     'day': {
         'en': "Day",
         'es': "Dia"
     },
+    'Week': {
+        'en': "Week",
+        'es': "Semanas"
+    },
     'week': {
         'en': "Week",
         'es': "Semanas"
+    },
+    'Month': {
+        'en': "Month",
+        'es': "Mes"
     },
     'month': {
         'en': "Month",
@@ -187,7 +236,7 @@ const messages =
         'en': "4 days",
         'es': '4 dias'
     },
-    'today': {
+    'Today': {
         'en': "Today",
         'es': "Hoy"
     },
@@ -207,11 +256,11 @@ const messages =
         'en': "You have been emailed your booking reference",
         'es': "Se te ha enviado un email con tu número de referencia"
     },
-    'book': {
+    'Book': {
         'en': "Book",
         'es': "Reservar"
     },
-    'bookAppointment': {
+    'Book an appointment': {
         'en': "Book an appointment",
         'es': "Reservar una cita"
     },
@@ -219,15 +268,19 @@ const messages =
         'en': "Please enter your first name and surname",
         'es': "" //TODO
     },
-    'online': {
+    'Online': {
         'en': "Online",
         'es': ""//TODO
+    },
+    'online': {
+        'en': "Online",
+        'es': "" //TODO
     },
     'bookingsOnline': {
         'en': "Bookings are online. You will be emailed contact details.",
         'es': "" //TODO
     },
-    'location': {
+    'Location': {
         'en': "Location",
         'es': "" //TODO
     },
@@ -236,12 +289,16 @@ const messages =
         'en': "Too long!",
         'es': "" //TODO
     },
-    'profileManagement': {
+    'Profile Management': {
         'en': "Profile Management",
-        'es': "" //TODO
+        'es': "Perfil" //TODO
+    },
+    'Profile Settings': {
+        'en': "Profile Settings",
+        'es': "Perfil" //TODO
     },
     'bioFormText': {
-        'en': "Bio - A short summary of who you are (This is shown under your name on the home screen)",
+        'en': "Bio - A short summary of who you are",
         'es': "" //TODO
     },
     'invalidBioFormText': {
@@ -264,7 +321,19 @@ const messages =
         'en': "Address",
         'es': "" //TODO
     },
-    'price': {
+    'Duration': {
+        'en': "Duration",
+        'es': "" //TODO
+    },
+    'minutes': {
+        'en': "minutes",
+        'es': "" //TODO
+    },
+    'minute': {
+        'en': "minute",
+        'es': "" //TODO
+    },
+    'Price': {
         'en': "Price",
         'es': "" //TODO
     },
@@ -276,7 +345,7 @@ const messages =
         'en': "If you're setting a booking price, it must be a number greater than 0",
         'es': "" //TODO
     },
-    'save': {
+    'Save': {
         'en': "Save",
         'es': "Salvar" //TODO
     },
@@ -292,15 +361,19 @@ const messages =
         'en': "Booking duration must a number greater than 0",
         'es': ""
     },
-    'bookingManagement': {
-        'en': "Booking Management",
+    'Booking Form': {
+        'en': "Booking Form",
+        'es': "" //TODO
+    },
+    'Edit Booking Form': {
+        'en': "Edit Booking Form",
         'es': "" //TODO
     },
     'preferenceSaved': {
         'en': "Your preference has been saved",
         'es': "" //TODO
     },
-    'yes': {
+    'Yes': {
         'en': "Yes",
         'es': "Si"
     },
@@ -308,11 +381,11 @@ const messages =
         'en': "Are you sure you wish to remove this?",
         'es': "" //TODO
     },
-    'remove': {
+    'Remove': {
         'en': "Remove",
         'es': "Eliminar"
     },
-    'upcomingBookings': {
+    'Upcoming bookings': {
         'en': "Upcoming bookings",
         'es': "Próximas Reservas"
     },
@@ -325,7 +398,7 @@ const messages =
         'es': "hasta"
     },
     //TODO: clarify naming v
-    'unavailable': {
+    'Unavailable': {
         'en': "Unavailable",
         'es': "Indisponibilidad"
     },
@@ -333,7 +406,15 @@ const messages =
         'en': "Working Hours",
         'es': "Horas laborables"
     },
-    'hours': {
+    'addWorkingHours': {
+        'en': "Add Working Hours",
+        'es': "" //TODO
+    },
+    'editWorkingHours': {
+        'en': "Edit Working Hours",
+        'es': "" //TODO
+    },
+    'Hours': {
         'en': "Hours",
         'es': "Horas"
     },

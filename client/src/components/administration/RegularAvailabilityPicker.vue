@@ -1,5 +1,4 @@
 <template>
-    <div>
     <v-form>
         <v-row>
             <v-col>
@@ -17,7 +16,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="fromTime"
-                            :label="$getLanguageMsg('fromTime')"
+                            :label="$getLanguageMsg('From time')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -31,8 +30,8 @@
                     :max = "toTime"
                     >
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                        <v-btn text color="primary" @click="fromTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.fromTimeDialog.save(fromTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
@@ -46,7 +45,7 @@
                     <template v-slot:activator="{ on }">
                         <v-text-field
                             v-model="toTime"
-                            :label="$getLanguageMsg('toTime')"
+                            :label="$getLanguageMsg('To time')"
                             readonly
                             v-on="on"
                         ></v-text-field>
@@ -59,24 +58,23 @@
                     full-width
                     :min="fromTime">
                         <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('cancel')}}</v-btn>
-                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('ok')}}</v-btn>
+                        <v-btn text color="primary" @click="toTimeDialogToggle = false">{{$getLanguageMsg('Cancel')}}</v-btn>
+                        <v-btn text color="primary" @click="$refs.toTimeDialog.save(toTime)">{{$getLanguageMsg('Ok')}}</v-btn>
                     </v-time-picker>
                 </v-dialog>
             </v-col>
         </v-row>
         <v-row>
             <v-col>
-                <v-btn @click="validate">{{$getLanguageMsg('add')}}</v-btn>
+                <v-btn color="primary" @click="validate">{{$getLanguageMsg('Add')}}</v-btn>
             </v-col>
         </v-row>
     </v-form>
-    </div>
 </template>
 
 <script>
-import { daysOfWeek } from '../DateUtils';
-import BusinessService from '../services/BusinessService';
+import { daysOfWeek } from '@/DateUtils';
+import BusinessService from '@/services/BusinessService';
 
 export default {
     props: ['id'],
@@ -99,22 +97,9 @@ export default {
         }
     },
     methods: {
-        /* Standard availability algorithm:
-
-            - Store date range
-                1. Save Lunes 09:00 - 17:00
-                2. Add to DB: business/unavailable/days/Lunes/17:00-09:00
-            - Retrieve date range
-                1. Click on Lunes on calendar
-                2. Read from DB: business/unavailable/days/Lunes
-                3. If Lunes collection length > 0:
-                    1. For each Calendar Hour (interval slot) in Calendar Lunes:
-                        1. If Calendar Hour in DB Lunes Range:
-                            1. Do not render clickable booking slot
-        */
         validate() {
             BusinessService.addRegularAvailabilityRange(this.id, this.day, this.fromTime, this.toTime)
-            .then(this.$emit('saved-time-range', this.day));
+            .then(this.$emit('saved-time-range', { weekday: this.day, from: this.fromTime, to: this.toTime }));
         }
     }
 }
