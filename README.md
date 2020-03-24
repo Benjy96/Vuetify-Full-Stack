@@ -6,6 +6,14 @@ https://booking-calendar.web.app/
 
 Fullstack app for managing business bookings using Vue.js, Express and Firebase cloud hosting/functions.
 
+## Complex Date-Time Logic Code Locations:
+
+- **https://github.com/Benjy96/Vuetify-Full-Stack/blob/master/functions/routes/api/src/DateUtils.js** - determines things like "does a time intersect a range?"
+- **https://github.com/Benjy96/Vuetify-Full-Stack/blob/master/functions/routes/api/src/MetaDataHelper.js** - determines things like "is a day unavailable or available?", marking dates as unavailable or available asynchronously
+
+## Main Front-end Code:
+
+- **https://github.com/Benjy96/Vuetify-Full-Stack/blob/master/client/src/components/Calendar.vue** - Built off Vuetify's calendar API, this presents the user with the booking calendar. It links up with my back-end API (under functions/)
 
 ## Quick Start
 
@@ -13,7 +21,7 @@ Fullstack app for managing business bookings using Vue.js, Express and Firebase 
 # Install dependencies
 npm install
 
-# Start Front-end (Vue.js): http://localhost:8080
+# Start Front-end (Vue.js): http://localhost:8081
 cd client
 npm run serve
 
@@ -43,7 +51,7 @@ Therefore, to run the tests:
 ```
 cd client/src/tests
 vue serve tests.js
-Open browser on localhost:8080
+Open browser on localhost:8081
 ```
 
 ### Author
