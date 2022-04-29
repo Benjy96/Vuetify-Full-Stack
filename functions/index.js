@@ -22,12 +22,6 @@ const customerRouter = require('./routes/api/customerRouter');
 app.use('*/api/business', businessRouter); //sends all requests to /api/x/* to the xRouter
 app.use('*/api/customer', customerRouter);
 
-// express.static is a built-in middleware function in Express. 
-// Defines where to serve static files from. public is our static asset folder on prod.
-// https://expressjs.com/en/starter/static-files.html
-// To see running locally, go to: http://localhost:5000/firebase-payment-test/us-central1/app/about
-app.use('/about', express.static(__dirname + '/lander/web/'));
-
 //TODO: Now need to add a Vue-routed 404 page - if we navigate to a non-existent route we will get nothing
 //as we're now allowing any route that won't return from the server to be redirected to index.html (our Vue app)
 app.use(/.*/, express.static(__dirname + '/public/index.html'));
