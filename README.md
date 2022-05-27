@@ -62,3 +62,12 @@ Benjamin Dickey
 
 ## Manage your hours
 ![alt text](./_manage_hours.jpg)
+
+## Manage your customer bookings
+![alt text](./_manage_bookings.jpg)
+
+## Take bookings based upon your hours
+![alt text](./_take_bookings.jpg)
+
+## Change language between Spanish and English
+![alt text](./_change_language.jpg)
