@@ -57,3 +57,8 @@ Open browser on localhost:8081
 ### Author
 
 Benjamin Dickey
+
+# Functionalities
+
+## Manage your hours
+![alt text](./_manage_hours.jpg)
