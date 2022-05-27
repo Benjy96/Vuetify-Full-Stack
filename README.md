@@ -1,4 +1,19 @@
-# Book a Business (IMAGES DEMONSTRATING FUNCTIONALITY AT BOTTOM OF README)
+
+# Functionalities
+
+## Manage your hours
+![alt text](./_manage_hours.jpg)
+
+## Manage your customer bookings
+![alt text](./_manage_bookings.jpg)
+
+## Take bookings based upon your hours
+![alt text](./_take_bookings.jpg)
+
+## Change language between Spanish and English
+![alt text](./_change_language.jpg)
+
+# Book a Business
 
 https://booking-calendar.web.app/about
 
@@ -57,17 +72,3 @@ Open browser on localhost:8081
 ### Author
 
 Benjamin Dickey
-
-# Functionalities
-
-## Manage your hours
-![alt text](./_manage_hours.jpg)
-
-## Manage your customer bookings
-![alt text](./_manage_bookings.jpg)
-
-## Take bookings based upon your hours
-![alt text](./_take_bookings.jpg)
-
-## Change language between Spanish and English
-![alt text](./_change_language.jpg)
