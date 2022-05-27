@@ -1,4 +1,4 @@
-# Book a Business
+# Book a Business (IMAGES DEMONSTRATING FUNCTIONALITY AT BOTTOM OF README)
 
 https://booking-calendar.web.app/about
 
